@@ -1,0 +1,296 @@
+{% load static %}
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="{% block meta_description %}Hệ thống bán lẻ Laptop & PC hàng đầu{% endblock %}"
+    />
+    <meta name="theme-color" content="#cb1c22" />
+
+    <title>{% block title %}36.RauMa - Công Nghệ Đỉnh Cao{% endblock %}</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'core/css/responsive.css' %}" />
+
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <!-- HEADER (Dùng chung) -->
+    {% block header %}
+    <header>
+      <div class="container">
+        <nav class="nav-island">
+          <div class="nav-left">
+            <a href="{% url 'core:home' %}" class="logo">
+              <i class="fa-solid fa-dragon"></i>
+              <span>36<span style="font-weight: 300">.RauMa</span></span>
+            </a>
+            <!-- Desktop Category Dropdown -->
+            <div class="cat-menu-wrapper">
+              <div class="cat-menu-btn">
+                <i class="fa-solid fa-bars"></i> Danh mục
+              </div>
+              <div class="cat-dropdown">
+                <!-- DJANGO: Loop danh mục cha tại đây -->
+                <ul>
+                  <li>
+                    <a href="{% url 'products:product_list' %}?category=laptop"
+                      ><i class="fa-solid fa-laptop"></i> Laptop</a
+                    >
+                  </li>
+                  <li>
+                    <a href="{% url 'products:product_list' %}?category=pc"
+                      ><i class="fa-solid fa-desktop"></i> PC Đồng Bộ</a
+                    >
+                  </li>
+                  <li>
+                    <a href="{% url 'products:product_list' %}?category=apple"
+                      ><i class="fa-brands fa-apple"></i> Apple</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="{% url 'products:product_list' %}?category=linh-kien"
+                      ><i class="fa-solid fa-microchip"></i> Linh Kiện</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#"><i class="fa-solid fa-tv"></i> Màn Hình</a>
+                  </li>
+                  <li>
+                    <a href="#"><i class="fa-solid fa-headset"></i> Phụ Kiện</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search Form -->
+          <form
+            class="search-box"
+            action="{% url 'products:search_results' %}"
+            method="GET"
+          >
+            <input
+              type="text"
+              name="q"
+              placeholder="Tìm kiếm Laptop, PC..."
+              autocomplete="off"
+            />
+            <button type="submit" class="search-btn">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <!-- Search Suggestions Container (JS fills this) -->
+          </form>
+
+          <!-- User Actions (Desktop) -->
+          <div class="nav-actions">
+            <button
+              class="action-btn"
+              onclick="window.location.href='{% url 'orders:wishlist' %}'"
+            >
+              <i class="fa-regular fa-heart"></i>
+            </button>
+            <!-- DJANGO: Check if user.is_authenticated -->
+            <button
+              class="action-btn"
+              onclick="window.location.href='{% url 'users:login' %}'"
+            >
+              <i class="fa-regular fa-user"></i>
+            </button>
+            <button
+              class="action-btn"
+              onclick="window.location.href='{% url 'orders:cart' %}'"
+            >
+              <i class="fa-solid fa-bag-shopping"></i>
+              <span class="badge-dot"></span>
+              <!-- DJANGO: Show if cart_items > 0 -->
+            </button>
+          </div>
+        </nav>
+      </div>
+    </header>
+    {% endblock %}
+
+    <!-- MOBILE MENU SIDEBAR (Dùng chung) -->
+    {% block mobile_menu %}
+    <aside class="mobile-menu">
+      <div class="mobile-menu-header">
+        <h3>Danh mục sản phẩm</h3>
+        <button class="mobile-menu-close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <ul class="mobile-menu-list">
+        <!-- DJANGO: Loop danh mục mobile -->
+        <li>
+          <a href="{% url 'products:product_list' %}?category=laptop"
+            ><i class="fa-solid fa-laptop"></i> Laptop</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'products:product_list' %}?category=pc"
+            ><i class="fa-solid fa-desktop"></i> PC Đồng Bộ</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'products:product_list' %}?category=apple"
+            ><i class="fa-brands fa-apple"></i> Apple</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'products:product_list' %}?category=linh-kien"
+            ><i class="fa-solid fa-microchip"></i> Linh Kiện</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'products:product_list' %}?category=man-hinh"
+            ><i class="fa-solid fa-tv"></i> Màn Hình</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'products:product_list' %}?category=phu-kien"
+            ><i class="fa-solid fa-headset"></i> Phụ Kiện</a
+          >
+        </li>
+      </ul>
+    </aside>
+    <div class="mobile-menu-overlay"></div>
+    {% endblock %}
+
+    <!-- MOBILE BOTTOM NAV (Dùng chung) -->
+    {% block mobile_bottom_nav %}
+    <div class="mobile-bottom-nav">
+      <a
+        href="{% url 'core:home' %}"
+        class="nav-item {% block nav_home_active %}{% endblock %}"
+      >
+        <i class="fa-solid fa-house"></i><span>Trang chủ</span>
+      </a>
+      <button class="nav-item btn-mobile-menu">
+        <i class="fa-solid fa-layer-group"></i><span>Danh mục</span>
+      </button>
+      <a
+        href="{% url 'orders:cart' %}"
+        class="nav-item {% block nav_cart_active %}{% endblock %}"
+      >
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="cart-count-mobile">3</span>
+        <!-- DJANGO: Cart count -->
+        <span>Giỏ hàng</span>
+      </a>
+      <a
+        href="{% url 'users:login' %}"
+        class="nav-item {% block nav_user_active %}{% endblock %}"
+      >
+        <i class="fa-regular fa-user"></i><span>Tài khoản</span>
+      </a>
+    </div>
+    {% endblock %}
+
+    <!-- MAIN CONTENT BLOCK -->
+    <main class="container">
+      {% block content %}
+      <!-- Nội dung riêng của từng trang sẽ nằm ở đây -->
+      {% endblock %}
+    </main>
+
+    <!-- FOOTER (Dùng chung) -->
+    {% block footer %}
+    <footer>
+      <div class="container foot-grid">
+        <div>
+          <h3 class="foot-title" style="color: var(--primary)">36.RauMa</h3>
+          <p style="font-size: 14px; color: var(--text-sub)">
+            Hệ thống bán lẻ kỹ thuật số chính hãng hàng đầu Việt Nam.
+          </p>
+          <div
+            style="margin-top: 20px; display: flex; gap: 16px; font-size: 20px"
+          >
+            <i class="fa-brands fa-facebook" style="color: #1877f2"></i>
+            <i class="fa-brands fa-youtube" style="color: red"></i>
+            <i class="fa-brands fa-tiktok" style="color: black"></i>
+          </div>
+        </div>
+        <nav>
+          <h4 class="foot-title">Sản phẩm</h4>
+          <ul>
+            <li><a href="#" class="foot-link">Laptop Gaming</a></li>
+            <li><a href="#" class="foot-link">MacBook</a></li>
+            <li><a href="#" class="foot-link">Linh Kiện PC</a></li>
+            <li><a href="#" class="foot-link">Màn Hình</a></li>
+          </ul>
+        </nav>
+        <nav>
+          <h4 class="foot-title">Hỗ trợ</h4>
+          <ul>
+            <li><a href="#" class="foot-link">Tra cứu đơn hàng</a></li>
+            <li><a href="#" class="foot-link">Chính sách bảo hành</a></li>
+            <li><a href="#" class="foot-link">Chính sách đổi trả</a></li>
+            <li><a href="#" class="foot-link">Giao hàng & Thanh toán</a></li>
+          </ul>
+        </nav>
+        <div>
+          <h4 class="foot-title">Tổng đài hỗ trợ</h4>
+          <div class="hotline-box">
+            <span class="hotline-desc">Mua hàng (8:00 - 22:00)</span>
+            <a href="tel:18006601" class="hotline-num">1800 6601</a>
+          </div>
+          <div class="hotline-box">
+            <span class="hotline-desc">Khiếu nại (8:00 - 21:00)</span>
+            <a href="tel:18006616" class="hotline-num">1800 6616</a>
+          </div>
+          <div style="margin-top: 20px">
+            <span class="foot-link">Phương thức thanh toán:</span>
+            <div
+              style="
+                display: flex;
+                gap: 10px;
+                margin-top: 5px;
+                font-size: 24px;
+                color: #555;
+              "
+            >
+              <i class="fa-brands fa-cc-visa"></i>
+              <i class="fa-brands fa-cc-mastercard"></i>
+              <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        © 2026 Designed by Luong Van Vu and Gemini Project. All rights reserved.
+      </div>
+    </footer>
+    {% endblock %}
+
+    <button id="backToTop" class="back-to-top" title="Lên đầu trang">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="{% static 'core/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

@@ -1,0 +1,490 @@
+{% extends 'core/base.html' %} {% load static %} {% block title %}Giỏ hàng - FPT
+Future Store{% endblock %} {% block nav_cart_active %}active{% endblock %} {%
+block extra_css %}
+<style>
+  /* =========================================
+           CSS RIÊNG CHO TRANG GIỎ HÀNG
+           ========================================= */
+
+  /* Layout lưới 2 cột cho Desktop */
+  .cart-layout {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr; /* Cột trái rộng hơn */
+    gap: 24px;
+    margin-top: 20px;
+    align-items: start;
+  }
+
+  /* KHỐI DANH SÁCH SẢN PHẨM (BÊN TRÁI) */
+  .cart-container {
+    background: var(--bg-white);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .cart-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .cart-item {
+    padding: 20px;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    gap: 16px;
+    position: relative;
+    transition: var(--trans);
+  }
+  .cart-item:last-child {
+    border-bottom: none;
+  }
+  .cart-item:hover {
+    background-color: #fffafb;
+  } /* Hover nhẹ màu hồng nhạt */
+
+  /* Checkbox đẹp */
+  .custom-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+    cursor: pointer;
+    margin-top: 30px; /* Căn giữa theo ảnh */
+  }
+
+  .item-img {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 5px;
+  }
+  .item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .item-name {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .item-variant {
+    font-size: 12px;
+    color: var(--text-sub);
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 4px;
+    width: fit-content;
+  }
+
+  .item-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 10px;
+  }
+
+  .item-price {
+    display: flex;
+    flex-direction: column;
+  }
+  .p-current {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .p-old {
+    color: #9ca3af;
+    text-decoration: line-through;
+    font-size: 12px;
+  }
+
+  /* Nút tăng giảm số lượng */
+  .qty-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 32px;
+  }
+  .qty-btn {
+    width: 32px;
+    height: 100%;
+    background: #fff;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qty-btn:hover {
+    background: #f3f4f6;
+    color: var(--primary);
+  }
+  .qty-input {
+    width: 40px;
+    height: 100%;
+    border: none;
+    border-left: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    outline: none;
+  }
+
+  .btn-delete {
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.2s;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+  .btn-delete:hover {
+    color: var(--primary);
+  }
+
+  /* KHỐI TỔNG TIỀN (BÊN PHẢI) */
+  .order-summary {
+    background: var(--bg-white);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 90px; /* Trượt theo khi cuộn */
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--text-sub);
+  }
+  .summary-row.total {
+    border-top: 1px dashed #e5e7eb;
+    padding-top: 15px;
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    align-items: center;
+  }
+  .total-price-big {
+    color: var(--primary);
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .btn-checkout {
+    width: 100%;
+    background: var(--gradient-red);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 99px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: var(--trans);
+    box-shadow: 0 4px 10px rgba(203, 28, 34, 0.3);
+  }
+  .btn-checkout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(203, 28, 34, 0.4);
+  }
+
+  /* Input Voucher */
+  .coupon-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .coupon-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    outline: none;
+    font-size: 13px;
+  }
+  .btn-apply {
+    background: var(--text-main);
+    color: white;
+    border: none;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  /* --- RESPONSIVE MOBILE --- */
+  @media (max-width: 768px) {
+    .cart-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 0;
+    }
+    .container {
+      padding: 0;
+    } /* Full width trên mobile */
+
+    .cart-container {
+      border-radius: 0;
+      box-shadow: none;
+      margin-bottom: 100px; /* Chừa chỗ cho thanh toán dưới */
+    }
+
+    /* Ẩn bớt sidebar tổng tiền trên mobile (vì dùng sticky bar dưới) */
+    .order-summary {
+      display: none;
+    }
+
+    .cart-item {
+      padding: 15px;
+      gap: 12px;
+    }
+    .item-img {
+      width: 80px;
+      height: 80px;
+    }
+    .custom-checkbox {
+      margin-top: 0;
+      align-self: center;
+    }
+
+    /* Thanh thanh toán dính dưới đáy Mobile */
+    .mobile-checkout-bar {
+      position: fixed;
+      bottom: 55px; /* Nằm trên menu đáy 1 chút */
+      left: 0;
+      width: 100%;
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 999;
+      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .mc-total span {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    .mc-price {
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 18px;
+      display: block;
+    }
+    .mc-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+  }
+
+  /* Ẩn thanh thanh toán mobile trên PC */
+  @media (min-width: 769px) {
+    .mobile-checkout-bar {
+      display: none;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div style="margin-top: -10px; margin-bottom: 10px">
+  <p style="font-size: 13px; color: var(--text-sub)">
+    <a href="{% url 'core:home' %}">Trang chủ</a>
+    <i
+      class="fa-solid fa-chevron-right"
+      style="font-size: 10px; margin: 0 5px"
+    ></i>
+    Giỏ hàng
+  </p>
+</div>
+
+<div class="cart-layout">
+  <div class="cart-container">
+    <!-- DJANGO: If cart is empty, show message -->
+    <div class="cart-header">
+      <input type="checkbox" class="custom-checkbox" checked />
+      <span>Tất cả (3 sản phẩm)</span>
+      <i
+        class="fa-regular fa-trash-can"
+        style="margin-left: auto; cursor: pointer; color: #9ca3af"
+      ></i>
+    </div>
+
+    <!-- DJANGO: Loop Cart Items -->
+    <div class="cart-item">
+      <input type="checkbox" class="custom-checkbox" checked />
+      <div class="item-img">
+        <img src="https://placehold.co/100x100?text=MacBook" alt="MacBook" />
+      </div>
+      <div class="item-info">
+        <div>
+          <div class="item-name">
+            MacBook Air 13 inch M1 2020 8GB/256GB Gray
+          </div>
+          <div class="item-variant">Màu: Xám • 256GB</div>
+        </div>
+        <div class="item-actions">
+          <div class="item-price">
+            <span class="p-current">18.490.000đ</span>
+            <span class="p-old">22.990.000đ</span>
+          </div>
+          <div class="qty-control">
+            <button class="qty-btn">-</button>
+            <input type="text" class="qty-input" value="1" />
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <i class="fa-solid fa-xmark btn-delete"></i>
+    </div>
+
+    <div class="cart-item">
+      <input type="checkbox" class="custom-checkbox" checked />
+      <div class="item-img">
+        <img src="https://placehold.co/100x100?text=Mouse" alt="Mouse" />
+      </div>
+      <div class="item-info">
+        <div>
+          <div class="item-name">Chuột Gaming Logitech G102 Lightsync RGB</div>
+          <div class="item-variant">Màu: Đen</div>
+        </div>
+        <div class="item-actions">
+          <div class="item-price">
+            <span class="p-current">399.000đ</span>
+            <span class="p-old">599.000đ</span>
+          </div>
+          <div class="qty-control">
+            <button class="qty-btn">-</button>
+            <input type="text" class="qty-input" value="1" />
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <i class="fa-solid fa-xmark btn-delete"></i>
+    </div>
+
+    <div class="cart-item">
+      <input type="checkbox" class="custom-checkbox" />
+      <div class="item-img">
+        <img src="https://placehold.co/100x100?text=RAM" alt="RAM" />
+      </div>
+      <div class="item-info">
+        <div>
+          <div class="item-name">
+            RAM Corsair Vengeance LPX 16GB DDR4 3200MHz
+          </div>
+          <div class="item-variant">Loại: DDR4</div>
+        </div>
+        <div class="item-actions">
+          <div class="item-price">
+            <span class="p-current">890.000đ</span>
+            <span class="p-old">1.200.000đ</span>
+          </div>
+          <div class="qty-control">
+            <button class="qty-btn">-</button>
+            <input type="text" class="qty-input" value="2" />
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <i class="fa-solid fa-xmark btn-delete"></i>
+    </div>
+    <!-- DJANGO: End Loop -->
+  </div>
+
+  <div class="order-summary">
+    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 20px">
+      Thông tin đơn hàng
+    </h3>
+
+    <div class="coupon-box">
+      <input type="text" class="coupon-input" placeholder="Mã giảm giá" />
+      <button class="btn-apply">Áp dụng</button>
+    </div>
+
+    <div class="summary-row">
+      <span>Tạm tính (3 sản phẩm)</span>
+      <span>20.669.000đ</span>
+    </div>
+    <div class="summary-row">
+      <span>Giảm giá</span>
+      <!-- DJANGO: Discount logic -->
+      <span style="color: #22c55e">-0đ</span>
+    </div>
+
+    <div class="summary-row total">
+      <span>Tổng cộng</span>
+      <span class="total-price-big">20.669.000đ</span>
+    </div>
+    <p
+      style="
+        font-size: 12px;
+        color: #6b7280;
+        text-align: right;
+        margin-top: 5px;
+      "
+    >
+      (Đã bao gồm VAT)
+    </p>
+
+    <!-- DJANGO: Checkout Form/Link -->
+    <button
+      class="btn-checkout"
+      onclick="window.location.href = '{% url 'orders:checkout' %}'"
+    >
+      MUA HÀNG NGAY
+    </button>
+  </div>
+</div>
+
+<div class="mobile-checkout-bar">
+  <div class="mc-total">
+    <span>Tổng cộng:</span>
+    <span class="mc-price">20.669.000đ</span>
+  </div>
+  <button
+    class="mc-btn"
+    onclick="window.location.href = '{% url 'orders:checkout' %}'"
+  >
+    Mua Hàng (3)
+  </button>
+</div>
+{% endblock %}

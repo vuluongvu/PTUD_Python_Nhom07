@@ -1,16 +1,589 @@
+{% extends 'core/base.html' %}
 {% load static %}
 
-<!doctype html>
-<html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Laptop Store</title>
+{% block title %}Sắm Tết Công Nghệ{% endblock %}
+{% block meta_description %} - Hệ thống bán lẻ Laptop & PC hàng đầu.{% endblock %}
+{% block nav_home_active %}active{% endblock %}
 
-    <link rel="stylesheet" href="{% static 'core/css/style.css' %}" />
-  </head>
-  <body>
-    <h1>Chào mừng đến với Web bán Laptop</h1>
+{% block content %}
+      <section class="bento-grid">
+        <article
+          /* DJANGO: Dynamic Banners if needed */
+          class="bento-item card-hero"
+          style="grid-column: 1 / -1; grid-row: 1 / 2"
+        >
+          <!-- Slide 1 -->
+          <div class="slide active">
+            <img
+              src="https://trungtran.vn/images/config/5_1766058931.png"
+              alt="Hero 1"
+            />
+          </div>
+          <!-- Slide 2 -->
+          <div class="slide">
+            <img
+              src="https://placehold.co/1200x540/111/fff?text=Gaming+Laptop+2026"
+              alt="Hero 2"
+            />
+          </div>
+        </article>
+        <article
+          class="bento-item card-sub card-red"
+          style="grid-column: 1 / 2; grid-row: 2 / 3"
+        >
+          <div>
+            <span class="tag tag-glass">Hot Deal</span>
+            <h3>Laptop Gaming<br />Lì Xì 5 Triệu</h3>
+          </div>
+          <img
+            src="https://laptopworld.vn/media/product/20382_s5406sa_pp059ws___thumbal.jpg"
+            alt="Laptop"
+          />
+        </article>
+        <article
+          class="bento-item card-sub"
+          style="background: #f3f4f6; grid-column: 2 / -1; grid-row: 2 / 3"
+          onclick="window.location.href = '{% url 'products:product_detail' 'pc-build' %}'"
+        >
+          <div>
+            <span class="tag tag-red">Build PC</span>
+            <h3>Lắp Ráp PC<br />Tặng Màn Hình</h3>
+          </div>
+          <img
+            src="https://laptopworld.vn/media/banner/HoangMinh696x397.png"
+            alt="PC"
+          />
+        </article>
+      </section>
 
-    <script src="{% static 'core/js/script.js' %}"></script>
-  </body>
-</html>
+      <div class="cat-section">
+        <div class="cat-title-small">Linh Kiện Máy Tính & PC</div>
+        <nav class="cat-scroll">
+          <ul class="cat-list">
+            <li class="cat-item active">
+              <i class="fa-solid fa-microchip"></i> CPU
+            </li>
+            <li class="cat-item"><i class="fa-solid fa-memory"></i> RAM</li>
+            <li class="cat-item"><i class="fa-solid fa-hard-drive"></i> SSD</li>
+            <li class="cat-item">
+              <i class="fa-solid fa-vr-cardboard"></i> VGA
+            </li>
+            <li class="cat-item">
+              <i class="fa-solid fa-server"></i> Mainboard
+            </li>
+            <li class="cat-item"><i class="fa-solid fa-box"></i> Case</li>
+            <li class="cat-item"><i class="fa-solid fa-plug"></i> PSU</li>
+            <li class="cat-item">
+              <i class="fa-solid fa-display"></i> Màn hình
+            </li>
+          </ul>
+        </nav>
+
+        <div class="cat-title-small">Laptop & Thiết Bị Số</div>
+        <nav class="cat-scroll">
+          <ul class="cat-list">
+            <li class="cat-item"><i class="fa-brands fa-apple"></i> MacBook</li>
+            <li class="cat-item">
+              <i class="fa-solid fa-gamepad"></i> Laptop Gaming
+            </li>
+            <li class="cat-item">
+              <i class="fa-solid fa-briefcase"></i> Laptop VP
+            </li>
+            <li class="cat-item">
+              <i class="fa-brands fa-windows"></i> Surface
+            </li>
+            <li class="cat-item">
+              <i class="fa-solid fa-headset"></i> Tai nghe
+            </li>
+            <li class="cat-item">
+              <i class="fa-solid fa-keyboard"></i> Bàn phím
+            </li>
+            <li class="cat-item">
+              <i class="fa-solid fa-computer-mouse"></i> Chuột
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <section class="flash-section">
+        <div class="flash-header">
+          <h2 class="flash-title"><i class="fa-solid fa-bolt"></i> GIỜ VÀNG</h2>
+          <div class="countdown">
+            <div class="time-box">02</div>
+            :
+            <div class="time-box">15</div>
+            :
+            <div class="time-box">48</div>
+          </div>
+        </div>
+        <div class="flash-grid">
+          <a href="{% url 'products:product_detail' 'macbook-air-m1' %}">
+            <article class="prod-card">
+              <span class="badge-sale" style="background: #000"
+                >Best Seller</span
+              >
+              <div class="prod-img-wrap">
+                <img
+                  src="https://laptopworld.vn/media/product/20382_s5406sa_pp059ws___thumbal.jpg"
+                  alt="MacBook"
+                />
+              </div>
+              <h3 class="prod-name">MacBook Air 13 inch M1 2020</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-microchip"></i> Apple M1</span>
+                <span><i class="fa-solid fa-memory"></i> 8GB • 256GB</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">18.490.000đ</span
+                  ><span class="price-old">22.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+
+          <a href="{% url 'products:product_detail' 'logitech-g102' %}">
+            <article class="prod-card">
+              <span class="badge-sale">-40%</span>
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=Mouse"
+                  alt="Product"
+                />
+              </div>
+              <h3 class="prod-name">Chuột Gaming Logitech G102 Lightsync</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-bolt"></i> 8000 DPI</span>
+                <span><i class="fa-solid fa-link"></i> USB Wired</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">399.000đ</span
+                  ><span class="price-old">599.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+
+          <a href="{% url 'products:product_detail' 'corsair-ram-16gb' %}">
+            <article class="prod-card">
+              <span class="badge-sale">-25%</span>
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=RAM"
+                  alt="Product"
+                />
+              </div>
+              <h3 class="prod-name">RAM Corsair Vengeance 16GB DDR4</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-memory"></i> 16GB (1x16)</span>
+                <span><i class="fa-solid fa-gauge-high"></i> 3200MHz</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">890.000đ</span
+                  ><span class="price-old">1.200.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+
+          <a href="{% url 'products:product_detail' 'samsung-ssd-980' %}">
+            <article class="prod-card">
+              <span class="badge-sale">-30%</span>
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=SSD"
+                  alt="Product"
+                />
+              </div>
+              <h3 class="prod-name">SSD Samsung 980 500GB NVMe</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-hard-drive"></i> 500GB M.2</span>
+                <span><i class="fa-solid fa-forward"></i> 3500MB/s</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">1.190.000đ</span
+                  ><span class="price-old">1.590.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2 style="font-size: 24px; font-weight: 800">
+            Laptop <span style="color: var(--primary)">Bán Chạy</span>
+          </h2>
+          <a
+            href="{% url 'products:product_list' %}"
+            style="
+              font-weight: 700;
+              color: var(--primary);
+              font-size: 14px;
+              border-bottom: 2px solid var(--primary);
+            "
+            >Xem tất cả ></a
+          >
+        </div>
+        <div class="flash-grid">
+          <a href="{% url 'products:product_detail' 'macbook-air-m1' %}">
+            <article class="prod-card">
+              <span class="badge-sale" style="background: #000"
+                >Best Seller</span
+              >
+              <div class="prod-img-wrap">
+                <img
+                  src="https://laptopworld.vn/media/product/22976_22956_lenovo_yoga_slim_7_14ill10__logo.jpg"
+                  alt="MacBook"
+                />
+              </div>
+              <h3 class="prod-name">MacBook Air 13 inch M1 2020</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-microchip"></i> Apple M1</span>
+                <span><i class="fa-solid fa-memory"></i> 8GB • 256GB</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">18.490.000đ</span
+                  ><span class="price-old">22.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+
+          <a href="{% url 'products:product_detail' 'asus-tuf-f15' %}">
+            <article class="prod-card">
+              <span class="badge-sale">Giảm 5TR</span>
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=Asus+TUF"
+                  alt="Asus"
+                />
+              </div>
+              <h3 class="prod-name">Laptop Gaming Asus TUF Dash F15</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-microchip"></i> i5-12450H</span>
+                <span><i class="fa-solid fa-gamepad"></i> RTX 3050</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">19.990.000đ</span
+                  ><span class="price-old">24.490.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+
+          <a href="{% url 'products:product_detail' 'acer-nitro-v' %}">
+            <article class="prod-card">
+              <span
+                class="badge-sale"
+                style="background: var(--accent); color: #000"
+                >New</span
+              >
+              <div class="prod-img-wrap">
+                <img src="https://placehold.co/200x200?text=Acer" alt="Acer" />
+              </div>
+              <h3 class="prod-name">Laptop Gaming Acer Nitro V ANV15</h3>
+              <div class="prod-specs-box">
+                <span
+                  ><i class="fa-solid fa-microchip"></i> Core i5-13420H</span
+                >
+                <span><i class="fa-solid fa-gamepad"></i> RTX 4050</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">26.990.000đ</span
+                  ><span class="price-old">29.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+
+          <a href="{% url 'products:product_detail' 'lg-gram-2023' %}">
+            <article class="prod-card">
+              <div class="prod-img-wrap">
+                <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
+              </div>
+              <h3 class="prod-name">Laptop LG Gram 2023 Ultra Light</h3>
+              <div class="prod-specs-box">
+                <span
+                  ><i class="fa-solid fa-weight-hanging"></i> Siêu nhẹ
+                  999g</span
+                >
+                <span><i class="fa-solid fa-microchip"></i> Core i7</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">32.990.000đ</span
+                  ><span class="price-old">35.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2 style="font-size: 24px; font-weight: 800">
+            Laptop <span style="color: var(--primary)">Bán Chạy</span>
+          </h2>
+          <a
+            href="{% url 'products:product_list' %}"
+            style="
+              font-weight: 700;
+              color: var(--primary);
+              font-size: 14px;
+              border-bottom: 2px solid var(--primary);
+            "
+            >Xem tất cả ></a
+          >
+        </div>
+        <div class="flash-grid">
+          <a href="{% url 'products:product_detail' 'macbook-air-m1' %}">
+            <article class="prod-card">
+              <span class="badge-sale" style="background: #000"
+                >Best Seller</span
+              >
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=MacBook"
+                  alt="MacBook"
+                />
+              </div>
+              <h3 class="prod-name">MacBook Air 13 inch M1 2020</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-microchip"></i> Apple M1</span>
+                <span><i class="fa-solid fa-memory"></i> 8GB • 256GB</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">18.490.000đ</span
+                  ><span class="price-old">22.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <a href="{% url 'products:product_detail' 'asus-tuf-f15' %}">
+            <article class="prod-card">
+              <span class="badge-sale">Giảm 5TR</span>
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=Asus+TUF"
+                  alt="Asus"
+                />
+              </div>
+              <h3 class="prod-name">Laptop Gaming Asus TUF Dash F15</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-microchip"></i> i5-12450H</span>
+                <span><i class="fa-solid fa-gamepad"></i> RTX 3050</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">19.990.000đ</span
+                  ><span class="price-old">24.490.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <a href="{% url 'products:product_detail' 'acer-nitro-v' %}">
+            <article class="prod-card">
+              <span
+                class="badge-sale"
+                style="background: var(--accent); color: #000"
+                >New</span
+              >
+              <div class="prod-img-wrap">
+                <img src="https://placehold.co/200x200?text=Acer" alt="Acer" />
+              </div>
+              <h3 class="prod-name">Laptop Gaming Acer Nitro V ANV15</h3>
+              <div class="prod-specs-box">
+                <span
+                  ><i class="fa-solid fa-microchip"></i> Core i5-13420H</span
+                >
+                <span><i class="fa-solid fa-gamepad"></i> RTX 4050</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">26.990.000đ</span
+                  ><span class="price-old">29.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <a href="{% url 'products:product_detail' 'lg-gram-2023' %}">
+            <article class="prod-card">
+              <div class="prod-img-wrap">
+                <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
+              </div>
+              <h3 class="prod-name">Laptop LG Gram 2023 Ultra Light</h3>
+              <div class="prod-specs-box">
+                <span
+                  ><i class="fa-solid fa-weight-hanging"></i> Siêu nhẹ
+                  999g</span
+                >
+                <span><i class="fa-solid fa-microchip"></i> Core i7</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">32.990.000đ</span
+                  ><span class="price-old">35.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <!-- DJANGO: {% endfor %} -->
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2 style="font-size: 24px; font-weight: 800">
+            Laptop <span style="color: var(--primary)">Bán Chạy</span>
+          </h2>
+          <a
+            href="#"
+            style="
+              font-weight: 700;
+              color: var(--primary);
+              font-size: 14px;
+              border-bottom: 2px solid var(--primary);
+            "
+            >Xem tất cả ></a
+          >
+        </div>
+        <div class="flash-grid">
+          <a href="product-detail.html">
+            <article class="prod-card">
+              <span class="badge-sale" style="background: #000"
+                >Best Seller</span
+              >
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=MacBook"
+                  alt="MacBook"
+                />
+              </div>
+              <h3 class="prod-name">MacBook Air 13 inch M1 2020</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-microchip"></i> Apple M1</span>
+                <span><i class="fa-solid fa-memory"></i> 8GB • 256GB</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">18.490.000đ</span
+                  ><span class="price-old">22.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <a href="product-detail.html">
+            <article class="prod-card">
+              <span class="badge-sale">Giảm 5TR</span>
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=Asus+TUF"
+                  alt="Asus"
+                />
+              </div>
+              <h3 class="prod-name">Laptop Gaming Asus TUF Dash F15</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-microchip"></i> i5-12450H</span>
+                <span><i class="fa-solid fa-gamepad"></i> RTX 3050</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">19.990.000đ</span
+                  ><span class="price-old">24.490.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <a href="product-detail.html">
+            <article class="prod-card">
+              <span
+                class="badge-sale"
+                style="background: var(--accent); color: #000"
+                >New</span
+              >
+              <div class="prod-img-wrap">
+                <img src="https://placehold.co/200x200?text=Acer" alt="Acer" />
+              </div>
+              <h3 class="prod-name">Laptop Gaming Acer Nitro V ANV15</h3>
+              <div class="prod-specs-box">
+                <span
+                  ><i class="fa-solid fa-microchip"></i> Core i5-13420H</span
+                >
+                <span><i class="fa-solid fa-gamepad"></i> RTX 4050</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">26.990.000đ</span
+                  ><span class="price-old">29.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <a href="product-detail.html">
+            <article class="prod-card">
+              <div class="prod-img-wrap">
+                <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
+              </div>
+              <h3 class="prod-name">Laptop LG Gram 2023 Ultra Light</h3>
+              <div class="prod-specs-box">
+                <span
+                  ><i class="fa-solid fa-weight-hanging"></i> Siêu nhẹ
+                  999g</span
+                >
+                <span><i class="fa-solid fa-microchip"></i> Core i7</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">32.990.000đ</span
+                  ><span class="price-old">35.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <!-- DJANGO: {% endfor %} -->
+        </div>
+      </section>
+
+      <section class="promo-banner">
+        <div class="promo-content">
+          <h2>Đỉnh Cao Đồ Họa<br />Trong Tầm Tay</h2>
+          <p>
+            Build PC Workstation cấu hình khủng. Trả góp 0%, hỗ trợ kỹ thuật tận
+            nơi.
+          </p>
+          <a href="{% url 'products:product_list' %}?category=pc" class="btn-cta">Tư vấn ngay</a>
+        </div>
+        <img
+          src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=2642"
+          class="promo-img"
+          loading="lazy"
+          alt="PC Setup"
+        />
+      </section>
+{% endblock %}
