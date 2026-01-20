@@ -424,6 +424,11 @@
         padding-right: 12px;
     }
 
+    .cat-menu-wrapper {
+        display: none;
+    }
+
+
     /* Back to top mobile */
     .back-to-top {
         bottom: 80px;

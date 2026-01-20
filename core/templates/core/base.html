@@ -15,7 +15,7 @@
     />
     <meta name="theme-color" content="#cb1c22" />
 
-    <title>{% block title %}36.RauMa - Công Nghệ Đỉnh Cao{% endblock %}</title>
+    <title>{% block title %}LapStore - Công Nghệ Đỉnh Cao{% endblock %}</title>
 
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -44,7 +44,7 @@
           <div class="nav-left">
             <a href="{% url 'core:home' %}" class="logo">
               <i class="fa-solid fa-dragon"></i>
-              <span>36<span style="font-weight: 300">.RauMa</span></span>
+              <span>Lap<span style="font-weight: 300">Store</span></span>
             </a>
             <!-- Desktop Category Dropdown -->
             <div class="cat-menu-wrapper">
@@ -55,23 +55,18 @@
                 <!-- DJANGO: Loop danh mục cha tại đây -->
                 <ul>
                   <li>
-                    <a href="{% url 'products:product_list' %}?category=laptop"
-                      ><i class="fa-solid fa-laptop"></i> Laptop</a
-                    >
+                    <a href="#"><i class="fa-solid fa-laptop"></i> Laptop</a>
                   </li>
                   <li>
-                    <a href="{% url 'products:product_list' %}?category=pc"
+                    <a href="#"
                       ><i class="fa-solid fa-desktop"></i> PC Đồng Bộ</a
                     >
                   </li>
                   <li>
-                    <a href="{% url 'products:product_list' %}?category=apple"
-                      ><i class="fa-brands fa-apple"></i> Apple</a
-                    >
+                    <a href="#"><i class="fa-brands fa-apple"></i> Apple</a>
                   </li>
                   <li>
-                    <a
-                      href="{% url 'products:product_list' %}?category=linh-kien"
+                    <a href="#"
                       ><i class="fa-solid fa-microchip"></i> Linh Kiện</a
                     >
                   </li>
@@ -87,11 +82,7 @@
           </div>
 
           <!-- Search Form -->
-          <form
-            class="search-box"
-            action="{% url 'products:search_results' %}"
-            method="GET"
-          >
+          <form class="search-box" action="#" method="GET">
             <input
               type="text"
               name="q"
@@ -106,23 +97,14 @@
 
           <!-- User Actions (Desktop) -->
           <div class="nav-actions">
-            <button
-              class="action-btn"
-              onclick="window.location.href='{% url 'orders:wishlist' %}'"
-            >
+            <button class="action-btn" onclick="window.location.href = '#'">
               <i class="fa-regular fa-heart"></i>
             </button>
             <!-- DJANGO: Check if user.is_authenticated -->
-            <button
-              class="action-btn"
-              onclick="window.location.href='{% url 'users:login' %}'"
-            >
+            <a href="{% url 'users:login' %}" class="action-btn">
               <i class="fa-regular fa-user"></i>
-            </button>
-            <button
-              class="action-btn"
-              onclick="window.location.href='{% url 'orders:cart' %}'"
-            >
+            </a>
+            <button class="action-btn" onclick="window.location.href = '#'">
               <i class="fa-solid fa-bag-shopping"></i>
               <span class="badge-dot"></span>
               <!-- DJANGO: Show if cart_items > 0 -->
@@ -145,34 +127,22 @@
       <ul class="mobile-menu-list">
         <!-- DJANGO: Loop danh mục mobile -->
         <li>
-          <a href="{% url 'products:product_list' %}?category=laptop"
-            ><i class="fa-solid fa-laptop"></i> Laptop</a
-          >
+          <a href="#"><i class="fa-solid fa-laptop"></i> Laptop</a>
         </li>
         <li>
-          <a href="{% url 'products:product_list' %}?category=pc"
-            ><i class="fa-solid fa-desktop"></i> PC Đồng Bộ</a
-          >
+          <a href="#"><i class="fa-solid fa-desktop"></i> PC Đồng Bộ</a>
         </li>
         <li>
-          <a href="{% url 'products:product_list' %}?category=apple"
-            ><i class="fa-brands fa-apple"></i> Apple</a
-          >
+          <a href="#"><i class="fa-brands fa-apple"></i> Apple</a>
         </li>
         <li>
-          <a href="{% url 'products:product_list' %}?category=linh-kien"
-            ><i class="fa-solid fa-microchip"></i> Linh Kiện</a
-          >
+          <a href="#"><i class="fa-solid fa-microchip"></i> Linh Kiện</a>
         </li>
         <li>
-          <a href="{% url 'products:product_list' %}?category=man-hinh"
-            ><i class="fa-solid fa-tv"></i> Màn Hình</a
-          >
+          <a href="#"><i class="fa-solid fa-tv"></i> Màn Hình</a>
         </li>
         <li>
-          <a href="{% url 'products:product_list' %}?category=phu-kien"
-            ><i class="fa-solid fa-headset"></i> Phụ Kiện</a
-          >
+          <a href="#"><i class="fa-solid fa-headset"></i> Phụ Kiện</a>
         </li>
       </ul>
     </aside>
@@ -191,10 +161,7 @@
       <button class="nav-item btn-mobile-menu">
         <i class="fa-solid fa-layer-group"></i><span>Danh mục</span>
       </button>
-      <a
-        href="{% url 'orders:cart' %}"
-        class="nav-item {% block nav_cart_active %}{% endblock %}"
-      >
+      <a href="#" class="nav-item {% block nav_cart_active %}{% endblock %}">
         <i class="fa-solid fa-cart-shopping"></i>
         <span class="cart-count-mobile">3</span>
         <!-- DJANGO: Cart count -->
@@ -221,7 +188,7 @@
     <footer>
       <div class="container foot-grid">
         <div>
-          <h3 class="foot-title" style="color: var(--primary)">36.RauMa</h3>
+          <h3 class="foot-title" style="color: var(--primary)">LapStore</h3>
           <p style="font-size: 14px; color: var(--text-sub)">
             Hệ thống bán lẻ kỹ thuật số chính hãng hàng đầu Việt Nam.
           </p>

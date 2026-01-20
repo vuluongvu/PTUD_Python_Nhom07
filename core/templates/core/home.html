@@ -1,11 +1,5 @@
-{% extends 'core/base.html' %}
-{% load static %}
-
-{% block title %}Sắm Tết Công Nghệ{% endblock %}
-{% block meta_description %} - Hệ thống bán lẻ Laptop & PC hàng đầu.{% endblock %}
-{% block nav_home_active %}active{% endblock %}
-
-{% block content %}
+{% extends 'core/base.html' %} {% load static %} {% block title %}Trang chủ -
+LapStore{% endblock %} {% block content %}
       <section class="bento-grid">
         <article
           /* DJANGO: Dynamic Banners if needed */
@@ -43,7 +37,7 @@
         <article
           class="bento-item card-sub"
           style="background: #f3f4f6; grid-column: 2 / -1; grid-row: 2 / 3"
-          onclick="window.location.href = '{% url 'products:product_detail' 'pc-build' %}'"
+          onclick="window.location.href = '#'"
         >
           <div>
             <span class="tag tag-red">Build PC</span>
@@ -117,7 +111,7 @@
           </div>
         </div>
         <div class="flash-grid">
-          <a href="{% url 'products:product_detail' 'macbook-air-m1' %}">
+          <a href="#">
             <article class="prod-card">
               <span class="badge-sale" style="background: #000"
                 >Best Seller</span
@@ -143,7 +137,7 @@
             </article>
           </a>
 
-          <a href="{% url 'products:product_detail' 'logitech-g102' %}">
+          <a href="#">
             <article class="prod-card">
               <span class="badge-sale">-40%</span>
               <div class="prod-img-wrap">
@@ -167,7 +161,7 @@
             </article>
           </a>
 
-          <a href="{% url 'products:product_detail' 'corsair-ram-16gb' %}">
+          <a href="#">
             <article class="prod-card">
               <span class="badge-sale">-25%</span>
               <div class="prod-img-wrap">
@@ -191,7 +185,7 @@
             </article>
           </a>
 
-          <a href="{% url 'products:product_detail' 'samsung-ssd-980' %}">
+          <a href="#">
             <article class="prod-card">
               <span class="badge-sale">-30%</span>
               <div class="prod-img-wrap">
@@ -223,7 +217,7 @@
             Laptop <span style="color: var(--primary)">Bán Chạy</span>
           </h2>
           <a
-            href="{% url 'products:product_list' %}"
+            href="#"
             style="
               font-weight: 700;
               color: var(--primary);
@@ -234,7 +228,7 @@
           >
         </div>
         <div class="flash-grid">
-          <a href="{% url 'products:product_detail' 'macbook-air-m1' %}">
+          <a href="#">
             <article class="prod-card">
               <span class="badge-sale" style="background: #000"
                 >Best Seller</span
@@ -260,7 +254,7 @@
             </article>
           </a>
 
-          <a href="{% url 'products:product_detail' 'asus-tuf-f15' %}">
+          <a href="#">
             <article class="prod-card">
               <span class="badge-sale">Giảm 5TR</span>
               <div class="prod-img-wrap">
@@ -284,7 +278,7 @@
             </article>
           </a>
 
-          <a href="{% url 'products:product_detail' 'acer-nitro-v' %}">
+          <a href="#">
             <article class="prod-card">
               <span
                 class="badge-sale"
@@ -311,7 +305,7 @@
             </article>
           </a>
 
-          <a href="{% url 'products:product_detail' 'lg-gram-2023' %}">
+          <a href="#">
             <article class="prod-card">
               <div class="prod-img-wrap">
                 <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
@@ -333,123 +327,6 @@
               </div>
             </article>
           </a>
-        </div>
-      </section>
-
-      <section>
-        <div class="section-head">
-          <h2 style="font-size: 24px; font-weight: 800">
-            Laptop <span style="color: var(--primary)">Bán Chạy</span>
-          </h2>
-          <a
-            href="{% url 'products:product_list' %}"
-            style="
-              font-weight: 700;
-              color: var(--primary);
-              font-size: 14px;
-              border-bottom: 2px solid var(--primary);
-            "
-            >Xem tất cả ></a
-          >
-        </div>
-        <div class="flash-grid">
-          <a href="{% url 'products:product_detail' 'macbook-air-m1' %}">
-            <article class="prod-card">
-              <span class="badge-sale" style="background: #000"
-                >Best Seller</span
-              >
-              <div class="prod-img-wrap">
-                <img
-                  src="https://placehold.co/200x200?text=MacBook"
-                  alt="MacBook"
-                />
-              </div>
-              <h3 class="prod-name">MacBook Air 13 inch M1 2020</h3>
-              <div class="prod-specs-box">
-                <span><i class="fa-solid fa-microchip"></i> Apple M1</span>
-                <span><i class="fa-solid fa-memory"></i> 8GB • 256GB</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">18.490.000đ</span
-                  ><span class="price-old">22.990.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-          <a href="{% url 'products:product_detail' 'asus-tuf-f15' %}">
-            <article class="prod-card">
-              <span class="badge-sale">Giảm 5TR</span>
-              <div class="prod-img-wrap">
-                <img
-                  src="https://placehold.co/200x200?text=Asus+TUF"
-                  alt="Asus"
-                />
-              </div>
-              <h3 class="prod-name">Laptop Gaming Asus TUF Dash F15</h3>
-              <div class="prod-specs-box">
-                <span><i class="fa-solid fa-microchip"></i> i5-12450H</span>
-                <span><i class="fa-solid fa-gamepad"></i> RTX 3050</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">19.990.000đ</span
-                  ><span class="price-old">24.490.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-          <a href="{% url 'products:product_detail' 'acer-nitro-v' %}">
-            <article class="prod-card">
-              <span
-                class="badge-sale"
-                style="background: var(--accent); color: #000"
-                >New</span
-              >
-              <div class="prod-img-wrap">
-                <img src="https://placehold.co/200x200?text=Acer" alt="Acer" />
-              </div>
-              <h3 class="prod-name">Laptop Gaming Acer Nitro V ANV15</h3>
-              <div class="prod-specs-box">
-                <span
-                  ><i class="fa-solid fa-microchip"></i> Core i5-13420H</span
-                >
-                <span><i class="fa-solid fa-gamepad"></i> RTX 4050</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">26.990.000đ</span
-                  ><span class="price-old">29.990.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-          <a href="{% url 'products:product_detail' 'lg-gram-2023' %}">
-            <article class="prod-card">
-              <div class="prod-img-wrap">
-                <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
-              </div>
-              <h3 class="prod-name">Laptop LG Gram 2023 Ultra Light</h3>
-              <div class="prod-specs-box">
-                <span
-                  ><i class="fa-solid fa-weight-hanging"></i> Siêu nhẹ
-                  999g</span
-                >
-                <span><i class="fa-solid fa-microchip"></i> Core i7</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">32.990.000đ</span
-                  ><span class="price-old">35.990.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-          <!-- DJANGO: {% endfor %} -->
         </div>
       </section>
 
@@ -470,7 +347,7 @@
           >
         </div>
         <div class="flash-grid">
-          <a href="product-detail.html">
+          <a href="#">
             <article class="prod-card">
               <span class="badge-sale" style="background: #000"
                 >Best Seller</span
@@ -495,7 +372,7 @@
               </div>
             </article>
           </a>
-          <a href="product-detail.html">
+          <a href="#">
             <article class="prod-card">
               <span class="badge-sale">Giảm 5TR</span>
               <div class="prod-img-wrap">
@@ -518,7 +395,7 @@
               </div>
             </article>
           </a>
-          <a href="product-detail.html">
+          <a href="#">
             <article class="prod-card">
               <span
                 class="badge-sale"
@@ -544,7 +421,7 @@
               </div>
             </article>
           </a>
-          <a href="product-detail.html">
+          <a href="#">
             <article class="prod-card">
               <div class="prod-img-wrap">
                 <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
@@ -566,7 +443,122 @@
               </div>
             </article>
           </a>
-          <!-- DJANGO: {% endfor %} -->
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2 style="font-size: 24px; font-weight: 800">
+            Laptop <span style="color: var(--primary)">Bán Chạy</span>
+          </h2>
+          <a
+            href="#"
+            style="
+              font-weight: 700;
+              color: var(--primary);
+              font-size: 14px;
+              border-bottom: 2px solid var(--primary);
+            "
+            >Xem tất cả ></a
+          >
+        </div>
+        <div class="flash-grid">
+          <a href="#">
+            <article class="prod-card">
+              <span class="badge-sale" style="background: #000"
+                >Best Seller</span
+              >
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=MacBook"
+                  alt="MacBook"
+                />
+              </div>
+              <h3 class="prod-name">MacBook Air 13 inch M1 2020</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-microchip"></i> Apple M1</span>
+                <span><i class="fa-solid fa-memory"></i> 8GB • 256GB</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">18.490.000đ</span
+                  ><span class="price-old">22.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <a href="#">
+            <article class="prod-card">
+              <span class="badge-sale">Giảm 5TR</span>
+              <div class="prod-img-wrap">
+                <img
+                  src="https://placehold.co/200x200?text=Asus+TUF"
+                  alt="Asus"
+                />
+              </div>
+              <h3 class="prod-name">Laptop Gaming Asus TUF Dash F15</h3>
+              <div class="prod-specs-box">
+                <span><i class="fa-solid fa-microchip"></i> i5-12450H</span>
+                <span><i class="fa-solid fa-gamepad"></i> RTX 3050</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">19.990.000đ</span
+                  ><span class="price-old">24.490.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <a href="#">
+            <article class="prod-card">
+              <span
+                class="badge-sale"
+                style="background: var(--accent); color: #000"
+                >New</span
+              >
+              <div class="prod-img-wrap">
+                <img src="https://placehold.co/200x200?text=Acer" alt="Acer" />
+              </div>
+              <h3 class="prod-name">Laptop Gaming Acer Nitro V ANV15</h3>
+              <div class="prod-specs-box">
+                <span
+                  ><i class="fa-solid fa-microchip"></i> Core i5-13420H</span
+                >
+                <span><i class="fa-solid fa-gamepad"></i> RTX 4050</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">26.990.000đ</span
+                  ><span class="price-old">29.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+          <a href="#">
+            <article class="prod-card">
+              <div class="prod-img-wrap">
+                <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
+              </div>
+              <h3 class="prod-name">Laptop LG Gram 2023 Ultra Light</h3>
+              <div class="prod-specs-box">
+                <span
+                  ><i class="fa-solid fa-weight-hanging"></i> Siêu nhẹ
+                  999g</span
+                >
+                <span><i class="fa-solid fa-microchip"></i> Core i7</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">32.990.000đ</span
+                  ><span class="price-old">35.990.000đ</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
         </div>
       </section>
 
@@ -577,7 +569,7 @@
             Build PC Workstation cấu hình khủng. Trả góp 0%, hỗ trợ kỹ thuật tận
             nơi.
           </p>
-          <a href="{% url 'products:product_list' %}?category=pc" class="btn-cta">Tư vấn ngay</a>
+          <a href="#" class="btn-cta">Tư vấn ngay</a>
         </div>
         <img
           src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=2642"
