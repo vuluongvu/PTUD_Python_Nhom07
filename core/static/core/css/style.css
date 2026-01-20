@@ -365,7 +365,7 @@ header {
     pointer-events: auto;
 }
 
-/* --- SLIDER STYLES (FPT Style) --- */
+/* --- SLIDER STYLES --- */
 .slide {
     position: absolute;
     inset: 0;

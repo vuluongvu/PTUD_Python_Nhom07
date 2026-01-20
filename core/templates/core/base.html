@@ -42,7 +42,7 @@
       <div class="container">
         <nav class="nav-island">
           <div class="nav-left">
-            <a href="{% url 'core:home' %}" class="logo">
+            <a href="#" class="logo">
               <i class="fa-solid fa-dragon"></i>
               <span>Lap<span style="font-weight: 300">Store</span></span>
             </a>
@@ -97,18 +97,18 @@
 
           <!-- User Actions (Desktop) -->
           <div class="nav-actions">
-            <button class="action-btn" onclick="window.location.href = '#'">
+            <a href="{% url 'orders:wishlist' %}" class="action-btn">
               <i class="fa-regular fa-heart"></i>
-            </button>
+            </a>
             <!-- DJANGO: Check if user.is_authenticated -->
             <a href="{% url 'users:login' %}" class="action-btn">
               <i class="fa-regular fa-user"></i>
             </a>
-            <button class="action-btn" onclick="window.location.href = '#'">
+            <a href="{% url 'orders:cart' %}" class="action-btn">
               <i class="fa-solid fa-bag-shopping"></i>
               <span class="badge-dot"></span>
               <!-- DJANGO: Show if cart_items > 0 -->
-            </button>
+            </a>
           </div>
         </nav>
       </div>
@@ -152,16 +152,17 @@
     <!-- MOBILE BOTTOM NAV (Dùng chung) -->
     {% block mobile_bottom_nav %}
     <div class="mobile-bottom-nav">
-      <a
-        href="{% url 'core:home' %}"
-        class="nav-item {% block nav_home_active %}{% endblock %}"
-      >
+      <a href="#" class="nav-item {% block nav_home_active %}{% endblock %}">
         <i class="fa-solid fa-house"></i><span>Trang chủ</span>
       </a>
       <button class="nav-item btn-mobile-menu">
         <i class="fa-solid fa-layer-group"></i><span>Danh mục</span>
       </button>
-      <a href="#" class="nav-item {% block nav_cart_active %}{% endblock %}">
+
+      <a
+        href="{% url 'orders:cart' %}"
+        class="nav-item {% block nav_cart_active %}{% endblock %}"
+      >
         <i class="fa-solid fa-cart-shopping"></i>
         <span class="cart-count-mobile">3</span>
         <!-- DJANGO: Cart count -->

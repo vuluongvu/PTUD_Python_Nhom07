@@ -1,8 +1,9 @@
 {% extends 'core/base.html' %} {% load static %} {% block title %}MacBook Air M1
-2020 - FPT Future Store{% endblock %} {% block content %}
+2020 - LapStore{% endblock %} {% block content %}
 <!-- DJANGO: Breadcrumbs dynamic -->
 <div class="breadcrumb">
-  <a href="index.html">Trang chủ</a> / <a href="#">Laptop</a> /
+  <a href="{% url 'core:home' %}">Trang chủ</a> /
+  <a href="{% url 'products:view_all' %}">Laptop</a> /
   <a href="#">Apple MacBook</a> / MacBook Air M1 2020
 </div>
 

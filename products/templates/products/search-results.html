@@ -42,7 +42,7 @@ kiếm - LapStore{% endblock %} {% block content %}
 <div class="flash-grid" style="margin-bottom: 40px">
   <!-- DJANGO: {% for product in products %} -->
   <!-- Sản phẩm 1 -->
-  <a href="#">
+  <a href="{% url 'products:product_detail' 'macbook-air-m1' %}">
     <article class="prod-card">
       <span class="badge-sale">-19%</span>
       <div class="prod-img-wrap">
@@ -64,7 +64,7 @@ kiếm - LapStore{% endblock %} {% block content %}
   </a>
 
   <!-- Sản phẩm 2 -->
-  <a href="#">
+  <a href="{% url 'products:product_detail' 'asus-tuf-dash-f15' %}">
     <article class="prod-card">
       <span class="badge-sale">Giảm 5TR</span>
       <div class="prod-img-wrap">
@@ -86,7 +86,7 @@ kiếm - LapStore{% endblock %} {% block content %}
   </a>
 
   <!-- Sản phẩm 3 -->
-  <a href="#">
+  <a href="{% url 'products:product_detail' 'lg-gram-2023' %}">
     <article class="prod-card">
       <div class="prod-img-wrap">
         <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
@@ -107,7 +107,7 @@ kiếm - LapStore{% endblock %} {% block content %}
   </a>
 
   <!-- Sản phẩm 4 -->
-  <a href="#">
+  <a href="{% url 'products:product_detail' 'acer-nitro-v' %}">
     <article class="prod-card">
       <span class="badge-sale">New</span>
       <div class="prod-img-wrap">

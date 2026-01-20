@@ -1,28 +1,21 @@
-{% extends 'core/base.html' %} {% load static %} {% block title %}Giỏ hàng - FPT
-Future Store{% endblock %} {% block nav_cart_active %}active{% endblock %} {%
-block extra_css %}
+{% extends 'core/base.html' %} {% load static %} {% load humanize %} {% block
+title %}Giỏ hàng - LapStore{% endblock %} {% block nav_cart_active %}active{%
+endblock %} {% block extra_css %}
 <style>
-  /* =========================================
-           CSS RIÊNG CHO TRANG GIỎ HÀNG
-           ========================================= */
-
-  /* Layout lưới 2 cột cho Desktop */
+  /* CSS remains the same as it is well-styled */
   .cart-layout {
     display: grid;
-    grid-template-columns: 2.5fr 1fr; /* Cột trái rộng hơn */
+    grid-template-columns: 2.5fr 1fr;
     gap: 24px;
     margin-top: 20px;
     align-items: start;
   }
-
-  /* KHỐI DANH SÁCH SẢN PHẨM (BÊN TRÁI) */
   .cart-container {
     background: var(--bg-white);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
   }
-
   .cart-header {
     padding: 16px 20px;
     border-bottom: 1px solid #f3f4f6;
@@ -32,7 +25,6 @@ block extra_css %}
     font-weight: 700;
     font-size: 16px;
   }
-
   .cart-item {
     padding: 20px;
     border-bottom: 1px solid #f3f4f6;
@@ -46,17 +38,14 @@ block extra_css %}
   }
   .cart-item:hover {
     background-color: #fffafb;
-  } /* Hover nhẹ màu hồng nhạt */
-
-  /* Checkbox đẹp */
+  }
   .custom-checkbox {
     width: 20px;
     height: 20px;
     accent-color: var(--primary);
     cursor: pointer;
-    margin-top: 30px; /* Căn giữa theo ảnh */
+    margin-top: 30px;
   }
-
   .item-img {
     width: 100px;
     height: 100px;
@@ -70,14 +59,12 @@ block extra_css %}
     height: 100%;
     object-fit: contain;
   }
-
   .item-info {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
-
   .item-name {
     font-size: 15px;
     font-weight: 600;
@@ -97,14 +84,12 @@ block extra_css %}
     border-radius: 4px;
     width: fit-content;
   }
-
   .item-actions {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     margin-top: 10px;
   }
-
   .item-price {
     display: flex;
     flex-direction: column;
@@ -119,8 +104,6 @@ block extra_css %}
     text-decoration: line-through;
     font-size: 12px;
   }
-
-  /* Nút tăng giảm số lượng */
   .qty-control {
     display: flex;
     align-items: center;
@@ -156,7 +139,6 @@ block extra_css %}
     font-weight: 600;
     outline: none;
   }
-
   .btn-delete {
     color: #9ca3af;
     cursor: pointer;
@@ -169,15 +151,13 @@ block extra_css %}
   .btn-delete:hover {
     color: var(--primary);
   }
-
-  /* KHỐI TỔNG TIỀN (BÊN PHẢI) */
   .order-summary {
     background: var(--bg-white);
     border-radius: var(--radius-card);
     padding: 20px;
     box-shadow: var(--shadow-sm);
     position: sticky;
-    top: 90px; /* Trượt theo khi cuộn */
+    top: 90px;
   }
   .summary-row {
     display: flex;
@@ -200,7 +180,6 @@ block extra_css %}
     font-size: 20px;
     font-weight: 800;
   }
-
   .btn-checkout {
     width: 100%;
     background: var(--gradient-red);
@@ -214,13 +193,14 @@ block extra_css %}
     margin-top: 20px;
     transition: var(--trans);
     box-shadow: 0 4px 10px rgba(203, 28, 34, 0.3);
+    display: block;
+    text-align: center;
+    text-decoration: none;
   }
   .btn-checkout:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(203, 28, 34, 0.4);
   }
-
-  /* Input Voucher */
   .coupon-box {
     display: flex;
     gap: 8px;
@@ -244,8 +224,31 @@ block extra_css %}
     cursor: pointer;
     font-size: 13px;
   }
+  .empty-cart-message {
+    padding: 40px;
+    text-align: center;
+  }
+  .empty-cart-message img {
+    width: 150px;
+    margin-bottom: 20px;
+  }
+  .empty-cart-message h3 {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .empty-cart-message p {
+    color: var(--text-sub);
+    margin-bottom: 20px;
+  }
+  .btn-back-home {
+    background: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 99px;
+    text-decoration: none;
+    font-weight: 600;
+  }
 
-  /* --- RESPONSIVE MOBILE --- */
   @media (max-width: 768px) {
     .cart-layout {
       display: flex;
@@ -255,19 +258,15 @@ block extra_css %}
     }
     .container {
       padding: 0;
-    } /* Full width trên mobile */
-
+    }
     .cart-container {
       border-radius: 0;
       box-shadow: none;
-      margin-bottom: 100px; /* Chừa chỗ cho thanh toán dưới */
+      margin-bottom: 100px;
     }
-
-    /* Ẩn bớt sidebar tổng tiền trên mobile (vì dùng sticky bar dưới) */
     .order-summary {
       display: none;
     }
-
     .cart-item {
       padding: 15px;
       gap: 12px;
@@ -280,11 +279,9 @@ block extra_css %}
       margin-top: 0;
       align-self: center;
     }
-
-    /* Thanh thanh toán dính dưới đáy Mobile */
     .mobile-checkout-bar {
       position: fixed;
-      bottom: 55px; /* Nằm trên menu đáy 1 chút */
+      bottom: 55px;
       left: 0;
       width: 100%;
       background: white;
@@ -314,10 +311,10 @@ block extra_css %}
       border-radius: 20px;
       font-weight: 700;
       font-size: 14px;
+      text-decoration: none;
+      display: inline-block;
     }
   }
-
-  /* Ẩn thanh thanh toán mobile trên PC */
   @media (min-width: 769px) {
     .mobile-checkout-bar {
       display: none;
@@ -325,7 +322,7 @@ block extra_css %}
   }
 </style>
 {% endblock %} {% block content %}
-<div style="margin-top: -10px; margin-bottom: 10px">
+<div class="container" style="margin-top: 1rem; margin-bottom: 1rem">
   <p style="font-size: 13px; color: var(--text-sub)">
     <a href="{% url 'core:home' %}">Trang chủ</a>
     <i
@@ -336,155 +333,137 @@ block extra_css %}
   </p>
 </div>
 
-<div class="cart-layout">
-  <div class="cart-container">
-    <!-- DJANGO: If cart is empty, show message -->
-    <div class="cart-header">
-      <input type="checkbox" class="custom-checkbox" checked />
-      <span>Tất cả (3 sản phẩm)</span>
-      <i
-        class="fa-regular fa-trash-can"
-        style="margin-left: auto; cursor: pointer; color: #9ca3af"
-      ></i>
+<div class="container">
+  {% if cart and cart.items %}
+  <div class="cart-layout">
+    <div class="cart-container">
+      <div class="cart-header">
+        <input type="checkbox" class="custom-checkbox" checked />
+        <span>Tất cả ({{ cart.items.count }} sản phẩm)</span>
+        <a
+          href="{% url 'orders:clear_cart' %}"
+          style="margin-left: auto; cursor: pointer; color: #9ca3af"
+          ><i class="fa-regular fa-trash-can"></i
+        ></a>
+      </div>
+
+      {% for item in cart.items.all %}
+      <div class="cart-item">
+        <input type="checkbox" class="custom-checkbox" checked />
+        <div class="item-img">
+          <img
+            src="{{ item.product.image.url|default:'https://placehold.co/100x100?text=No+Image' }}"
+            alt="{{ item.product.name }}"
+          />
+        </div>
+        <div class="item-info">
+          <div>
+            <a
+              href="{{ item.product.get_absolute_url }}"
+              style="text-decoration: none"
+            >
+              <div class="item-name">{{ item.product.name }}</div>
+            </a>
+            <!-- Placeholder for variant info -->
+            <!-- <div class="item-variant">Màu: Xám • 256GB</div> -->
+          </div>
+          <div class="item-actions">
+            <div class="item-price">
+              <span class="p-current"
+                >{{ item.product.price|floatformat:0|intcomma }}đ</span
+              >
+              {% if item.product.old_price %}
+              <span class="p-old"
+                >{{ item.product.old_price|floatformat:0|intcomma }}đ</span
+              >
+              {% endif %}
+            </div>
+            <div class="qty-control">
+              <a
+                href="{% url 'orders:remove_from_cart' item.product.id %}"
+                class="qty-btn"
+                >-</a
+              >
+              <input
+                type="text"
+                class="qty-input"
+                value="{{ item.quantity }}"
+                readonly
+              />
+              <a
+                href="{% url 'orders:add_to_cart' item.product.id %}"
+                class="qty-btn"
+                >+</a
+              >
+            </div>
+          </div>
+        </div>
+        <a
+          href="{% url 'orders:remove_cart_item' item.product.id %}"
+          class="btn-delete"
+          ><i class="fa-solid fa-xmark"></i
+        ></a>
+      </div>
+      {% endfor %}
     </div>
 
-    <!-- DJANGO: Loop Cart Items -->
-    <div class="cart-item">
-      <input type="checkbox" class="custom-checkbox" checked />
-      <div class="item-img">
-        <img src="https://placehold.co/100x100?text=MacBook" alt="MacBook" />
+    <div class="order-summary">
+      <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 20px">
+        Thông tin đơn hàng
+      </h3>
+      <div class="coupon-box">
+        <input type="text" class="coupon-input" placeholder="Mã giảm giá" />
+        <button class="btn-apply">Áp dụng</button>
       </div>
-      <div class="item-info">
-        <div>
-          <div class="item-name">
-            MacBook Air 13 inch M1 2020 8GB/256GB Gray
-          </div>
-          <div class="item-variant">Màu: Xám • 256GB</div>
-        </div>
-        <div class="item-actions">
-          <div class="item-price">
-            <span class="p-current">18.490.000đ</span>
-            <span class="p-old">22.990.000đ</span>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn">-</button>
-            <input type="text" class="qty-input" value="1" />
-            <button class="qty-btn">+</button>
-          </div>
-        </div>
+      <div class="summary-row">
+        <span>Tạm tính ({{ cart.items.count }} sản phẩm)</span>
+        <span>{{ cart.get_total_price|floatformat:0|intcomma }}đ</span>
       </div>
-      <i class="fa-solid fa-xmark btn-delete"></i>
+      <div class="summary-row">
+        <span>Giảm giá</span>
+        <span style="color: #22c55e">-0đ</span>
+      </div>
+      <div class="summary-row total">
+        <span>Tổng cộng</span>
+        <span class="total-price-big"
+          >{{ cart.get_total_price|floatformat:0|intcomma }}đ</span
+        >
+      </div>
+      <p
+        style="
+          font-size: 12px;
+          color: #6b7280;
+          text-align: right;
+          margin-top: 5px;
+        "
+      >
+        (Đã bao gồm VAT)
+      </p>
+      <a href="{% url 'orders:checkout' %}" class="btn-checkout"
+        >MUA HÀNG NGAY</a
+      >
     </div>
-
-    <div class="cart-item">
-      <input type="checkbox" class="custom-checkbox" checked />
-      <div class="item-img">
-        <img src="https://placehold.co/100x100?text=Mouse" alt="Mouse" />
-      </div>
-      <div class="item-info">
-        <div>
-          <div class="item-name">Chuột Gaming Logitech G102 Lightsync RGB</div>
-          <div class="item-variant">Màu: Đen</div>
-        </div>
-        <div class="item-actions">
-          <div class="item-price">
-            <span class="p-current">399.000đ</span>
-            <span class="p-old">599.000đ</span>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn">-</button>
-            <input type="text" class="qty-input" value="1" />
-            <button class="qty-btn">+</button>
-          </div>
-        </div>
-      </div>
-      <i class="fa-solid fa-xmark btn-delete"></i>
-    </div>
-
-    <div class="cart-item">
-      <input type="checkbox" class="custom-checkbox" />
-      <div class="item-img">
-        <img src="https://placehold.co/100x100?text=RAM" alt="RAM" />
-      </div>
-      <div class="item-info">
-        <div>
-          <div class="item-name">
-            RAM Corsair Vengeance LPX 16GB DDR4 3200MHz
-          </div>
-          <div class="item-variant">Loại: DDR4</div>
-        </div>
-        <div class="item-actions">
-          <div class="item-price">
-            <span class="p-current">890.000đ</span>
-            <span class="p-old">1.200.000đ</span>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn">-</button>
-            <input type="text" class="qty-input" value="2" />
-            <button class="qty-btn">+</button>
-          </div>
-        </div>
-      </div>
-      <i class="fa-solid fa-xmark btn-delete"></i>
-    </div>
-    <!-- DJANGO: End Loop -->
   </div>
 
-  <div class="order-summary">
-    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 20px">
-      Thông tin đơn hàng
-    </h3>
-
-    <div class="coupon-box">
-      <input type="text" class="coupon-input" placeholder="Mã giảm giá" />
-      <button class="btn-apply">Áp dụng</button>
+  <div class="mobile-checkout-bar">
+    <div class="mc-total">
+      <span>Tổng cộng:</span>
+      <span class="mc-price"
+        >{{ cart.get_total_price|floatformat:0|intcomma }}đ</span
+      >
     </div>
-
-    <div class="summary-row">
-      <span>Tạm tính (3 sản phẩm)</span>
-      <span>20.669.000đ</span>
-    </div>
-    <div class="summary-row">
-      <span>Giảm giá</span>
-      <!-- DJANGO: Discount logic -->
-      <span style="color: #22c55e">-0đ</span>
-    </div>
-
-    <div class="summary-row total">
-      <span>Tổng cộng</span>
-      <span class="total-price-big">20.669.000đ</span>
-    </div>
-    <p
-      style="
-        font-size: 12px;
-        color: #6b7280;
-        text-align: right;
-        margin-top: 5px;
-      "
+    <a href="{% url 'orders:checkout' %}" class="mc-btn"
+      >Mua Hàng ({{ cart.items.count }})</a
     >
-      (Đã bao gồm VAT)
-    </p>
-
-    <!-- DJANGO: Checkout Form/Link -->
-    <button
-      class="btn-checkout"
-      onclick="window.location.href = '{% url 'orders:checkout' %}'"
-    >
-      MUA HÀNG NGAY
-    </button>
   </div>
-</div>
 
-<div class="mobile-checkout-bar">
-  <div class="mc-total">
-    <span>Tổng cộng:</span>
-    <span class="mc-price">20.669.000đ</span>
+  {% else %}
+  <div class="empty-cart-message">
+    <img src="https://placehold.co/150x150?text=Empty+Cart" alt="Giỏ hàng trống">
+    <h3>Giỏ hàng của bạn đang trống</h3>
+    <p>Hãy khám phá thêm các sản phẩm và thêm vào giỏ hàng nhé!</p>
+    <a href="{% url 'core:home' %}" class="btn-back-home">Tiếp tục mua sắm</a>
   </div>
-  <button
-    class="mc-btn"
-    onclick="window.location.href = '{% url 'orders:checkout' %}'"
-  >
-    Mua Hàng (3)
-  </button>
+  {% endif %}
 </div>
 {% endblock %}
