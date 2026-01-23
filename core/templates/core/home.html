@@ -1,11 +1,14 @@
 {% extends 'core/base.html' %} {% load static %} {% block title %}Trang chủ -
-LapStore{% endblock %} {% block content %}
+LapStore{% endblock %} 
+{% block content %}
       <section class="bento-grid">
         <article
           {# DJANGO: Dynamic Banners if needed #}
           class="bento-item card-hero"
           style="grid-column: 1 / -1; grid-row: 1 / 2"
         >
+        
+
           <!-- Slide 1 -->
           <div class="slide">
             <img
@@ -20,51 +23,41 @@ LapStore{% endblock %} {% block content %}
               alt="Hero 2"
             />
           </div>
-           {% comment %} <!-- Slide 3 -->
+           <!-- Slide 3 -->
           <div class="slide">
             <img
-              src="https://cdn.hoanghamobile.vn/i/home/Uploads/2025/11/27/m5-moi-rs.png"
-              alt="Hero 2"
+              src="https://laptopworld.vn/media/banner/Bannermsi_anh1_trangch.jpg"
+              alt="Hero 3"
             />
           </div>
 
-           <!-- Slide 4 -->
-          <div class="slide">
-            <img
-              src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/NF_1200x628_30_8facf85b05.png"
-              alt="Hero 2"
-            /> {% endcomment %}
-          </div>
+          <button class="slider-btn prev">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button class="slider-btn next">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <div class="slider-dots"></div>
         </article>
-        <article
-          class="bento-item card-sub card-red"
-          style="grid-column: 1 / 2; grid-row: 2 / 3"
-        >
-          <div>
-            <span class="tag tag-glass">Hot Deal</span>
-            <h3>Laptop Gaming<br />Lì Xì 5 Triệu</h3>
-          </div>
-          <img
-            src="https://laptopworld.vn/media/product/20382_s5406sa_pp059ws___thumbal.jpg"
+          <!--Subslide-->
+          <img class="bento-item card-sub card-red"
+          style="grid-column: 1 / 2; grid-row: 2 / 3; object-fit: cover; object-position: center"
+          onclick="window.location.href = '#'"
+            src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/41/6f/416fb524e665191e6fc3346b5267ac42.png"
             alt="Laptop"
           />
-        </article>
-        <article
-          class="bento-item card-sub"
-          style="background: #f3f4f6; grid-column: 2 / -1; grid-row: 2 / 3"
+
+          <img  class="bento-item card-sub"
+          style="background: transparent; grid-column: 2 / -1; grid-row: 2 / 3; object-fit: cover; object-position: center"
           onclick="window.location.href = '#'"
-        >
-          <div>
-            <span class="tag tag-red">Build PC</span>
-            <h3>Lắp Ráp PC<br />Tặng Màn Hình</h3>
-          </div>
-          <img
-            src="https://laptopworld.vn/media/banner/HoangMinh696x397.png"
+            src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/15/ef/15ef176bdab2f1162d71b75406539138.png"
             alt="PC"
           />
-        </article>
-      </section>
 
+      </section>
+      <!--end Subslide-->
+
+      <!--Danh mục sản phẩm-->
       <div class="cat-section">
         <div class="cat-title-small">Linh Kiện Máy Tính & PC</div>
         <nav class="cat-scroll">
@@ -114,6 +107,7 @@ LapStore{% endblock %} {% block content %}
         </nav>
       </div>
 
+      <!--Dãy sản phẩm bán chạy-->
       <section class="flash-section">
         <div class="flash-header">
           <h2 class="flash-title"><i class="fa-solid fa-bolt"></i> GIỜ VÀNG</h2>
@@ -226,6 +220,8 @@ LapStore{% endblock %} {% block content %}
         </div>
       </section>
 
+
+      <!--Dãy sản phẩm bán chạy-->
       <section>
         <div class="section-head">
           <h2 style="font-size: 24px; font-weight: 800">
@@ -392,4 +388,5 @@ LapStore{% endblock %} {% block content %}
           alt="PC Setup"
         />
       </section>
+      <script src="{% static 'core/js/main.js' %}"></script>
 {% endblock %}

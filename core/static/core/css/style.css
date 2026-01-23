@@ -312,7 +312,7 @@ header {
 .bento-grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: 540px 240px;
+    grid-template-rows: 650px 240px;
     gap: 20px;
     margin-bottom: 50px;
 }
@@ -419,6 +419,32 @@ header {
     right: 20px;
 }
 
+.slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 20;
+}
+
+.slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+    transition: var(--trans);
+}
+
+.slider-dot:hover,
+.slider-dot.active {
+    background: white;
+    transform: scale(1.2);
+}
+
 .tag {
     display: inline-flex;
     padding: 6px 16px;
@@ -463,27 +489,10 @@ header {
 }
 
 .card-sub {
-    padding: 24px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.card-red {
-    background: var(--gradient-red);
-    color: white;
-}
-
-.card-sub h3 {
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.card-sub img {
-    width: 260px;
-    margin: 0;
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 /* =========================================
@@ -1018,20 +1027,8 @@ footer {
     }
 
     .card-sub {
-        height: 140px;
-        flex-direction: row;
-        align-items: center;
-        padding: 16px;
-    }
-
-    .card-sub img {
-        width: 100px;
-        order: 2;
-        margin: 0;
-    }
-
-    .card-sub div {
-        order: 1;
+        height: 160px;
+        padding: 0;
     }
 
     /* Flash Sale & Grid 2 Cột */

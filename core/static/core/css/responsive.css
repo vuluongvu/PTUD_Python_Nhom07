@@ -65,7 +65,7 @@
 
     .card-hero {
         height: 280px;
-        padding: 20px;
+        padding: 0;
     }
 
     .hero-title {
@@ -73,20 +73,8 @@
     }
 
     .card-sub {
-        height: 140px;
-        flex-direction: row;
-        align-items: center;
-        padding: 16px;
-    }
-
-    .card-sub img {
-        width: 100px;
-        order: 2;
-        margin: 0;
-    }
-
-    .card-sub div {
-        order: 1;
+        height: 160px;
+        padding: 0;
     }
 
     /* Flash Sale & Grid 2 Cột */

@@ -8,15 +8,77 @@ document.addEventListener("DOMContentLoaded", () => {
   const slides = document.querySelectorAll(".slide");
 
   if (slides.length > 0) {
+    let slideInterval;
+
+    // Đồng bộ trạng thái active ban đầu từ HTML
+    const activeIndex = Array.from(slides).findIndex((s) =>
+      s.classList.contains("active"),
+    );
+    if (activeIndex !== -1) currentSlide = activeIndex;
+
+    const dotsContainer = document.querySelector(".slider-dots");
+
+    // Tạo dots dựa trên số lượng slide
+    if (dotsContainer) {
+      dotsContainer.innerHTML = "";
+      slides.forEach((_, index) => {
+        const dot = document.createElement("div");
+        dot.classList.add("slider-dot");
+        if (index === currentSlide) dot.classList.add("active");
+
+        dot.addEventListener("click", (e) => {
+          e.stopPropagation();
+          slides[currentSlide].classList.remove("active");
+          currentSlide = index;
+          slides[currentSlide].classList.add("active");
+          updateDots();
+          // Reset tiem khi click
+          clearInterval(slideInterval);
+          slideInterval = setInterval(() => moveSlide(1), 5000);
+        });
+
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    function updateDots() {
+      if (!dotsContainer) return;
+      const dots = dotsContainer.querySelectorAll(".slider-dot");
+      dots.forEach((d, i) => d.classList.toggle("active", i === currentSlide));
+    }
+
     // @ts-ignore
     function moveSlide(n) {
       slides[currentSlide].classList.remove("active");
       currentSlide = (currentSlide + n + slides.length) % slides.length;
       slides[currentSlide].classList.add("active");
+      updateDots();
     }
 
     // Tự động chuyển slide sau 5 giây
-    setInterval(() => moveSlide(1), 5000);
+    slideInterval = setInterval(() => moveSlide(1), 5000);
+
+    // Xử lý nút prev/next
+    const prevBtn = document.querySelector(".slider-btn.prev");
+    const nextBtn = document.querySelector(".slider-btn.next");
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        moveSlide(-1);
+        clearInterval(slideInterval);
+        slideInterval = setInterval(() => moveSlide(1), 5000);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        moveSlide(1);
+        clearInterval(slideInterval);
+        slideInterval = setInterval(() => moveSlide(1), 5000);
+      });
+    }
   }
 
   // --- SEARCH AUTOCOMPLETE ---
@@ -41,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   searchInputs.forEach((input) => {
-    // Tạo box gợi ý nếu chưa có
+    // Tạo box gợi ý
     // @ts-ignore
     let suggestionBox = input.parentElement.querySelector(
       ".search-suggestions",
@@ -103,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- PRODUCT DETAIL LOGIC ---
-  // 1. Chọn Option (Màu sắc / Cấu hình)
+  // 1. Chọn Option 
   const optBtns = document.querySelectorAll(".opt-btn");
   optBtns.forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -117,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 2. Đổi ảnh (Global function để dùng trong onclick HTML)
+  // 2. Đổi ảnh 
   // @ts-ignore
   window.changeImage = function (element, src) {
     // @ts-ignore
@@ -128,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     element.classList.add("active");
   };
 
-  // 3. Đánh giá sao (Review Stars)
+  // 3. Đánh giá sao 
   const starInputs = document.querySelectorAll(".star-input i");
   starInputs.forEach((star, index) => {
     star.addEventListener("click", () => {
