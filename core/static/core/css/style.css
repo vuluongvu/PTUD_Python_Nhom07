@@ -473,7 +473,9 @@ header {
     margin-bottom: 24px;
 }
 
+
 .btn-cta {
+    margin-top: 30px;
     background: var(--bg-white);
     color: var(--text-main);
     padding: 12px 32px;
@@ -1026,10 +1028,6 @@ footer {
         font-size: 24px;
     }
 
-    .card-sub {
-        height: 160px;
-        padding: 0;
-    }
 
     /* Flash Sale & Grid 2 Cột */
     .flash-section {

@@ -73,8 +73,9 @@
     }
 
     .card-sub {
-        height: 160px;
-        padding: 0;
+        height: 130px !important;
+        object-fit: cover !important;
+        width: 100%;
     }
 
     /* Flash Sale & Grid 2 Cột */

@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- PRODUCT DETAIL LOGIC ---
-  // 1. Chọn Option 
+  // 1. Chọn Option
   const optBtns = document.querySelectorAll(".opt-btn");
   optBtns.forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 2. Đổi ảnh 
+  // 2. Đổi ảnh
   // @ts-ignore
   window.changeImage = function (element, src) {
     // @ts-ignore
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     element.classList.add("active");
   };
 
-  // 3. Đánh giá sao 
+  // 3. Đánh giá sao
   const starInputs = document.querySelectorAll(".star-input i");
   starInputs.forEach((star, index) => {
     star.addEventListener("click", () => {
