@@ -1,5 +1,6 @@
-{% extends 'core/base.html' %} {% load static %} {% block title %}Tất cả sản
-phẩm - LapStore{% endblock %} {% block content %}
+{% extends 'core/base.html' %} {% load static %} 
+{% block title %}Tất cả sản phẩm - LapStore
+{% endblock %} {% block content %}
 <div style="margin-top: -10px; margin-bottom: 20px">
   <p style="font-size: 13px; color: var(--text-sub)">
     <a href="#">Trang chủ</a>
@@ -315,29 +316,27 @@ phẩm - LapStore{% endblock %} {% block content %}
     <!-- Phân trang -->
     <!-- DJANGO: Pagination Logic -->
     <div class="pagination">
-      {% if page_obj.has_previous %}
+
       <a
         href="?{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ page_obj.previous_page_number }}"
         class="page-link"
         ><i class="fa-solid fa-chevron-left"></i
       ></a>
-      {% endif %} {% for num in page_obj.paginator.page_range %} {% if
-      page_obj.number == num %}
+      
       <a href="#" class="page-link active">{{ num }}</a>
-      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3'
-      %}
+      
       <a
         href="?{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ num }}"
         class="page-link"
         >{{ num }}</a
       >
-      {% endif %} {% endfor %} {% if page_obj.has_next %}
+      
       <a
         href="?{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ page_obj.next_page_number }}"
         class="page-link"
         ><i class="fa-solid fa-chevron-right"></i
       ></a>
-      {% endif %}
+    
     </div>
   </div>
 </div>

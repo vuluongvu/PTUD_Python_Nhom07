@@ -1,21 +1,23 @@
 {% extends 'core/base.html' %} {% load static %} {% block title %}Thanh toán -
-LapStore{% endblock %} {% block mobile_menu %}{% endblock %} {% block
-mobile_bottom_nav %}{% endblock %} {% block header %}
+LapStore{% endblock %} {% block extra_css %}{% endblock %}
+{% block mobile_menu %}{% endblock %} 
+{% block mobile_bottom_nav %}{% endblock %} {% block header %}
 <header>
   <div class="container">
     <nav
-      class="nav-island"
+      class="nav-island checkout-nav"
       style="display: flex; align-items: center; justify-content: space-between"
     >
       <div class="nav-left">
         <a href="{% url 'core:home' %}" class="logo">
           <i class="fa-solid fa-dragon"></i>
-          <span>36<span style="font-weight: 300">.RauMa</span></span>
+          <span>Lap<span style="font-weight: 300">Store</span></span>
         </a>
       </div>
 
       <!-- Tiêu đề trang thanh toán -->
       <div
+        class="checkout-title"
         style="
           font-weight: 800;
           font-size: 18px;

@@ -1,6 +1,6 @@
-{% extends 'core/base.html' %} {% load static %} {% load humanize %} {% block
-title %}Giỏ hàng - LapStore{% endblock %} {% block nav_cart_active %}active{%
-endblock %} {% block extra_css %}
+{% extends 'core/base.html' %} {% load static %} {% load humanize %}
+{% block title %} Giỏ hàng - LapStore{% endblock %} {% block nav_cart_active %}active
+{% endblock %} {% block extra_css %}
 <style>
   /* CSS remains the same as it is well-styled */
   .cart-layout {
@@ -334,7 +334,7 @@ endblock %} {% block extra_css %}
 </div>
 
 <div class="container">
-  {% if cart and cart.items %}
+  {% if cart and cart.items.all %}
   <div class="cart-layout">
     <div class="cart-container">
       <div class="cart-header">
@@ -352,7 +352,7 @@ endblock %} {% block extra_css %}
         <input type="checkbox" class="custom-checkbox" checked />
         <div class="item-img">
           <img
-            src="{{ item.product.image.url|default:'https://placehold.co/100x100?text=No+Image' }}"
+            src="{% if item.product.image %}{{ item.product.image.url }}{% else %}https://placehold.co/100x100?text=No+Image{% endif %}"
             alt="{{ item.product.name }}"
           />
         </div>
@@ -459,7 +459,6 @@ endblock %} {% block extra_css %}
 
   {% else %}
   <div class="empty-cart-message">
-    <img src="https://placehold.co/150x150?text=Empty+Cart" alt="Giỏ hàng trống">
     <h3>Giỏ hàng của bạn đang trống</h3>
     <p>Hãy khám phá thêm các sản phẩm và thêm vào giỏ hàng nhé!</p>
     <a href="{% url 'core:home' %}" class="btn-back-home">Tiếp tục mua sắm</a>

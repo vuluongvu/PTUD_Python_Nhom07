@@ -1,5 +1,7 @@
-{% extends 'core/base.html' %} {% load static %} {% block title %}Kết quả tìm
-kiếm - LapStore{% endblock %} {% block content %}
+{% extends 'core/base.html' %} 
+{% load static %} {% block title %}
+Kết quả tìm kiếm - LapStore
+{% endblock %} {% block content %}
 <div style="margin-top: -10px; margin-bottom: 20px">
   <p style="font-size: 13px; color: var(--text-sub)">
     <a href="{% url 'core:home' %}">Trang chủ</a>
@@ -132,23 +134,23 @@ kiếm - LapStore{% endblock %} {% block content %}
 
 <!-- Phân trang -->
 <div class="pagination">
-  {% if page_obj.has_previous %}
+  {% comment %} {% if page_obj.has_previous %} {% endcomment %}
   <a
     href="?q={{ query }}&page={{ page_obj.previous_page_number }}"
     class="page-link"
     ><i class="fa-solid fa-chevron-left"></i
   ></a>
-  {% endif %} {% for num in page_obj.paginator.page_range %} {% if
+  {% comment %} {% endif %} {% for num in page_obj.paginator.page_range %} {% if {% endcomment %}
   page_obj.number == num %}
   <a href="#" class="page-link active">{{ num }}</a>
-  {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+  {% comment %} {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} {% endcomment %}
   <a href="?q={{ query }}&page={{ num }}" class="page-link">{{ num }}</a>
-  {% endif %} {% endfor %} {% if page_obj.has_next %}
+  {% comment %} {% endif %} {% endfor %} {% if page_obj.has_next %} {% endcomment %}
   <a
     href="?q={{ query }}&page={{ page_obj.next_page_number }}"
     class="page-link"
     ><i class="fa-solid fa-chevron-right"></i
   ></a>
-  {% endif %}
+  {% comment %} {% endif %} {% endcomment %}
 </div>
 {% endblock %}

@@ -177,6 +177,10 @@
         -webkit-mask-image: none;
     }
 
+    footer .container {
+        margin-left: 20px;
+    }
+
     .foot-grid {
         grid-template-columns: 1fr;
         gap: 32px;
@@ -263,7 +267,7 @@
         margin-bottom: 100px;
     }
 
-    .order-summary {
+    .cart-layout .order-summary {
         display: none;
     }
 
@@ -434,5 +438,50 @@
 
     .checkout-form .form-row {
         grid-template-columns: 1fr;
+    }
+
+    /* --- CHECKOUT PAGE FIXES --- */
+    .checkout-nav {
+        padding: 10px 15px !important;
+        flex-wrap: nowrap !important;
+        /* Ngăn vỡ dòng header */
+    }
+
+    .checkout-nav .logo {
+        display: flex !important;
+        /* Hiện lại logo */
+        font-size: 22px;
+    }
+
+    .checkout-nav .logo span {
+        display: none;
+        /* Ẩn chữ LapStore, chỉ hiện icon rồng */
+    }
+
+    .checkout-nav .checkout-title {
+        font-size: 14px !important;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .checkout-nav .nav-actions {
+        display: flex !important;
+        /* Hiện nút giỏ hàng */
+    }
+
+    .checkout-nav .nav-actions a {
+        font-size: 0 !important;
+        /* Ẩn chữ "Giỏ hàng" */
+    }
+
+    .checkout-nav .nav-actions a i {
+        font-size: 18px !important;
+        /* Chỉ hiện icon */
+    }
+
+    .checkout-layout .order-summary {
+        position: static !important;
+        /* Bỏ sticky trên mobile để không bị lỗi */
+        margin-top: 20px;
     }
 }

@@ -1,9 +1,12 @@
-{% extends 'core/base.html' %} {% load static %} {% block title %}MacBook Air M1
-2020 - LapStore{% endblock %} {% block content %}
+{% extends 'core/base.html' %} 
+{% load static %} 
+{% block title %}MacBook Air M1 2020 - LapStore
+{% endblock %} 
+{% block content %}
 <!-- DJANGO: Breadcrumbs dynamic -->
 <div class="breadcrumb">
   <a href="{% url 'core:home' %}">Trang chủ</a> /
-  <a href="{% url 'products:view_all' %}">Laptop</a> /
+  {% comment %} <a href="{% url 'products:view-all' %}">Laptop</a> / {% endcomment %}
   <a href="#">Apple MacBook</a> / MacBook Air M1 2020
 </div>
 
@@ -67,7 +70,7 @@
     </div>
 
     <div class="price-row">
-      <!-- DJANGO: {{ product.price|floatform:0 }} -->
+      <!-- DJANGO:  -->
       <span class="current-price">18.490.000đ</span>
       <span class="old-price">22.990.000đ</span>
       <span class="discount-tag">-19%</span>

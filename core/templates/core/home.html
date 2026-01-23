@@ -120,7 +120,7 @@ LapStore{% endblock %}
           </div>
         </div>
         <div class="flash-grid">
-          <a href="#">
+          <a href="{% url 'products:product-detail' %}">
             <article class="prod-card">
               <span class="badge-sale" style="background: #000"
                 >Best Seller</span
@@ -228,7 +228,7 @@ LapStore{% endblock %}
             Laptop <span style="color: var(--primary)">Bán Chạy</span>
           </h2>
           <a
-            href="#"
+            href="{% url 'products:view-all-products' %}"
             style="
               font-weight: 700;
               color: var(--primary);

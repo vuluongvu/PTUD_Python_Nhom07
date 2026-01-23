@@ -7,7 +7,7 @@ def view_cart(request):
     """View hiển thị giỏ hàng."""
     # This view will eventually need to fetch cart data
     # For now, we pass an empty context
-    return render(request, 'orders/cart.html', {})
+    return render(request, 'orders/cart.html')
 
 def checkout(request):
     """View for the checkout page."""
