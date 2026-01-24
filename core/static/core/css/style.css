@@ -23,6 +23,8 @@
     --trans: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+
+
 * {
     margin: 0;
     padding: 0;
@@ -312,7 +314,7 @@ header {
 .bento-grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: 650px 240px;
+    grid-template-rows: 650px 199px;
     gap: 20px;
     margin-bottom: 50px;
 }
@@ -344,7 +346,7 @@ header {
 .card-hero img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     opacity: 1;
 }
 
@@ -401,7 +403,8 @@ header {
     /* Ẩn nút khi không hover */
 }
 
-.card-hero:hover .slider-btn {
+.card-hero:hover .slider-btn,
+.card-sub:hover .slider-btn {
     opacity: 1;
 }
 
@@ -461,10 +464,7 @@ header {
     color: white;
 }
 
-.tag-red {
-    background: var(--primary-light);
-    color: var(--primary);
-}
+
 
 .hero-title {
     font-size: 36px;
@@ -485,16 +485,19 @@ header {
     transition: var(--trans);
 }
 
-.btn-cta:hover {
-    background-color: var(--primary);
-    color: #fff;
-}
 
 .card-sub {
     width: 100%;
     height: 100%;
-    object-fit: cover;
     display: block;
+    position: relative;
+    padding: 0;
+}
+
+.card-sub img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* =========================================
@@ -893,7 +896,7 @@ footer {
 }
 
 /* =========================================
-           7. MOBILE BOTTOM NAVIGATION (MỚI)
+           7. MOBILE BOTTOM NAVIGATION 
            ========================================= */
 .mobile-bottom-nav {
     position: fixed;
@@ -965,7 +968,7 @@ footer {
 @media (max-width: 1024px) {
     .bento-grid {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: 280px 240px 200px;
+        grid-template-rows: 280px 340px 200px;
     }
 
     .card-hero {
@@ -978,6 +981,14 @@ footer {
 @media (max-width: 768px) {
     .container {
         padding: 0 12px;
+    }
+
+    .bento-item.card-sub {
+        object-fit: cover;
+    }
+
+    .bento-grid {
+        grid-template-columns: 1fr
     }
 
     /* Header Mobile: Ẩn Action Buttons */

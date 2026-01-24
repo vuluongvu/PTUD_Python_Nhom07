@@ -4,19 +4,26 @@
   Path: static/js/main.js
 */
 document.addEventListener("DOMContentLoaded", () => {
-  let currentSlide = 0;
-  const slides = document.querySelectorAll(".slide");
+  // --- SLIDER LOGIC (Hỗ trợ nhiều slider) ---
+  const sliders = document.querySelectorAll(".js-slider");
 
-  if (slides.length > 0) {
+  sliders.forEach((slider) => {
+    let currentSlide = 0;
+    const slides = slider.querySelectorAll(".slide");
+
+    if (slides.length === 0) return;
+
     let slideInterval;
+    const dotsContainer = slider.querySelector(".slider-dots");
+    const prevBtn = slider.querySelector(".slider-btn.prev");
+    const nextBtn = slider.querySelector(".slider-btn.next");
 
     // Đồng bộ trạng thái active ban đầu từ HTML
     const activeIndex = Array.from(slides).findIndex((s) =>
       s.classList.contains("active"),
     );
     if (activeIndex !== -1) currentSlide = activeIndex;
-
-    const dotsContainer = document.querySelector(".slider-dots");
+    else slides[0].classList.add("active");
 
     // Tạo dots dựa trên số lượng slide
     if (dotsContainer) {
@@ -59,9 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
     slideInterval = setInterval(() => moveSlide(1), 5000);
 
     // Xử lý nút prev/next
-    const prevBtn = document.querySelector(".slider-btn.prev");
-    const nextBtn = document.querySelector(".slider-btn.next");
-
     if (prevBtn) {
       prevBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -79,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         slideInterval = setInterval(() => moveSlide(1), 5000);
       });
     }
-  }
+  });
 
   // --- SEARCH AUTOCOMPLETE ---
   const searchInputs = document.querySelectorAll(".search-box input");

@@ -4,7 +4,7 @@ LapStore{% endblock %}
       <section class="bento-grid">
         <article
           {# DJANGO: Dynamic Banners if needed #}
-          class="bento-item card-hero"
+          class="bento-item card-hero js-slider"
           style="grid-column: 1 / -1; grid-row: 1 / 2"
         >
         
@@ -26,7 +26,7 @@ LapStore{% endblock %}
            <!-- Slide 3 -->
           <div class="slide">
             <img
-              src="https://laptopworld.vn/media/banner/Bannermsi_anh1_trangch.jpg"
+              src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/pc_content_28e9b3af16.png"
               alt="Hero 3"
             />
           </div>
@@ -40,20 +40,47 @@ LapStore{% endblock %}
           <div class="slider-dots"></div>
         </article>
           <!--Subslide-->
-          <img class="bento-item card-sub card-red"
-          style="grid-column: 1 / 2; grid-row: 2 / 3; object-fit: cover; object-position: center"
-          onclick="window.location.href = '#'"
-            src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/41/6f/416fb524e665191e6fc3346b5267ac42.png"
-            alt="Laptop"
-          />
+          <div class="bento-item card-sub js-slider" style="grid-column: 1 / 2; grid-row: 2 / 3;">
+            <!-- Slide 1 -->
+            <div class="slide active">
+              <a href="#" style="display:block; width:100%; height:100%">
+                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/41/6f/416fb524e665191e6fc3346b5267ac42.png" alt="Laptop 1" />
+              </a>
+            </div>
+            <!-- Slide 2 -->
+            <div class="slide">
+              <a href="#" style="display:block; width:100%; height:100%">
+                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/15/ef/15ef176bdab2f1162d71b75406539138.png" alt="Laptop 2" />
+              </a>
+            </div>
+            
+            <button class="slider-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="slider-btn next"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
 
-          <img  class="bento-item card-sub"
-          style="background: transparent; grid-column: 2 / -1; grid-row: 2 / 3; object-fit: cover; object-position: center"
-          onclick="window.location.href = '#'"
-            src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/15/ef/15ef176bdab2f1162d71b75406539138.png"
-            alt="PC"
-          />
+          <div class="bento-item card-sub js-slider" style="grid-column: 2 / -1; grid-row: 2 / 3;">
+             <!-- Slide 1 -->
+            <div class="slide active">
+              <a href="#" style="display:block; width:100%; height:100%">
+                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/15/ef/15ef176bdab2f1162d71b75406539138.png" alt="PC 1" />
+              </a>
+            </div>
+             <!-- Slide 2 -->
+            <div class="slide">
+              <a href="#" style="display:block; width:100%; height:100%">
+                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/41/6f/416fb524e665191e6fc3346b5267ac42.png" alt="PC 2" />
+              </a>
+            </div>
+             <!-- Slide 3 -->
+             <div class="slide">
+              <a href="#" style="display:block; width:100%; height:100%">
+                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/3f/a9/3fa9310a8cfb76b1ee3872b02bee59f4.png" alt="PC 3" />
+              </a>
+            </div>
 
+            <button class="slider-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="slider-btn next"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
       </section>
       <!--end Subslide-->
 

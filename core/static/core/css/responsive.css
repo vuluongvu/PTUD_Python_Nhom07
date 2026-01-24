@@ -6,7 +6,7 @@
 @media (max-width: 1024px) {
     .bento-grid {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: 280px 240px 200px;
+        grid-template-rows: 280px 199px 200px;
     }
 
     .card-hero {
@@ -23,11 +23,7 @@
 
     /* Header Mobile: Ẩn Action Buttons */
     .nav-island {
-        display: flex;
-        /* Ghi đè Grid của PC */
-        padding: 0;
-        flex-wrap: wrap;
-        gap: 12px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     }
 
     .logo,
@@ -74,8 +70,15 @@
 
     .card-sub {
         height: 130px !important;
-        object-fit: cover !important;
         width: 100%;
+        padding: 0 !important;
+    }
+
+    .card-sub img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
     }
 
     /* Flash Sale & Grid 2 Cột */
