@@ -318,19 +318,26 @@
       </div>
 
       <div id="form-login" class="form-container active">
-        <form>
+        <form id="login-form-element" novalidate>
           <!-- DJANGO: {% csrf_token %} -->
           <div class="form-group">
             <i class="fa-regular fa-envelope input-icon"></i>
             <input
               type="email"
               class="form-input"
+              spellcheck="false"
+              autocorrect="off"
+              autocapitalize="off"
+              autocomplete="off"
+              autofocus="autofocus"
+              required=""
+              id="input-login-username"
               placeholder="Email hoặc số điện thoại"
             />
           </div>
           <div class="form-group">
             <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" class="form-input" placeholder="Mật khẩu" />
+            <input type="password" class="form-input" id="input-login-password" placeholder="Mật khẩu" />
           </div>
 
           <div class="auth-options">
@@ -348,33 +355,37 @@
           </div>
 
           <button
-            type="button"
+            type="submit"
+            id="btn-login"
             class="btn-submit"
-            onclick="window.location.href = '{% url 'core:home' %}'"
           >
             ĐĂNG NHẬP
           </button>
         </form>
       </div>
 
+      <!-- DJANGO: {% csrf_token %} -->
       <div id="form-register" class="form-container">
-        <form>
+        <form id="register-form-element">
           <!-- DJANGO: {% csrf_token %} -->
           <div class="form-group">
             <i class="fa-regular fa-user input-icon"></i>
-            <input type="text" class="form-input" placeholder="Họ và tên" />
+            <input type="text" class="form-input" id="input-register-name" placeholder="Họ và tên" />
           </div>
           <div class="form-group">
             <i class="fa-regular fa-envelope input-icon"></i>
             <input
               type="email"
+              id="input-register-email"
               class="form-input"
               placeholder="Email của bạn"
             />
           </div>
           <div class="form-group">
             <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" class="form-input" placeholder="Mật khẩu" />
+            <input type="password" class="form-input"
+              id="input-register-password"
+             placeholder="Mật khẩu" />
           </div>
           <div class="form-group">
             <i class="fa-solid fa-lock input-icon"></i>
@@ -386,9 +397,9 @@
           </div>
 
           <button
-            type="button"
+            type="submit"
+            id="btn-register"
             class="btn-submit"
-            onclick="alert('Đăng ký thành công!')"
           >
             ĐĂNG KÝ NGAY
           </button>
@@ -399,7 +410,7 @@
       <div class="social-login">
         <button class="btn-social">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+            src="https://i.pinimg.com/564x/fb/52/e3/fb52e39c5910bdbcc3b98d58d6ca6944.jpg"
             width="18"
             alt="Google"
           />
@@ -419,45 +430,6 @@
     <button id="backToTop" class="back-to-top" title="Lên đầu trang">
       <i class="fa-solid fa-arrow-up"></i>
     </button>
-
-    <script>
-      function switchTab(tabName) {
-        // Xóa class active ở tất cả tab và form
-        document
-          .querySelectorAll(".tab-btn")
-          .forEach((btn) => btn.classList.remove("active"));
-        document
-          .querySelectorAll(".form-container")
-          .forEach((form) => form.classList.remove("active"));
-
-        // Thêm class active vào tab và form được chọn
-        if (tabName === "login") {
-          document
-            .querySelector(".tab-btn:nth-child(1)")
-            .classList.add("active");
-          document.getElementById("form-login").classList.add("active");
-        } else {
-          document
-            .querySelector(".tab-btn:nth-child(2)")
-            .classList.add("active");
-          document.getElementById("form-register").classList.add("active");
-        }
-      }
-
-      // Back to Top Logic
-      const backToTopBtn = document.getElementById("backToTop");
-      if (backToTopBtn) {
-        window.addEventListener("scroll", () => {
-          if (window.scrollY > 100) {
-            backToTopBtn.classList.add("show");
-          } else {
-            backToTopBtn.classList.remove("show");
-          }
-        });
-        backToTopBtn.addEventListener("click", () => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-      }
-    </script>
+    <script src="{% static 'users/js/main.js' %}"></script>
   </body>
 </html>
