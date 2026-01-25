@@ -3,301 +3,13 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <title>Đăng nhập - LapStore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tài khoản - LapStore</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-
-    <style>
-      /* --- 1. SETTINGS & THEME --- */
-      :root {
-        --primary: #cb1c22;
-        --primary-dark: #a61217;
-        --text-main: #111827;
-        --text-sub: #6b7280;
-        --bg-body: #f9fafb;
-        --radius: 16px;
-        --trans: all 0.3s ease;
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Plus Jakarta Sans", sans-serif;
-      }
-
-      body {
-        background-color: var(--bg-body);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        padding: 20px;
-        /* Hình nền trang trí mờ */
-        background-image:
-          radial-gradient(#cb1c22 0.5px, transparent 0.5px),
-          radial-gradient(#cb1c22 0.5px, var(--bg-body) 0.5px);
-        background-size: 20px 20px;
-        background-position:
-          0 0,
-          10px 10px;
-      }
-
-      /* --- 2. AUTH CARD --- */
-      .auth-card {
-        background: #fff;
-        width: 100%;
-        max-width: 420px;
-        border-radius: 24px;
-        padding: 40px 30px;
-        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
-        position: relative;
-        overflow: hidden;
-      }
-
-      /* Logo */
-      .auth-header {
-        text-align: center;
-        margin-bottom: 30px;
-      }
-      .logo {
-        font-size: 24px;
-        font-weight: 800;
-        color: var(--primary);
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-      }
-      .logo i {
-        color: #fcd34d;
-      }
-
-      /* Tabs chuyển đổi */
-      .auth-tabs {
-        display: flex;
-        background: #f3f4f6;
-        padding: 4px;
-        border-radius: 12px;
-        margin-bottom: 25px;
-      }
-      .tab-btn {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        background: transparent;
-        font-weight: 600;
-        color: var(--text-sub);
-        cursor: pointer;
-        border-radius: 10px;
-        transition: var(--trans);
-      }
-      .tab-btn.active {
-        background: #fff;
-        color: var(--primary);
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-      }
-
-      /* Form */
-      .form-group {
-        margin-bottom: 16px;
-        position: relative;
-      }
-      .form-input {
-        width: 100%;
-        padding: 14px 14px 14px 45px;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        font-size: 14px;
-        outline: none;
-        transition: var(--trans);
-        background: #f9fafb;
-      }
-      .form-input:focus {
-        border-color: var(--primary);
-        background: #fff;
-        box-shadow: 0 0 0 4px rgba(203, 28, 34, 0.1);
-      }
-      .input-icon {
-        position: absolute;
-        left: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9ca3af;
-        font-size: 16px;
-      }
-
-      /* Buttons */
-      .btn-submit {
-        width: 100%;
-        padding: 14px;
-        border: none;
-        background: var(--primary);
-        color: #fff;
-        font-weight: 700;
-        border-radius: 12px;
-        cursor: pointer;
-        font-size: 15px;
-        margin-top: 10px;
-        transition: var(--trans);
-      }
-      .btn-submit:hover {
-        background: var(--primary-dark);
-        transform: translateY(-2px);
-      }
-
-      /* Utilities */
-      .auth-options {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 13px;
-        color: var(--text-sub);
-        margin-bottom: 20px;
-      }
-      .auth-options a {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 600;
-      }
-
-      .divider {
-        text-align: center;
-        margin: 25px 0;
-        position: relative;
-      }
-      .divider span {
-        background: #fff;
-        padding: 0 10px;
-        color: #9ca3af;
-        font-size: 12px;
-        position: relative;
-        z-index: 2;
-      }
-      .divider::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        width: 100%;
-        height: 1px;
-        background: #e5e7eb;
-        z-index: 1;
-      }
-
-      /* Social Login */
-      .social-login {
-        display: flex;
-        gap: 10px;
-      }
-      .btn-social {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 10px;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        background: #fff;
-        cursor: pointer;
-        transition: var(--trans);
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-main);
-      }
-      .btn-social:hover {
-        background: #f9fafb;
-        border-color: #d1d5db;
-      }
-
-      /* Animation Switch */
-      .form-container {
-        display: none;
-        animation: fadeIn 0.4s ease;
-      }
-      .form-container.active {
-        display: block;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* Back to Top */
-      .back-to-top {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 45px;
-        height: 45px;
-        background: var(--primary);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        z-index: 999;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(20px);
-        transition: var(--trans);
-        border: none;
-      }
-      .back-to-top.show {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-      }
-      .back-to-top:hover {
-        background: var(--primary-dark);
-        transform: translateY(-5px);
-      }
-
-      /* Mobile */
-      @media (max-width: 480px) {
-        .auth-card {
-          padding: 30px 20px;
-          border-radius: 0;
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
-        body {
-          padding: 0;
-          background: #fff;
-        }
-        .back-to-top {
-          width: 40px;
-          height: 40px;
-          font-size: 16px;
-          bottom: 20px;
-          right: 20px;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="{% static 'users/css/style.css' %}">
   </head>
   <body>
     <div class="auth-card">
@@ -305,131 +17,85 @@
         <a href="{% url 'core:home' %}" class="logo">
           <i class="fa-solid fa-dragon"></i> LapStore
         </a>
-        <p style="font-size: 13px; color: #6b7280; margin-top: 5px">
+        <p class="subtitle">
           Hệ thống bán lẻ công nghệ hàng đầu
         </p>
       </div>
 
       <div class="auth-tabs">
-        <button class="tab-btn active" onclick="switchTab('login')">
+        <button class="tab-btn active" onclick="switchTab('login')" id="tab-login">
           Đăng nhập
         </button>
-        <button class="tab-btn" onclick="switchTab('register')">Đăng ký</button>
+        <button class="tab-btn" onclick="switchTab('register')" id="tab-register">
+          Đăng ký
+        </button>
       </div>
 
       <div id="form-login" class="form-container active">
-        <form id="login-form-element" novalidate>
-          <!-- DJANGO: {% csrf_token %} -->
+        <form id="login-form-element" method="POST" action="{% url 'users:login' %}">
+          {% csrf_token %} 
           <div class="form-group">
             <i class="fa-regular fa-envelope input-icon"></i>
-            <input
-              type="email"
-              class="form-input"
-              spellcheck="false"
-              autocorrect="off"
-              autocapitalize="off"
-              autocomplete="off"
-              autofocus="autofocus"
-              required=""
-              id="input-login-username"
-              placeholder="Email hoặc số điện thoại"
-            />
+            <input type="text" id="input-login-username" name="username" class="form-input" placeholder="Tên đăng nhập" required autofocus>
           </div>
+          
           <div class="form-group">
             <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" class="form-input" id="input-login-password" placeholder="Mật khẩu" />
+            <input type="password" id="input-login-password" name="password" class="form-input" placeholder="Mật khẩu" required>
           </div>
 
           <div class="auth-options">
-            <label
-              style="
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                cursor: pointer;
-              "
-            >
-              <input type="checkbox" /> Nhớ tài khoản
+            <label class="remember-label">
+              <input type="checkbox" name="remember_me" /> Nhớ tài khoản
             </label>
             <a href="#">Quên mật khẩu?</a>
           </div>
 
-          <button
-            type="submit"
-            id="btn-login"
-            class="btn-submit"
-          >
-            ĐĂNG NHẬP
-          </button>
+          <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
         </form>
       </div>
 
-      <!-- DJANGO: {% csrf_token %} -->
       <div id="form-register" class="form-container">
-        <form id="register-form-element">
-          <!-- DJANGO: {% csrf_token %} -->
+        <form id="register-form-element" method="POST" action="{% url 'users:register' %}">
+          {% csrf_token %} 
+          
           <div class="form-group">
             <i class="fa-regular fa-user input-icon"></i>
-            <input type="text" class="form-input" id="input-register-name" placeholder="Họ và tên" />
-          </div>
-          <div class="form-group">
-            <i class="fa-regular fa-envelope input-icon"></i>
-            <input
-              type="email"
-              id="input-register-email"
-              class="form-input"
-              placeholder="Email của bạn"
-            />
-          </div>
-          <div class="form-group">
-            <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" class="form-input"
-              id="input-register-password"
-             placeholder="Mật khẩu" />
-          </div>
-          <div class="form-group">
-            <i class="fa-solid fa-lock input-icon"></i>
-            <input
-              type="password"
-              class="form-input"
-              placeholder="Nhập lại mật khẩu"
-            />
+            <input type="text" id="reg-fullname" name="full_name" class="form-input" placeholder="Họ và tên" required>
           </div>
 
-          <button
-            type="submit"
-            id="btn-register"
-            class="btn-submit"
-          >
-            ĐĂNG KÝ NGAY
-          </button>
+          <div class="form-group">
+            <i class="fa-regular fa-envelope input-icon"></i>
+            <input type="email" id="reg-email" name="email" class="form-input" placeholder="Email của bạn" required>
+          </div>
+          
+          <div class="form-group">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="reg-password" name="password" class="form-input" placeholder="Mật khẩu" required>
+          </div>
+          
+          <div class="form-group">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="reg-confirm-password" name="confirm_password" class="form-input" placeholder="Nhập lại mật khẩu" required>
+          </div>
+
+          <button type="submit" class="btn-submit">ĐĂNG KÝ NGAY</button>
         </form>
       </div>
 
       <div class="divider"><span>Hoặc tiếp tục với</span></div>
       <div class="social-login">
         <button class="btn-social">
-          <img
-            src="https://i.pinimg.com/564x/fb/52/e3/fb52e39c5910bdbcc3b98d58d6ca6944.jpg"
-            width="18"
-            alt="Google"
-          />
-          Google
+          <img src="https://i.pinimg.com/564x/fb/52/e3/fb52e39c5910bdbcc3b98d58d6ca6944.jpg" width="18" alt="Google" /> Google
         </button>
         <button class="btn-social">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg"
-            width="18"
-            alt="Facebook"
-          />
-          Facebook
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="18" alt="Facebook" /> Facebook
         </button>
       </div>
     </div>
+    
+    {% block extra_js %}{% endblock %}
 
-    <button id="backToTop" class="back-to-top" title="Lên đầu trang">
-      <i class="fa-solid fa-arrow-up"></i>
-    </button>
     <script src="{% static 'users/js/main.js' %}"></script>
   </body>
 </html>
