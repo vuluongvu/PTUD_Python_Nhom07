@@ -1,0 +1,314 @@
+{% extends 'core/base.html' %} {% load static %} {% block title %}Thanh toán -
+LapStore{% endblock %} {% block extra_css %}{% endblock %}
+{% block mobile_menu %}{% endblock %} 
+{% block mobile_bottom_nav %}{% endblock %} {% block header %}
+<header>
+  <div class="container">
+    <nav
+      class="nav-island checkout-nav"
+      style="display: flex; align-items: center; justify-content: space-between"
+    >
+      <div class="nav-left">
+        <a href="{% url 'core:home' %}" class="logo">
+          <i class="fa-solid fa-dragon"></i>
+          <span>Lap<span style="font-weight: 300">Store</span></span>
+        </a>
+      </div>
+
+      <!-- Tiêu đề trang thanh toán -->
+      <div
+        class="checkout-title"
+        style="
+          font-weight: 800;
+          font-size: 18px;
+          color: var(--primary);
+          text-transform: uppercase;
+        "
+      >
+        Thanh toán an toàn
+      </div>
+
+      <div class="nav-actions">
+        <a
+          href="{% url 'orders:cart' %}"
+          style="
+            font-size: 14px;
+            color: var(--text-sub);
+            text-decoration: underline;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+          "
+        >
+          <i class="fa-solid fa-chevron-left"></i> Giỏ hàng
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+{% endblock %} {% block content %}
+<div style="margin-top: -10px; margin-bottom: 20px">
+  <p style="font-size: 13px; color: var(--text-sub)">
+    <a href="{% url 'core:home' %}">Trang chủ</a>
+    <i
+      class="fa-solid fa-chevron-right"
+      style="font-size: 10px; margin: 0 5px"
+    ></i>
+    <a href="{% url 'orders:cart' %}">Giỏ hàng</a>
+    <i
+      class="fa-solid fa-chevron-right"
+      style="font-size: 10px; margin: 0 5px"
+    ></i>
+    Thanh toán
+  </p>
+</div>
+
+<div class="checkout-layout">
+  <!-- Cột trái: Thông tin giao hàng -->
+  <div class="checkout-col-left">
+    <div class="content-block">
+      <h3 class="block-title">
+        <i class="fa-solid fa-location-dot"></i> Thông tin giao hàng
+      </h3>
+      <!-- DJANGO: Form Checkout -->
+      <form id="checkoutForm" class="checkout-form">
+        <!-- DJANGO: {% csrf_token %} -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Họ và tên <span style="color: red">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              name="fullname"
+              placeholder="Nhập họ tên của bạn"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>Số điện thoại <span style="color: red">*</span></label>
+            <input
+              type="tel"
+              class="form-control"
+              name="phone"
+              placeholder="Nhập số điện thoại"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email (Để nhận hóa đơn)</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            placeholder="Nhập email của bạn"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tỉnh / Thành phố <span style="color: red">*</span></label>
+            <select class="form-control" name="province">
+              <option value="">Chọn Tỉnh/Thành</option>
+              <option value="hanoi">Hà Nội</option>
+              <option value="hcm">TP. Hồ Chí Minh</option>
+              <option value="danang">Đà Nẵng</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quận / Huyện <span style="color: red">*</span></label>
+            <select class="form-control" name="district">
+              <option value="">Chọn Quận/Huyện</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Phường / Xã <span style="color: red">*</span></label>
+            <select class="form-control" name="ward">
+              <option value="">Chọn Phường/Xã</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Địa chỉ cụ thể <span style="color: red">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            name="address"
+            placeholder="Số nhà, tên đường..."
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Ghi chú đơn hàng</label>
+          <textarea
+            class="form-control"
+            name="note"
+            rows="3"
+            placeholder="Ví dụ: Giao hàng giờ hành chính..."
+          ></textarea>
+        </div>
+      </form>
+    </div>
+
+    <div class="content-block" style="margin-top: 20px">
+      <h3 class="block-title">
+        <i class="fa-regular fa-credit-card"></i> Phương thức thanh toán
+      </h3>
+      <div class="payment-methods">
+        <label class="payment-option active">
+          <input type="radio" name="payment" value="cod" checked />
+          <div class="payment-info">
+            <span class="payment-name">Thanh toán khi nhận hàng (COD)</span>
+            <span class="payment-desc"
+              >Bạn chỉ phải thanh toán khi đã nhận được hàng.</span
+            >
+          </div>
+          <i
+            class="fa-solid fa-money-bill-wave"
+            style="font-size: 24px; color: var(--primary)"
+          ></i>
+        </label>
+
+        <label class="payment-option">
+          <input type="radio" name="payment" value="banking" />
+          <div class="payment-info">
+            <span class="payment-name">Chuyển khoản ngân hàng</span>
+            <span class="payment-desc"
+              >Giảm ngay 1% tối đa 100k khi chuyển khoản trước.</span
+            >
+          </div>
+          <i
+            class="fa-solid fa-building-columns"
+            style="font-size: 24px; color: #1877f2"
+          ></i>
+        </label>
+
+        <label class="payment-option">
+          <input type="radio" name="payment" value="card" />
+          <div class="payment-info">
+            <span class="payment-name">Thẻ ATM / Visa / MasterCard</span>
+            <span class="payment-desc"
+              >Thanh toán an toàn qua cổng VNPAY/Momo.</span
+            >
+          </div>
+          <i
+            class="fa-regular fa-credit-card"
+            style="font-size: 24px; color: #fcd34d"
+          ></i>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cột phải: Tóm tắt đơn hàng -->
+  <div class="checkout-col-right">
+    <div class="order-summary" style="position: sticky; top: 100px">
+      <h3
+        style="
+          font-size: 18px;
+          font-weight: 700;
+          margin-bottom: 20px;
+          border-bottom: 1px solid #eee;
+          padding-bottom: 15px;
+        "
+      >
+        Đơn hàng (3 sản phẩm)
+      </h3>
+
+      <!-- DJANGO: Loop Cart Items (Read only) -->
+      <div class="checkout-items">
+        <div class="c-item">
+          <div class="c-img">
+            <img
+              src="https://placehold.co/100x100?text=MacBook"
+              alt="Product"
+            />
+            <span class="c-qty">1</span>
+          </div>
+          <div class="c-info">
+            <div class="c-name">MacBook Air 13 inch M1 2020</div>
+            <div class="c-price">18.490.000đ</div>
+          </div>
+        </div>
+        <div class="c-item">
+          <div class="c-img">
+            <img src="https://placehold.co/100x100?text=Mouse" alt="Product" />
+            <span class="c-qty">1</span>
+          </div>
+          <div class="c-info">
+            <div class="c-name">Chuột Gaming Logitech G102</div>
+            <div class="c-price">399.000đ</div>
+          </div>
+        </div>
+        <div class="c-item">
+          <div class="c-img">
+            <img src="https://placehold.co/100x100?text=RAM" alt="Product" />
+            <span class="c-qty">2</span>
+          </div>
+          <div class="c-info">
+            <div class="c-name">RAM Corsair Vengeance LPX 16GB</div>
+            <div class="c-price">1.780.000đ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="coupon-box" style="margin-top: 20px">
+        <input type="text" class="coupon-input" placeholder="Mã giảm giá" />
+        <button class="btn-apply">Áp dụng</button>
+      </div>
+
+      <div class="summary-row" style="margin-top: 15px">
+        <span>Tạm tính</span>
+        <span>20.669.000đ</span>
+      </div>
+      <div class="summary-row">
+        <span>Phí vận chuyển</span>
+        <span>Miễn phí</span>
+      </div>
+      <div class="summary-row">
+        <span>Giảm giá</span>
+        <span style="color: #22c55e">-0đ</span>
+      </div>
+
+      <div class="summary-row total">
+        <span>Tổng cộng</span>
+        <span class="total-price-big">20.669.000đ</span>
+      </div>
+
+      <button
+        class="btn-checkout"
+        onclick="
+          alert('Đặt hàng thành công! Mã đơn hàng của bạn là #DH123456');
+          window.location.href = '{% url 'core:home' %}';
+        "
+      >
+        ĐẶT HÀNG
+      </button>
+      <p
+        style="
+          font-size: 12px;
+          text-align: center;
+          margin-top: 10px;
+          color: #6b7280;
+        "
+      >
+        Bằng việc đặt hàng, bạn đồng ý với
+        <a href="#" style="color: var(--primary)">Điều khoản sử dụng</a> của
+        chúng tôi.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block footer %}
+<footer>
+  <div
+    class="container"
+    style="text-align: center; padding: 20px 0; color: #9ca3af; font-size: 13px"
+  >
+    © 2026 FPT Future Store. All rights reserved.
+  </div>
+</footer>
+{% endblock %}
