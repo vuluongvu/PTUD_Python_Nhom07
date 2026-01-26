@@ -19,6 +19,18 @@ function switchTab(tabName) {
 
 // 2. ===== Validate Login =======
 const loginForm = $("#login-form-element");
+const errorLoginMessage = $("#login-error-message");
+
+// pattens for errors
+
+function xmarkAndErrorMessage(message) {
+  return `<i class="fa-solid fa-xmark"><span>${message}</span></i>`;
+}
+
+const errorMessageNullLogin = " Vui lòng nhập đầy đủ thông tin đăng nhập.";
+const errorMessageUsername = " Tài khoản phải có ít nhất 8 ký tự.";
+const errorMessagePassword = " Mật khẩu phải có ít nhất 8 ký tự.";
+const errorMessageEmail = " Email không hợp lệ! Vui lòng kiểm tra lại.";
 
 if (loginForm) {
   loginForm.addEventListener("submit", (e) => {
@@ -27,13 +39,16 @@ if (loginForm) {
     let hasError = false;
 
     if (!username || !password) {
-      alert("Vui lòng nhập đầy đủ thông tin đăng nhập");
+      errorLoginMessage.innerHTML = xmarkAndErrorMessage(errorMessageNullLogin);
+      errorLoginMessage.classList.add("error-message");
       hasError = true;
     } else if (username.length < 8) {
-      alert("Tài khoản phải có ít nhất 8 ký tự");
+      errorLoginMessage.innerHTML = xmarkAndErrorMessage(errorMessageUsername);
+      errorLoginMessage.classList.add("error-message");
       hasError = true;
     } else if (password.length < 8) {
-      alert("Mật khẩu phải có ít nhất 8 ký tự");
+      errorLoginMessage.innerHTML = xmarkAndErrorMessage(errorMessagePassword);
+      errorLoginMessage.classList.add("error-message");
       hasError = true;
     }
 
@@ -43,6 +58,11 @@ if (loginForm) {
 
 // 3. ==== Validate Register ========
 const registerForm = $("#register-form-element");
+const errorRegisterMessage = $("#register-error-message");
+
+// pattens for errors
+const errorMessageNullRegister = " Vui lòng nhập đầy đủ thông tin đăng ký";
+const errorMessageConfirmPass = " Mật khẩu nhập lại không khớp!";
 
 if (registerForm) {
   registerForm.addEventListener("submit", (e) => {
@@ -58,25 +78,35 @@ if (registerForm) {
 
     // 1. Check trống
     if (!fullName || !email || !password || !confirmPass) {
-      alert("Vui lòng điền đầy đủ thông tin đăng ký!");
+      errorRegisterMessage.innerHTML = xmarkAndErrorMessage(
+        errorMessageNullRegister,
+      );
+      errorRegisterMessage.classList.add("error-message");
       hasError = true;
     }
     // 2. Check định dạng email
     else if (!emailRegex.test(email)) {
-      alert("Email không hợp lệ! Vui lòng kiểm tra lại.");
+      errorRegisterMessage.innerHTML = xmarkAndErrorMessage(errorMessageEmail);
+      errorRegisterMessage.classList.add("error-message");
       hasError = true;
     }
     // 3. Check độ dài pass
     else if (password.length < 8) {
-      alert("Mật khẩu đăng ký phải có ít nhất 8 ký tự!");
+      errorRegisterMessage.innerHTML =
+        xmarkAndErrorMessage(errorMessagePassword);
+      errorRegisterMessage.classList.add("error-message");
       hasError = true;
     }
     // 4. Check khớp pass
     else if (password !== confirmPass) {
-      alert("Mật khẩu nhập lại không khớp!");
+      errorRegisterMessage.innerHTML = xmarkAndErrorMessage(
+        errorMessageConfirmPass,
+      );
+      errorRegisterMessage.classList.add("error-message");
       hasError = true;
     }
 
     if (hasError) e.preventDefault();
   });
 }
+

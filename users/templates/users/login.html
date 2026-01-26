@@ -15,7 +15,7 @@
     <div class="auth-card">
       <div class="auth-header">
         <a href="{% url 'core:home' %}" class="logo">
-          <i class="fa-solid fa-dragon"></i> LapStore
+          <i class="fa-brands fa-shopify" style="color: #ff1a1a;"></i> LapStore
         </a>
         <p class="subtitle">
           Hệ thống bán lẻ công nghệ hàng đầu
@@ -43,10 +43,12 @@
             <i class="fa-solid fa-lock input-icon"></i>
             <input type="password" id="input-login-password" name="password" class="form-input" placeholder="Mật khẩu" required>
           </div>
+          
+          <p class="login-error-message" id= "login-error-message"> </p>
 
           <div class="auth-options">
             <label class="remember-label">
-              <input type="checkbox" name="remember_me" /> Nhớ tài khoản
+              <input type="checkbox" name="remember_me" style="accent-color: #ff0000;"/> Nhớ tài khoản
             </label>
             <a href="#">Quên mật khẩu?</a>
           </div>
@@ -78,7 +80,7 @@
             <i class="fa-solid fa-lock input-icon"></i>
             <input type="password" id="reg-confirm-password" name="confirm_password" class="form-input" placeholder="Nhập lại mật khẩu" required>
           </div>
-
+          <p class="login-error-message" id= "register-error-message"><i class="fa-solid fa-xmark" style="color: #ff0a0a;"> </i> </p>
           <button type="submit" class="btn-submit">ĐĂNG KÝ NGAY</button>
         </form>
       </div>
