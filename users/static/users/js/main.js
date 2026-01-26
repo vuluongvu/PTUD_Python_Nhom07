@@ -56,6 +56,7 @@ if (loginForm) {
   });
 }
 
+
 // 3. ==== Validate Register ========
 const registerForm = $("#register-form-element");
 const errorRegisterMessage = $("#register-error-message");
