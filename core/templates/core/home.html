@@ -1,14 +1,14 @@
 {% extends 'core/base.html' %} {% load static %} {% block title %}Trang chủ -
 LapStore{% endblock %} 
 {% block content %}
+
+    <!--=================== Hero slide Main ====================-->
       <section class="bento-grid">
         <article
           {# DJANGO: Dynamic Banners if needed #}
           class="bento-item card-hero js-slider"
           style="grid-column: 1 / -1; grid-row: 1 / 2"
         >
-        
-
           <!-- Slide 1 -->
           <div class="slide">
             <img
@@ -23,13 +23,7 @@ LapStore{% endblock %}
               alt="Hero 2"
             />
           </div>
-           <!-- Slide 3 -->
-          <div class="slide">
-            <img
-              src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/pc_content_28e9b3af16.png"
-              alt="Hero 3"
-            />
-          </div>
+          
 
           <button class="slider-btn prev">
             <i class="fa-solid fa-chevron-left"></i>
@@ -38,6 +32,8 @@ LapStore{% endblock %}
             <i class="fa-solid fa-chevron-right"></i>
           </button>
           <div class="slider-dots"></div>
+
+          <!-- ============= DOUBLE sub slides ==============-->
         </article>
           <!--Subslide-->
           <div class="bento-item card-sub js-slider" style="grid-column: 1 / 2; grid-row: 2 / 3;">
@@ -84,7 +80,8 @@ LapStore{% endblock %}
       </section>
       <!--end Subslide-->
 
-      <!--Danh mục sản phẩm-->
+    
+        <!--=============== Phân loại theo Linh kiện máy tính, PC ===================-->
       <div class="cat-section">
         <div class="cat-title-small">Linh Kiện Máy Tính & PC</div>
         <nav class="cat-scroll">
@@ -108,6 +105,7 @@ LapStore{% endblock %}
           </ul>
         </nav>
 
+        <!--=============== Phân loại theo Laptop, Thiết bị số ===================-->
         <div class="cat-title-small">Laptop & Thiết Bị Số</div>
         <nav class="cat-scroll">
           <ul class="cat-list">
@@ -134,7 +132,7 @@ LapStore{% endblock %}
         </nav>
       </div>
 
-      <!--Dãy sản phẩm bán chạy-->
+      <!--================= Dãy sản phẩm giờ vàng =================-->
       <section class="flash-section">
         <div class="flash-header">
           <h2 class="flash-title"><i class="fa-solid fa-bolt"></i> GIỜ VÀNG</h2>
@@ -147,6 +145,9 @@ LapStore{% endblock %}
           </div>
         </div>
         <div class="flash-grid">
+
+          
+          <!--Sản phẩm đơn giờ vàng 1-->
           <a href="{% url 'products:product-detail' %}">
             <article class="prod-card">
               <span class="badge-sale" style="background: #000"
@@ -173,6 +174,7 @@ LapStore{% endblock %}
             </article>
           </a>
 
+          <!--Sản phẩm đơn giờ vàng 2-->
           <a href="#">
             <article class="prod-card">
               <span class="badge-sale">-40%</span>
@@ -197,6 +199,7 @@ LapStore{% endblock %}
             </article>
           </a>
 
+          <!--Sản phẩm đơn giờ vàng 3-->
           <a href="#">
             <article class="prod-card">
               <span class="badge-sale">-25%</span>
@@ -221,6 +224,7 @@ LapStore{% endblock %}
             </article>
           </a>
 
+          <!--Sản phẩm đơn giờ vàng 4-->
           <a href="#">
             <article class="prod-card">
               <span class="badge-sale">-30%</span>
@@ -248,7 +252,7 @@ LapStore{% endblock %}
       </section>
 
 
-      <!--Dãy sản phẩm bán chạy-->
+      <!--=============== Dãy sản phẩm bán chạy ==================-->
       <section>
         <div class="section-head">
           <h2 style="font-size: 24px; font-weight: 800">
@@ -393,14 +397,14 @@ LapStore{% endblock %}
               </div>
             </article>
           </a>
-
+          
             <!--end sản phẩm đơn-->
         </div>
       </section>
-      <!--end Dãy sản phẩm bán chạy-->
+      <!-- ======================= end Dãy sản phẩm bán chạy ===================-->
 
       
-      
+      <!-- ===================== Banner Home =====================-->
       <section class="promo-banner">
         <div class="promo-content">
           <h2>Đỉnh Cao Đồ Họa<br />Trong Tầm Tay</h2>

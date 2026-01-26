@@ -13,7 +13,6 @@
       name="description"
       content="{% block meta_description %}Hệ thống bán lẻ Laptop & PC hàng đầu{% endblock %}"
     />
-    <meta name="theme-color" content="#cb1c22" />
 
     <title>{% block title %}LapStore - Công Nghệ Đỉnh Cao{% endblock %}</title>
 
@@ -43,8 +42,8 @@
         <nav class="nav-island">
           <div class="nav-left">
             <a href="#" class="logo">
-              <i class="fa-solid fa-dragon"></i>
-              <span>Lap<span style="font-weight: 300">Store</span></span>
+              <i class="fa-brands fa-shopify" style="color: #ff1a1a;"></i>
+             <span>LapStore</span>
             </a>
             <!-- Desktop Category Dropdown -->
             <div class="cat-menu-wrapper">
@@ -52,31 +51,47 @@
                 <i class="fa-solid fa-bars"></i> Danh mục
               </div>
               <div class="cat-dropdown">
-                <!-- DJANGO: Loop danh mục cha tại đây -->
-                <ul>
-                  <li>
-                    <a href="#"><i class="fa-solid fa-laptop"></i> Laptop</a>
-                  </li>
-                  <li>
-                    <a href="#"
-                      ><i class="fa-solid fa-desktop"></i> PC Đồng Bộ</a
-                    >
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa-brands fa-apple"></i> Apple</a>
-                  </li>
-                  <li>
-                    <a href="#"
-                      ><i class="fa-solid fa-microchip"></i> Linh Kiện</a
-                    >
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa-solid fa-tv"></i> Màn Hình</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa-solid fa-headset"></i> Phụ Kiện</a>
-                  </li>
-                </ul>
+                <div class="mega-menu-grid">
+                  <!-- Cột 1: Laptop -->
+                  <div class="mega-col">
+                    <h3 class="mega-title"><i class="fa-solid fa-laptop"></i> Laptop</h3>
+                    <a href="#" class="mega-link">MacBook Air / Pro</a>
+                    <a href="#" class="mega-link">Laptop Gaming</a>
+                    <a href="#" class="mega-link">Laptop Văn Phòng</a>
+                    <a href="#" class="mega-link">Laptop Đồ Họa</a>
+                    <a href="#" class="mega-link">Surface</a>
+                  </div>
+                  
+                  <!-- Cột 2: PC & Màn hình -->
+                  <div class="mega-col">
+                    <h3 class="mega-title"><i class="fa-solid fa-desktop"></i> PC & Màn Hình</h3>
+                    <a href="#" class="mega-link">PC Gaming</a>
+                    <a href="#" class="mega-link">PC Workstation</a>
+                    <a href="#" class="mega-link">PC Văn Phòng</a>
+                    <a href="#" class="mega-link">Màn hình Gaming</a>
+                    <a href="#" class="mega-link">Màn hình Đồ Họa</a>
+                  </div>
+
+                  <!-- Cột 3: Linh Kiện -->
+                  <div class="mega-col">
+                    <h3 class="mega-title"><i class="fa-solid fa-microchip"></i> Linh Kiện PC</h3>
+                    <a href="#" class="mega-link">CPU - Vi xử lý</a>
+                    <a href="#" class="mega-link">VGA - Card màn hình</a>
+                    <a href="#" class="mega-link">Mainboard - Bo mạch</a>
+                    <a href="#" class="mega-link">RAM - Bộ nhớ trong</a>
+                    <a href="#" class="mega-link">SSD / HDD</a>
+                  </div>
+
+                  <!-- Cột 4: Phụ Kiện -->
+                  <div class="mega-col">
+                    <h3 class="mega-title"><i class="fa-solid fa-headset"></i> Phụ Kiện & Gear</h3>
+                    <a href="#" class="mega-link">Chuột Gaming</a>
+                    <a href="#" class="mega-link">Bàn phím cơ</a>
+                    <a href="#" class="mega-link">Tai nghe</a>
+                    <a href="#" class="mega-link">Ghế công thái học</a>
+                    <a href="#" class="mega-link">Thiết bị mạng</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -125,24 +140,29 @@
         </button>
       </div>
       <ul class="mobile-menu-list">
-        <!-- DJANGO: Loop danh mục mobile -->
-        <li>
-          <a href="#"><i class="fa-solid fa-laptop"></i> Laptop</a>
+        <!-- Mobile Item 1 -->
+        <li class="m-menu-group">
+          <div class="m-menu-title"><i class="fa-solid fa-laptop"></i> Laptop</div>
+          <a href="#" class="m-menu-link">MacBook</a>
+          <a href="#" class="m-menu-link">Laptop Gaming</a>
+          <a href="#" class="m-menu-link">Laptop Văn Phòng</a>
         </li>
-        <li>
-          <a href="#"><i class="fa-solid fa-desktop"></i> PC Đồng Bộ</a>
+        <!-- Mobile Item 2 -->
+        <li class="m-menu-group">
+          <div class="m-menu-title"><i class="fa-solid fa-desktop"></i> PC & Màn Hình</div>
+          <a href="#" class="m-menu-link">PC Gaming / Workstation</a>
+          <a href="#" class="m-menu-link">Màn hình máy tính</a>
         </li>
-        <li>
-          <a href="#"><i class="fa-brands fa-apple"></i> Apple</a>
+        <!-- Mobile Item 3 -->
+        <li class="m-menu-group">
+          <div class="m-menu-title"><i class="fa-solid fa-microchip"></i> Linh Kiện</div>
+          <a href="#" class="m-menu-link">CPU / VGA / Mainboard</a>
+          <a href="#" class="m-menu-link">RAM / SSD</a>
         </li>
-        <li>
-          <a href="#"><i class="fa-solid fa-microchip"></i> Linh Kiện</a>
-        </li>
-        <li>
-          <a href="#"><i class="fa-solid fa-tv"></i> Màn Hình</a>
-        </li>
-        <li>
-          <a href="#"><i class="fa-solid fa-headset"></i> Phụ Kiện</a>
+        <!-- Mobile Item 4 -->
+        <li class="m-menu-group">
+          <div class="m-menu-title"><i class="fa-solid fa-headset"></i> Phụ Kiện</div>
+          <a href="#" class="m-menu-link">Chuột / Phím / Tai nghe</a>
         </li>
       </ul>
     </aside>
@@ -189,7 +209,8 @@
     <footer>
       <div class="container foot-grid">
         <div>
-          <h3 class="foot-title" style="color: var(--primary)">LapStore</h3>
+          <h3 class="foot-title" style="color: var(--primary)">
+            <i class="fa-brands fa-shopify" style="color: #ff1a1a;"></i>LapStore</h3>
           <p style="font-size: 14px; color: var(--text-sub)">
             Hệ thống bán lẻ kỹ thuật số chính hãng hàng đầu Việt Nam.
           </p>
