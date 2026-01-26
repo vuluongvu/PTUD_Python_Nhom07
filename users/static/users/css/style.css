@@ -210,6 +210,28 @@ body {
     border-color: #d1d5db;
 }
 
+.login-error-message {
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--primary);
+    visibility: hidden;
+}
+
+/*Hien thi loi message login register*/
+.error-message {
+    visibility: visible;
+    animation: fadeIn 0.4s ease;
+}
+
+
+.fa-xmark {
+    color: #ff0a0a;
+}
+
+.fa-xmark span {
+    font-weight: normal;
+}
+
 /* Ẩn hiện form */
 .form-container {
     display: none;

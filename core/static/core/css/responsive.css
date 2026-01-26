@@ -377,20 +377,36 @@
         color: #9ca3af;
     }
 
-    .mobile-menu-list li a {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 0;
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--text-main);
-        border-bottom: 1px solid #f9fafb;
+    .m-menu-group {
+        margin-bottom: 15px;
+        border-bottom: 1px solid #f3f4f6;
+        padding-bottom: 15px;
     }
 
-    .mobile-menu-list li a i {
-        width: 24px;
+    .m-menu-title {
+        font-weight: 800;
+        font-size: 16px;
+        color: var(--text-main);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .m-menu-title i {
+        color: var(--primary);
+    }
+
+    .m-menu-link {
+        display: block;
+        padding: 8px 0 8px 34px;
+        /* Thụt đầu dòng */
+        font-size: 14px;
         color: var(--text-sub);
+    }
+
+    .m-menu-link:hover {
+        color: var(--primary);
     }
 
     .mobile-menu-overlay {
