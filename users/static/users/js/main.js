@@ -109,3 +109,4 @@ if (registerForm) {
     if (hasError) e.preventDefault();
   });
 }
+
