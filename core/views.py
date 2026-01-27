@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from . models import Product, ProductImage
+from .models import Product
 
 def home(request):
     """View hiển thị trang chủ."""
-    return render(request, 'core/home.html')
+    products = Product.objects.all()
+    context = {'products': products}
+    
+    return render(request, 'core/home.html', context)
 
-def home_product_view(request):
-    pass
