@@ -272,9 +272,13 @@ LapStore{% endblock %}
         <div class="flash-grid">
           
           <!--SẢN PHẨM HOME-->
+
            {% for p in products %}
          <a href="{% url 'products:product-detail' p.slug %}">
-            <article class="prod-card">
+            <article class="prod-card pod-card-view-all" >
+              <button class="btn-add-wishlist" title="Thêm vào yêu thích">
+                <i class="fa-regular fa-heart"></i>
+              </button>
               <span class="badge-sale">Hot</span>
               <div class="prod-img-wrap">
                 <img src="{{p.images.first.image_url}}" alt="LG" />

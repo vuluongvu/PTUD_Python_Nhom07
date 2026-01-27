@@ -1375,7 +1375,7 @@ footer {
 }
 
 .current-price {
-    font-size: 28px;
+    font-size: 27px;
     font-weight: 800;
     color: var(--primary);
     line-height: 1;
@@ -2085,4 +2085,30 @@ footer {
 .c-price {
     font-size: 13px;
     color: var(--text-sub);
+}
+
+
+/* order css add btn*/
+.btn-add-wishlist {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef4444;
+    cursor: pointer;
+    z-index: 5;
+    border: 1px solid #fee2e2;
+    transition: all 0.2s;
+}
+
+.btn-add-wishlist:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
 }

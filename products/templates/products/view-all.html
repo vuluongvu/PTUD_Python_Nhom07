@@ -1,9 +1,19 @@
 {% extends 'core/base.html' %} {% load static %} 
 {% block title %}Tất cả sản phẩm - LapStore
-{% endblock %} {% block content %}
+{% endblock %} 
+
+{% block extra_css %}
+<style>
+  @media (min-width: 769px) {
+    .flash-grid.view-all-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
 <div style="margin-top: -10px; margin-bottom: 20px">
   <p style="font-size: 13px; color: var(--text-sub)">
-    <a href="#">Trang chủ</a>
+    <a href="{% url 'core:home' %}">Trang chủ</a>
     <i
       class="fa-solid fa-chevron-right"
       style="font-size: 10px; margin: 0 5px"
@@ -195,148 +205,64 @@
     </div>
 
     <!-- Lưới sản phẩm -->
-    <div class="flash-grid" style="margin-bottom: 40px">
-      <!-- DJANGO: {% for product in products %} -->
-      <!-- Sản phẩm 1 -->
-      <a href="#">
-        <article class="prod-card">
-          <span class="badge-sale">-19%</span>
-          <div class="prod-img-wrap">
-            <img
-              src="https://placehold.co/200x200?text=MacBook"
-              alt="MacBook"
-            />
-          </div>
-          <h3 class="prod-name">MacBook Air 13 inch M1 2020</h3>
-          <div class="prod-specs-box">
-            <span><i class="fa-solid fa-microchip"></i> Apple M1</span>
-            <span><i class="fa-solid fa-memory"></i> 8GB • 256GB</span>
-          </div>
-          <div class="prod-footer">
-            <div class="price-box">
-              <span class="price-current">18.490.000đ</span>
-              <span class="price-old">22.990.000đ</span>
-            </div>
-            <button class="btn-buy-now">Mua ngay</button>
-          </div>
-        </article>
-      </a>
+    <div class="flash-grid view-all-grid" style="margin-bottom: 40px;">
+     
 
-      <!-- Sản phẩm 2 -->
-      <a href="#">
-        <article class="prod-card">
-          <span class="badge-sale">Giảm 5TR</span>
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/200x200?text=Asus+TUF" alt="Asus" />
-          </div>
-          <h3 class="prod-name">Laptop Gaming Asus TUF Dash F15</h3>
-          <div class="prod-specs-box">
-            <span><i class="fa-solid fa-microchip"></i> i5-12450H</span>
-            <span><i class="fa-solid fa-gamepad"></i> RTX 3050</span>
-          </div>
-          <div class="prod-footer">
-            <div class="price-box">
-              <span class="price-current">19.990.000đ</span>
-              <span class="price-old">24.490.000đ</span>
-            </div>
-            <button class="btn-buy-now">Mua ngay</button>
-          </div>
-        </article>
-      </a>
+        {% for p in products %}
+         <a href="{% url 'products:product-detail' p.slug %}">
+            <article class="prod-card pod-card-view-all">
+              <button class="btn-add-wishlist" title="Thêm vào yêu thích">
+                <i class="fa-regular fa-heart"></i>
+              </button>
+              <span class="badge-sale">Hot</span>
+              <div class="prod-img-wrap">
+                <img src="{{p.images.first.image_url}}" alt="LG" />
+              </div>
+              <h3 class="prod-name">{{p.name}}</h3>
+              <div class="prod-specs-box">
+                <span
+                  ><i class="fa-solid fa-vr-cardboard"></i>VGA: {{p.laptop_config.vga}}
+                  </span
+                >
+                <span><i class="fa-solid fa-microchip"></i>CPU: {{p.laptop_config.cpu}}</span>
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">{{p.price_vn}}</span
+                  ><span class="price-old">{{p.discount_price_vn}}</span>
+                </div>
+                <button class="btn-buy-now">Mua ngay</button>
+              </div>
+            </article>
+          </a>
+           {% endfor %}
+     
+           
 
-      <!-- Sản phẩm 3 -->
-      <a href="#">
-        <article class="prod-card">
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
-          </div>
-          <h3 class="prod-name">Laptop LG Gram 2023 Ultra Light</h3>
-          <div class="prod-specs-box">
-            <span
-              ><i class="fa-solid fa-weight-hanging"></i> Siêu nhẹ 999g</span
-            >
-            <span><i class="fa-solid fa-microchip"></i> Core i7</span>
-          </div>
-          <div class="prod-footer">
-            <div class="price-box">
-              <span class="price-current">32.990.000đ</span>
-              <span class="price-old">35.990.000đ</span>
-            </div>
-            <button class="btn-buy-now">Mua ngay</button>
-          </div>
-        </article>
-      </a>
-
-      <!-- Sản phẩm 4 -->
-      <a href="#">
-        <article class="prod-card">
-          <span class="badge-sale">New</span>
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/200x200?text=Acer" alt="Acer" />
-          </div>
-          <h3 class="prod-name">Laptop Gaming Acer Nitro V ANV15</h3>
-          <div class="prod-specs-box">
-            <span><i class="fa-solid fa-microchip"></i> Core i5-13420H</span>
-            <span><i class="fa-solid fa-gamepad"></i> RTX 4050</span>
-          </div>
-          <div class="prod-footer">
-            <div class="price-box">
-              <span class="price-current">26.990.000đ</span>
-              <span class="price-old">29.990.000đ</span>
-            </div>
-            <button class="btn-buy-now">Mua ngay</button>
-          </div>
-        </article>
-      </a>
-
-      <!-- Lặp lại sản phẩm để demo lưới đầy -->
-      <a href="#">
-        <article class="prod-card">
-          <span class="badge-sale">-30%</span>
-          <div class="prod-img-wrap">
-            <img src="https://placehold.co/200x200?text=SSD" alt="Product" />
-          </div>
-          <h3 class="prod-name">SSD Samsung 980 500GB NVMe</h3>
-          <div class="prod-specs-box">
-            <span><i class="fa-solid fa-hard-drive"></i> 500GB M.2</span>
-            <span><i class="fa-solid fa-forward"></i> 3500MB/s</span>
-          </div>
-          <div class="prod-footer">
-            <div class="price-box">
-              <span class="price-current">1.190.000đ</span>
-              <span class="price-old">1.590.000đ</span>
-            </div>
-            <button class="btn-buy-now">Mua ngay</button>
-          </div>
-        </article>
-      </a>
-      <!-- DJANGO: {% endfor %} -->
     </div>
 
     <!-- Phân trang -->
     <!-- DJANGO: Pagination Logic -->
-    <div class="pagination">
+    <div class="pagination" style="margin-top: 20px;">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}" class="page-link">
+        <i class="fa-solid fa-chevron-left"></i>
+      </a>
+      {% endif %}
 
-      <a
-        href="?{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ page_obj.previous_page_number }}"
-        class="page-link"
-        ><i class="fa-solid fa-chevron-left"></i
-      ></a>
-      
-      <a href="#" class="page-link active">{{ num }}</a>
-      
-      <a
-        href="?{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ num }}"
-        class="page-link"
-        >{{ num }}</a
-      >
-      
-      <a
-        href="?{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}page={{ page_obj.next_page_number }}"
-        class="page-link"
-        ><i class="fa-solid fa-chevron-right"></i
-      ></a>
-    
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <a href="#" class="page-link active">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="page-link">
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+      {% endif %}
     </div>
   </div>
 </div>

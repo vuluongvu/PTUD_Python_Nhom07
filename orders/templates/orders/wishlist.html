@@ -25,6 +25,7 @@ thích - LapStore{% endblock %} {% block extra_css %}
     transform: scale(1.1);
   }
 </style>
+
 {% endblock %} {% block content %}
 <div style="margin-top: -10px; margin-bottom: 20px">
   <p style="font-size: 13px; color: var(--text-sub)">
@@ -129,4 +130,14 @@ thích - LapStore{% endblock %} {% block extra_css %}
   </article>
   <!-- DJANGO: End Loop -->
 </div>
+<script>
+  const btnRemoveWishlistAll = document.querySelectorAll(".btn-remove-wish");
+
+btnRemoveWishlistAll.forEach((btnRemoveWish) => {
+  btnRemoveWish.addEventListener("click", function (e) {
+    alert("Đã xóa khỏi danh sách yêu thích");
+    e.preventDefault();
+  });
+});
+</script>
 {% endblock %}
