@@ -148,7 +148,7 @@ LapStore{% endblock %}
 
           
           <!--Sản phẩm đơn giờ vàng 1-->
-          <a href="{% url 'products:product-detail' %}">
+          <a href="">
             <article class="prod-card">
               <span class="badge-sale" style="background: #000"
                 >Best Seller</span
@@ -271,134 +271,33 @@ LapStore{% endblock %}
         </div>
         <div class="flash-grid">
           
-          <!--Sản phẩm đơn 1-->
-          <a href="#">
-            <article class="prod-card">
-              <span class="badge-sale" style="background: #000"
-                >Best Seller</span
-              >
-              <div class="prod-img-wrap">
-                <img
-                  src="https://laptopworld.vn/media/product/22976_22956_lenovo_yoga_slim_7_14ill10__logo.jpg"
-                  alt="MacBook"
-                />
-              </div>
-              <h3 class="prod-name">MacBook Air 13 inch M1 2020</h3>
-              <div class="prod-specs-box">
-                <span><i class="fa-solid fa-microchip"></i> Apple M1</span>
-                <span><i class="fa-solid fa-memory"></i> 8GB • 256GB</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">18.490.000đ</span
-                  ><span class="price-old">22.990.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-          <!--Sản phẩm đơn 2-->
-          <a href="#">
-            <article class="prod-card">
-              <span class="badge-sale">Giảm 5TR</span>
-              <div class="prod-img-wrap">
-                <img
-                  src="https://laptopaz.vn/media/product/120_3289_dell_inspiron_14_5445_2024_1715338903.jpg"
-                  alt="Asus"
-                />
-              </div>
-              <h3 class="prod-name">Laptop Gaming Asus TUF Dash F15</h3>
-              <div class="prod-specs-box">
-                <span><i class="fa-solid fa-microchip"></i> i5-12450H</span>
-                <span><i class="fa-solid fa-gamepad"></i> RTX 3050</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">19.990.000đ</span
-                  ><span class="price-old">24.490.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-          <!--Sản phẩm đơn 3-->
-          <a href="#">
-            <article class="prod-card">
-              <span
-                class="badge-sale"
-                style="background: var(--accent); color: #000"
-                >New</span
-              >
-              <div class="prod-img-wrap">
-                <img src="https://laptopaz.vn/media/product/120_4206_" alt="Acer" />
-              </div>
-              <h3 class="prod-name">Laptop Gaming Acer Nitro V ANV15</h3>
-              <div class="prod-specs-box">
-                <span
-                  ><i class="fa-solid fa-microchip"></i> Core i5-13420H</span
-                >
-                <span><i class="fa-solid fa-gamepad"></i> RTX 4050</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">26.990.000đ</span
-                  ><span class="price-old">29.990.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-          <!--Sản phẩm đơn 4-->
-          <a href="#">
+          <!--SẢN PHẨM HOME-->
+           {% for p in products %}
+         <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card">
               <span class="badge-sale">Hot</span>
               <div class="prod-img-wrap">
-                <img src="https://laptopaz.vn/media/product/250_4346_" alt="LG" />
+                <img src="{{p.images.first.image_url}}" alt="LG" />
               </div>
-              <h3 class="prod-name">Laptop LG Gram 2023 Ultra Light</h3>
+              <h3 class="prod-name">{{p.name}}</h3>
               <div class="prod-specs-box">
                 <span
-                  ><i class="fa-solid fa-weight-hanging"></i> Siêu nhẹ
-                  999g</span
+                  ><i class="fa-solid fa-vr-cardboard"></i>VGA: {{p.laptop_config.vga}}
+                  </span
                 >
-                <span><i class="fa-solid fa-microchip"></i> Core i7</span>
+                <span><i class="fa-solid fa-microchip"></i>CPU: {{p.laptop_config.cpu}}</span>
               </div>
               <div class="prod-footer">
                 <div class="price-box">
-                  <span class="price-current">32.990.000đ</span
-                  ><span class="price-old">35.990.000đ</span>
+                  <span class="price-current">{{p.price_vn}}</span
+                  ><span class="price-old">{{p.discount_price_vn}}</span>
                 </div>
                 <button class="btn-buy-now">Mua ngay</button>
               </div>
             </article>
           </a>
+           {% endfor %}
 
-           <!--Sản phẩm đơn 5-->
-          <a href="#">
-            <article class="prod-card">
-              <span class="badge-sale">Giảm 3TR</span>
-              <div class="prod-img-wrap">
-                <img src="https://laptopaz.vn/media/product/120_4280_" alt="LG" />
-              </div>
-              <h3 class="prod-name">Laptop LG Gram 2023 Ultra Light</h3>
-              <div class="prod-specs-box">
-                <span
-                  ><i class="fa-solid fa-weight-hanging"></i> Siêu nhẹ
-                  999g</span
-                >
-                <span><i class="fa-solid fa-microchip"></i> Core i7</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">32.990.000đ</span
-                  ><span class="price-old">35.990.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-          
-            <!--end sản phẩm đơn-->
         </div>
       </section>
       <!-- ======================= end Dãy sản phẩm bán chạy ===================-->

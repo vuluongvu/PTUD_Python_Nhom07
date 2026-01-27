@@ -72,19 +72,39 @@ class Warranty(models.Model):
 
 class Product(TimeStampedModel):
     name = models.CharField(max_length=200, db_index=True) # Index để search nhanh
-    slug = models.SlugField(max_length=250, unique=True, blank=True) # SEO
+    slug = models.SlugField(max_length=250, unique=True, blank=True)
     description = models.TextField()
     
     # Validation: Giá không được âm
     price = models.DecimalField(
-        max_digits=10, decimal_places=2, 
+        max_digits=15, decimal_places=0, 
         validators=[MinValueValidator(0)]
     )
     discount_price = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True, blank=True,
+        max_digits=15, decimal_places=0, null=True, blank=True,
         validators=[MinValueValidator(0)]
     )
+    @property
+    def price_vn(self):
+        return "{:,.0f}".format(self.price).replace(',', '.') + " đ"
 
+    @property
+    def discount_price_vn(self):
+        return "{:,.0f}".format(self.discount_price).replace(',', '.') + " đ"
+    @property
+    def thumbnail(self):
+        # 1. Thử tìm ảnh nào được tick là "Primary" (Ảnh chính)
+        primary_img = self.images.filter(is_primary=True).first()
+        if primary_img:
+            return primary_img.image_url
+            
+        # 2. Nếu không có ảnh chính, lấy bừa ảnh đầu tiên
+        first_img = self.images.first()
+        if first_img:
+            return first_img.image_url
+            
+        # 3. Nếu không có ảnh nào hết -> Trả về ảnh placeholder online
+        return "https://via.placeholder.com/300x300.png?text=No+Image"
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='products')
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='products')
     warranty = models.ForeignKey(Warranty, on_delete=models.SET_NULL, null=True)
@@ -112,6 +132,7 @@ class ProductImage(models.Model):
     image_url = models.URLField()
     is_primary = models.BooleanField(default=False)
     sort_order = models.IntegerField(default=0)
+    
 
 class Inventory(TimeStampedModel):
     product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='inventory')
@@ -219,12 +240,53 @@ class WishList(TimeStampedModel):
 
     class Meta:
         unique_together = ('user', 'product') # Một user không thể wish 1 món 2 lần
-class Specification(models.Model):
-    # Nối với sản phẩm (Một cái Laptop có nhiều dòng thông số)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE) 
+      
+        
+# --- 1. CẤU HÌNH LAPTOP (Chuyên biệt để lọc) ---
+class LaptopConfig(models.Model):
+    # Nối 1-1 với Product. Xóa Product là xóa luôn cấu hình.
+    product = models.OneToOneField(
+        Product, 
+        on_delete=models.CASCADE, 
+        related_name='laptop_config' 
+    )
     
-    # Tên thông số (Ví dụ: "RAM", "CPU", "Màn hình")
-    spec_name = models.CharField(max_length=100) 
+    # Các thông số CỨNG 
+    cpu = models.CharField(max_length=100, help_text="VD: Intel Core i5 12400H")
+    ram = models.CharField(max_length=50, help_text="VD: 16GB DDR4 3200MHz")
+    rom = models.CharField(max_length=100, verbose_name="Ổ cứng", help_text="VD: 512GB SSD NVMe")
+    vga = models.CharField(max_length=100, verbose_name="Card đồ họa")
+    screen = models.CharField(max_length=100, verbose_name="Màn hình")
+    battery = models.CharField(max_length=50, verbose_name="Pin", blank=True)
+    weight = models.DecimalField(max_digits=4, decimal_places=2, verbose_name="Trọng lượng (kg)")
     
-    # Giá trị (Ví dụ: "16GB", tg"Core i5", "14 inch OLED")
-    spec_value = models.CharField(max_length=255)
+    def __str__(self):
+        return f"Cấu hình: {self.product.name}"
+
+# --- 2. CẤU HÌNH LINH KIỆN (Chuột, Phím, Tai nghe...) ---
+class AccessoryConfig(models.Model):
+    product = models.OneToOneField(
+        Product, 
+        on_delete=models.CASCADE, 
+        related_name='accessory_config'
+    )
+    
+    # Loại phụ kiện
+    TYPE_CHOICES = (
+        ('mouse', 'Chuột'),
+        ('keyboard', 'Bàn phím'),
+        ('headphone', 'Tai nghe'),
+        ('screen', 'Màn hình rời'),
+        ('other', 'Khác'),
+    )
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='other')
+    
+    # Các thông số chung
+    connect_type = models.CharField(max_length=50, verbose_name="Kết nối", help_text="VD: Bluetooth, USB, Wireless")
+    is_led_rgb = models.BooleanField(default=False, verbose_name="Có Led RGB không?")
+    
+    # Thông số chi tiết 
+    detail = models.TextField(verbose_name="Thông số chi tiết", help_text="Nhập DPI, Switch, Loại dây...")
+
+    def __str__(self):
+        return f"Linh kiện: {self.product.name}"

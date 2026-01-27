@@ -44,7 +44,7 @@ Kết quả tìm kiếm - LapStore
 <div class="flash-grid" style="margin-bottom: 40px">
   <!-- DJANGO: {% for product in products %} -->
   <!-- Sản phẩm 1 -->
-  <a href="{% url 'products:product_detail' 'macbook-air-m1' %}">
+  <a href="{% url 'core:product_detail' 'macbook-air-m1' %}">
     <article class="prod-card">
       <span class="badge-sale">-19%</span>
       <div class="prod-img-wrap">
@@ -66,7 +66,7 @@ Kết quả tìm kiếm - LapStore
   </a>
 
   <!-- Sản phẩm 2 -->
-  <a href="{% url 'products:product_detail' 'asus-tuf-dash-f15' %}">
+  <a href="{% url 'core:product_detail' 'asus-tuf-dash-f15' %}">
     <article class="prod-card">
       <span class="badge-sale">Giảm 5TR</span>
       <div class="prod-img-wrap">
@@ -88,7 +88,7 @@ Kết quả tìm kiếm - LapStore
   </a>
 
   <!-- Sản phẩm 3 -->
-  <a href="{% url 'products:product_detail' 'lg-gram-2023' %}">
+  <a href="{% url 'core:product_detail' 'lg-gram-2023' %}">
     <article class="prod-card">
       <div class="prod-img-wrap">
         <img src="https://placehold.co/200x200?text=LG+Gram" alt="LG" />
@@ -109,7 +109,7 @@ Kết quả tìm kiếm - LapStore
   </a>
 
   <!-- Sản phẩm 4 -->
-  <a href="{% url 'products:product_detail' 'acer-nitro-v' %}">
+  <a href="{% url 'core:product_detail' 'acer-nitro-v' %}">
     <article class="prod-card">
       <span class="badge-sale">New</span>
       <div class="prod-img-wrap">
@@ -134,23 +134,22 @@ Kết quả tìm kiếm - LapStore
 
 <!-- Phân trang -->
 <div class="pagination">
-  {% comment %} {% if page_obj.has_previous %} {% endcomment %}
+  {% if page_obj.has_previous %}
   <a
     href="?q={{ query }}&page={{ page_obj.previous_page_number }}"
     class="page-link"
     ><i class="fa-solid fa-chevron-left"></i
   ></a>
-  {% comment %} {% endif %} {% for num in page_obj.paginator.page_range %} {% if {% endcomment %}
-  page_obj.number == num %}
+  {% endif %} {% for num in page_obj.paginator.page_range %} {% if page_obj.number == num %}
   <a href="#" class="page-link active">{{ num }}</a>
-  {% comment %} {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} {% endcomment %}
+  {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
   <a href="?q={{ query }}&page={{ num }}" class="page-link">{{ num }}</a>
-  {% comment %} {% endif %} {% endfor %} {% if page_obj.has_next %} {% endcomment %}
+  {% endif %} {% endfor %} {% if page_obj.has_next %}
   <a
     href="?q={{ query }}&page={{ page_obj.next_page_number }}"
     class="page-link"
     ><i class="fa-solid fa-chevron-right"></i
   ></a>
-  {% comment %} {% endif %} {% endcomment %}
+  {% endif %}
 </div>
 {% endblock %}
