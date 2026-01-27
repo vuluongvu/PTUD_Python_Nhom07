@@ -1,88 +1,74 @@
 {% extends 'core/base.html' %} 
 {% load static %} 
-{% block title %}MacBook Air M1 2020 - LapStore
+{% block title %}{{p.name}}
 {% endblock %} 
 {% block content %}
-<!-- DJANGO: Breadcrumbs dynamic -->
+<!-- DJANGO: dynamic -->
 <div class="breadcrumb">
   <a href="{% url 'core:home' %}">Trang chủ</a> /
-  {% comment %} <a href="{% url 'products:view-all' %}">Laptop</a> / {% endcomment %}
-  <a href="#">Apple MacBook</a> / MacBook Air M1 2020
+  <a href="{% url 'products:view-all-products' %}">Laptop</a> /
+  <a href="#">{{p.brand}}</a>
 </div>
 
 <div class="detail-grid">
   <div class="gallery-box">
     <div class="main-img-wrap">
-      <!-- DJANGO: {{ product.image.url }} -->
+      <!-- DJANGO: ảnh -->
       <img
         id="mainImage"
-        src="https://placehold.co/500x500?text=MacBook+Air+M1"
+        src="{{p.images.first.image_url}}"
         alt="MacBook"
       />
     </div>
     <div class="thumb-list">
       <!-- DJANGO: Loop product images -->
-      <div
-        class="thumb-item active"
-        onclick="
-          changeImage(this, 'https://placehold.co/500x500?text=MacBook+Air+M1')
-        "
-      >
-        <img src="https://placehold.co/100x100?text=Front" alt="Front" />
-      </div>
-      <div
-        class="thumb-item"
-        onclick="
-          changeImage(this, 'https://placehold.co/500x500?text=Side+View')
-        "
-      >
-        <img src="https://placehold.co/100x100?text=Side" alt="Side" />
-      </div>
-      <div
-        class="thumb-item"
-        onclick="
-          changeImage(this, 'https://placehold.co/500x500?text=Keyboard')
-        "
-      >
-        <img src="https://placehold.co/100x100?text=Key" alt="Key" />
-      </div>
-      <div
-        class="thumb-item"
-        onclick="changeImage(this, 'https://placehold.co/500x500?text=Back')"
-      >
-        <img src="https://placehold.co/100x100?text=Back" alt="Back" />
-      </div>
+        {% if p.images.first %}
+        <div class="thumb-item active" 
+            onclick="changeImage(this, '{{ p.images.first.image_url }}')">
+            <img src="{{ p.images.first.image_url }}" alt="Ảnh gốc" />
+        </div>
+        {% endif %}
+
+        {% for img in p.images.all|slice:"1:" %}
+        <div class="thumb-item" 
+            onclick="changeImage(this, '{{ img.image_url }}')">
+            <img src="{{ img.image_url }}" alt="Ảnh phụ" />
+        </div>
+        {% endfor %}
     </div>
   </div>
 
   <div class="prod-info">
     <h1 class="prod-title">
-      <!-- DJANGO: {{ product.name }} -->
-      MacBook Air 13 inch M1 2020 8GB/256GB Chính hãng
+      {{p.name}}
     </h1>
 
     <div class="prod-meta">
       <!-- DJANGO: {{ product.rating }} -->
       <div class="rating">
-        <i class="fa-solid fa-star"></i> 4.9 (120 đánh giá)
+        <i class="fa-solid fa-star"></i> 5 ({{p.reviews.count}} đánh giá)
       </div>
-      <div>Mã: MBA-M1-256</div>
+      <div>Trạng thái: 
+        {% if p.inventory and p.inventory.quantity > 0 %}
+          Còn hàng
+        {% else  %}
+          Hết hàng
+        {% endif %}
+      </div>
     </div>
 
     <div class="price-row">
-      <!-- DJANGO:  -->
-      <span class="current-price">18.490.000đ</span>
-      <span class="old-price">22.990.000đ</span>
-      <span class="discount-tag">-19%</span>
+      <!-- DJANGO  -->
+      <span class="current-price">{{p.price_vn}}</span>
+      <span class="old-price">{{p.discount_price_vn}}</span>
+      <span class="discount-tag">-15%</span>
     </div>
 
     <!-- DJANGO: Loop Variants (Colors) -->
     <div class="option-group">
       <label class="option-label">Màu sắc</label>
       <div class="option-list">
-        <button class="opt-btn active">Xám (Gray)</button>
-        <button class="opt-btn">Bạc (Silver)</button>
-        <button class="opt-btn">Vàng (Gold)</button>
+        <button class="opt-btn active">Đen (black)</button>
       </div>
     </div>
 
@@ -90,8 +76,7 @@
     <div class="option-group">
       <label class="option-label">Cấu hình (RAM / SSD)</label>
       <div class="option-list">
-        <button class="opt-btn active">8GB / 256GB</button>
-        <button class="opt-btn">16GB / 512GB</button>
+        <button class="opt-btn active">{{ p.laptop_config.ram|slice:":4" }} / {{ p.laptop_config.rom }}</button>
       </div>
     </div>
 
@@ -143,14 +128,12 @@
     <h3 class="block-title">Đặc điểm nổi bật</h3>
     <!-- DJANGO: {{ product.description|safe }} -->
     <p style="margin-bottom: 15px; color: #4b5563">
-      MacBook Air M1 2020 mang đến một bước nhảy vọt về hiệu năng với con chip
-      Apple M1 mạnh mẽ. Thiết kế nhôm nguyên khối sang trọng, mỏng nhẹ chỉ
-      1.29kg, thời lượng pin lên đến 18 tiếng giúp bạn thoải mái làm việc cả
-      ngày dài.
+      {{p.description}}
     </p>
     <img
-      src="https://placehold.co/800x400?text=Feature+Image"
-      style="border-radius: 12px; margin-top: 10px"
+      src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/l/a/laptop_asus_rog_zephyrus_g16_gu605cm-qr078w_-_3.png"
+      style="border-radius: 12px; 
+      margin-top: 10px; "
     />
   </div>
 
@@ -160,40 +143,41 @@
     <table class="specs-table">
       <tr>
         <td>CPU</td>
-        <td>Apple M1 8-Core</td>
+        <td>{{p.laptop_config.cpu}}</td>
       </tr>
       <tr>
         <td>RAM</td>
-        <td>8 GB</td>
+        <td>{{p.laptop_config.ram}}</td>
       </tr>
       <tr>
         <td>Ổ cứng</td>
-        <td>256 GB SSD</td>
+        <td>{{p.laptop_config.rom}}</td>
       </tr>
       <tr>
         <td>Màn hình</td>
-        <td>13.3" Retina (2560 x 1600)</td>
+        <td>{{p.laptop_config.screen}}</td>
       </tr>
       <tr>
         <td>Card màn hình</td>
-        <td>7-core GPU</td>
+        <td>{{p.laptop_config.vga}}</td>
       </tr>
       <tr>
         <td>Cổng kết nối</td>
-        <td>2 x Thunderbolt 3 (USB-C)</td>
-      </tr>
-      <tr>
-        <td>Hệ điều hành</td>
-        <td>macOS Big Sur</td>
+        <td>Đầy đủ</td>
       </tr>
       <tr>
         <td>Pin</td>
-        <td>Lên đến 18 giờ</td>
+        <td>{{p.laptop_config.battery}}</td>
       </tr>
       <tr>
         <td>Trọng lượng</td>
-        <td>1.29 kg</td>
+        <td>{{p.laptop_config.weight}} kg</td>
       </tr>
+      <tr>
+        <td>Led phím: </td>
+        <td>Có</td>
+      </tr>
+
     </table>
   </div>
 </div>
@@ -203,7 +187,7 @@
   <h3 class="block-title">Đánh giá & Nhận xét</h3>
 
   <div class="review-dashboard">
-    <!-- DJANGO: Average Rating Calculation -->
+    <!-- DJANGO: Avg rating star -->
     <div class="rating-summary">
       <div class="average-score">4.9/5</div>
       <div class="stars-display">
@@ -213,7 +197,7 @@
         <i class="fa-solid fa-star"></i>
         <i class="fa-solid fa-star-half-stroke"></i>
       </div>
-      <div class="total-reviews">120 đánh giá</div>
+      <div class="total-reviews">{{p.reviews_set.count}} đánh giá</div>
     </div>
 
     <!-- DJANGO: Review Form (POST) -->
@@ -246,9 +230,9 @@
     <!-- DJANGO: Loop Reviews -->
     <div class="review-item">
       <div class="reviewer-info">
-        <div class="avatar">H</div>
+        <div class="avatar">CR</div>
         <div>
-          <div class="reviewer-name">Hoàng Văn Nam</div>
+          <div class="reviewer-name">Cristiano Ronaldo</div>
           <div class="review-time">2 ngày trước</div>
         </div>
       </div>
@@ -258,16 +242,15 @@
         ><i class="fa-solid fa-star"></i>
       </div>
       <p class="review-text">
-        Máy đẹp, chạy mượt, pin trâu. Shop tư vấn nhiệt tình, giao hàng siêu
-        tốc. Rất hài lòng!
+       Đẳng cấp quá trời quá đất, tại sao lại có cái máy ngon đến vậy, chơi black myth wukong với elden ring thì gọi là bá cháy
       </p>
     </div>
 
     <div class="review-item">
       <div class="reviewer-info">
-        <div class="avatar" style="background: #fcd34d; color: #000">L</div>
+        <div class="avatar" style="background: #fcd34d; color: #000">LM</div>
         <div>
-          <div class="reviewer-name">Lê Thị Bích</div>
+          <div class="reviewer-name">Lionel Messi</div>
           <div class="review-time">1 tuần trước</div>
         </div>
       </div>
@@ -277,31 +260,36 @@
         ><i class="fa-regular fa-star"></i>
       </div>
       <p class="review-text">
-        Sản phẩm tốt trong tầm giá. Tuy nhiên hộp hơi móp một chút do vận
-        chuyển.
+        Sản phẩm tốt trong tầm giá. Tuy nhiên hộp hơi móp một chút do vận chuyển.
+      </p>
+    </div>
+
+    <div class="review-item">
+      <div class="reviewer-info">
+        <div class="avatar" style="background: #FF6699; color: #000">LM</div>
+        <div>
+          <div class="reviewer-name">Trần Mạnh Trung</div>
+          <div class="review-time">2 tuần trước</div>
+        </div>
+      </div>
+      <div class="review-rating">
+        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
+        ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
+        ><i class="fa-regular fa-star"></i>
+      </div>
+      <p class="review-text">
+        quá đẳng cấp trong tầm giá,thật sự tuyệt vời
       </p>
     </div>
   </div>
 </div>
 
 <!-- Video Section -->
+ 
 <div class="content-block video-section" style="margin-bottom: 50px">
   <h3 class="block-title">Video đánh giá chi tiết</h3>
   <div class="video-container">
-    <iframe
-      src="https://www.youtube.com/embed/hs1HoLs4SD0?si=generic"
-      title="YouTube video player"
-      allow="
-        accelerometer;
-        autoplay;
-        clipboard-write;
-        encrypted-media;
-        gyroscope;
-        picture-in-picture;
-        web-share;
-      "
-      allowfullscreen
-    ></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rqz3sc67_jc?si=Lm6_bjLFVILMZ69G" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
   </div>
 </div>
 

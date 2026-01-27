@@ -1,8 +1,3 @@
-// @ts-nocheck
-/*
-  DJANGO STATIC FILE: main.js
-  Path: static/js/main.js
-*/
 document.addEventListener("DOMContentLoaded", () => {
   // --- SLIDER LOGIC (Hỗ trợ nhiều slider) ---
   const sliders = document.querySelectorAll(".js-slider");
@@ -289,4 +284,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+});
+
+const btnAddWishListAll = document.querySelectorAll(".btn-add-wishlist");
+
+btnAddWishListAll.forEach((btnAddWish) => {
+  btnAddWish.addEventListener("click", function (e) {
+    alert("Đã thêm vào danh sách yêu thích");
+    e.preventDefault();
+  });
 });
