@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 from core.models import Product
 
@@ -8,24 +9,41 @@ from core.models import Product
 
 def view_all_products(request):
     """View hiển thị tất cả sản phẩm có phân trang."""
-    # 1. Lấy tất cả sản phẩm đang active, sắp xếp mới nhất
     products_list = Product.objects.filter(status=True).order_by('-created_at')
     
-    # 2. Cấu hình phân trang (12 sản phẩm/trang)
+   
     paginator = Paginator(products_list, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    # 3. Truyền dữ liệu vào template
+   
     context = {
-        'products': page_obj,  # Biến này để vòng lặp {% for p in products %} chạy
-        'page_obj': page_obj,  # Biến này để hiển thị thanh phân trang
+        'products': page_obj,  
+        'page_obj': page_obj,  
     }
     return render(request, 'products/view-all.html', context)
 
 def search_results(request):
-    """View hiển thị trang chủ."""
-    return render(request, 'products/search-results.html')
+    query = request.GET.get('q', '')
+    if query:
+        products_list = Product.objects.filter(
+            Q(name__icontains=query),
+            status=True
+        ).select_related('laptop_config').prefetch_related('images').order_by('-created_at')
+    else:
+        products_list = Product.objects.none()
+
+    # Phân trang: 12 sản phẩm/trang
+    paginator = Paginator(products_list, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'products': page_obj,
+        'page_obj': page_obj,
+        'query': query,
+    }
+    return render(request, 'products/search-results.html', context)
 
 def product_detail(request, slug):
     product = get_object_or_404(
