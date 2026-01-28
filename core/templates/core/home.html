@@ -5,7 +5,7 @@ LapStore{% endblock %}
     <!--=================== Hero slide Main ====================-->
       <section class="bento-grid">
         <article
-          {# DJANGO: Dynamic Banners if needed #}
+         
           class="bento-item card-hero js-slider"
           style="grid-column: 1 / -1; grid-row: 1 / 2"
         >
@@ -137,117 +137,78 @@ LapStore{% endblock %}
         <div class="flash-header">
           <h2 class="flash-title"><i class="fa-solid fa-bolt"></i> GIỜ VÀNG</h2>
           <div class="countdown">
-            <div class="time-box">02</div>
+            <div class="time-box">23</div>
             :
             <div class="time-box">15</div>
             :
             <div class="time-box">48</div>
           </div>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        const boxes = document.querySelectorAll('.time-box');
+
+        if (boxes.length < 3) return; 
+        let h = parseInt(boxes[0].innerText) || 0;
+        let m = parseInt(boxes[1].innerText) || 0;
+        let s = parseInt(boxes[2].innerText) || 0;
+
+        let totalSeconds = (h * 3600) + (m * 60) + s;
+
+        const interval = setInterval(() => {
+            if (totalSeconds <= 0) {
+                clearInterval(interval);
+                return; 
+            }
+
+            totalSeconds--;
+
+            const hoursLeft = Math.floor(totalSeconds / 3600);
+            const minutesLeft = Math.floor((totalSeconds % 3600) / 60);
+            const secondsLeft = totalSeconds % 60;
+
+            boxes[0].innerText = hoursLeft < 10 ? '0' + hoursLeft : hoursLeft;
+            boxes[1].innerText = minutesLeft < 10 ? '0' + minutesLeft : minutesLeft;
+            boxes[2].innerText = secondsLeft < 10 ? '0' + secondsLeft : secondsLeft;
+
+        }, 1000);
+    });
+          </script>
         </div>
         <div class="flash-grid">
-
           
-          <!--Sản phẩm đơn giờ vàng 1-->
-          <a href="">
+          <!--Sản phẩm đơn giờ vàng -->
+         {% for p in products|slice:4 %}
+          <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card">
-              <span class="badge-sale" style="background: #000"
+              <button class="btn-add-wishlist" title="Thêm vào yêu thích">
+                <i class="fa-regular fa-heart"></i>
+              </button>
+              <span class="badge-sale" style="background: red"
                 >Best Seller</span
               >
               <div class="prod-img-wrap">
                 <img
-                  src="https://cdn.hoanghamobile.vn/i/previewV2/Uploads/2024/11/18/air-m3-13-inch-sliver-1.png"
-                  alt="MacBook"
+                  src="{{p.images.first.image_url}}"
+                  alt=""
                 />
               </div>
-              <h3 class="prod-name">MacBook Air 13 inch M1 2020</h3>
+              <h3 class="prod-name">{{p.name}}</h3>
               <div class="prod-specs-box">
-                <span><i class="fa-solid fa-microchip"></i> Apple M1</span>
-                <span><i class="fa-solid fa-memory"></i> 8GB • 256GB</span>
+                <span><i class="fa-solid fa-microchip"></i>{{p.laptop_config.cpu}}</span>
+                <span><i class="fa-solid fa-vr-cardboard"></i>{{p.laptop_config.vga}}</span>
               </div>
               <div class="prod-footer">
                 <div class="price-box">
-                  <span class="price-current">18.490.000đ</span
-                  ><span class="price-old">22.990.000đ</span>
+                  <span class="price-current">{{p.price_vn}}</span
+                  ><span class="price-old">{{p.discount_price_vn}}</span>
                 </div>
                 <button class="btn-buy-now">Mua ngay</button>
               </div>
             </article>
           </a>
+          {% endfor %}
 
-          <!--Sản phẩm đơn giờ vàng 2-->
-          <a href="#">
-            <article class="prod-card">
-              <span class="badge-sale">-40%</span>
-              <div class="prod-img-wrap">
-                <img
-                  src="https://cdn.hoanghamobile.vn/i/previewV2/Uploads/2025/04/01/logitech-g304-trang-0.png"
-                  alt="Product"
-                />
-              </div>
-              <h3 class="prod-name">Chuột Gaming Logitech G102 Lightsync</h3>
-              <div class="prod-specs-box">
-                <span><i class="fa-solid fa-bolt"></i> 8000 DPI</span>
-                <span><i class="fa-solid fa-link"></i> USB Wired</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">399.000đ</span
-                  ><span class="price-old">599.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-
-          <!--Sản phẩm đơn giờ vàng 3-->
-          <a href="#">
-            <article class="prod-card">
-              <span class="badge-sale">-25%</span>
-              <div class="prod-img-wrap">
-                <img
-                  src="https://m.media-amazon.com/images/I/61D2DDpDITL._AC_SX300_SY300_QL70_FMwebp_.jpg"
-                  alt="Product"
-                />
-              </div>
-              <h3 class="prod-name">RAM Corsair Vengeance 16GB DDR4</h3>
-              <div class="prod-specs-box">
-                <span><i class="fa-solid fa-memory"></i> 16GB (1x16)</span>
-                <span><i class="fa-solid fa-gauge-high"></i> 3200MHz</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">4.590.000đ</span
-                  ><span class="price-old">5.200.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-
-          <!--Sản phẩm đơn giờ vàng 4-->
-          <a href="#">
-            <article class="prod-card">
-              <span class="badge-sale">-30%</span>
-              <div class="prod-img-wrap">
-                <img
-                  src="https://cdn.hstatic.net/products/200000722513/gearvn-card-man-hinh-gigabyte-geforce-rtx-5050-gaming-oc-8gbs-__1__eb529ef60a1c4765991945f93c8a49a7_master.png"
-                  alt="Product"
-                />
-              </div>
-              <h3 class="prod-name">Card màn hình Gigabyte GeForce RTX 5050 Gaming OC 8GB</h3>
-              <div class="prod-specs-box">
-                <span><i class="fa-solid fa-hard-drive"></i> 500GB M.2</span>
-                <span><i class="fa-solid fa-forward"></i> 3500MB/s</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">9.190.000đ</span
-                  ><span class="price-old">10.590.000đ</span>
-                </div>
-                <button class="btn-buy-now">Mua ngay</button>
-              </div>
-            </article>
-          </a>
         </div>
       </section>
 
@@ -272,8 +233,8 @@ LapStore{% endblock %}
         <div class="flash-grid">
           
           <!--SẢN PHẨM HOME-->
-
-           {% for p in products %}
+         
+           {% for p in products|slice:5 %}
          <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card pod-card-view-all" >
               <button class="btn-add-wishlist" title="Thêm vào yêu thích">

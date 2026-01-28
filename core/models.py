@@ -277,6 +277,8 @@ class AccessoryConfig(models.Model):
         ('keyboard', 'Bàn phím'),
         ('headphone', 'Tai nghe'),
         ('screen', 'Màn hình rời'),
+        ('vga', 'Card đồ họa'),
+        ('cpu', 'CPU'),
         ('other', 'Khác'),
     )
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='other')
