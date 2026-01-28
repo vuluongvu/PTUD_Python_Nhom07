@@ -181,6 +181,9 @@ LapStore{% endblock %}
          {% for p in products|slice:4 %}
           <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card">
+              <button class="btn-add-wishlist" title="Thêm vào yêu thích">
+                <i class="fa-regular fa-heart"></i>
+              </button>
               <span class="badge-sale" style="background: red"
                 >Best Seller</span
               >
