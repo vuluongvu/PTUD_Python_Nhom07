@@ -46,26 +46,38 @@ Kết quả tìm kiếm - LapStore
   
    {% for p in products %}
          <a href="{% url 'products:product-detail' p.slug %}">
-            <article class="prod-card pod-card-view-all">
+            <article class="prod-card prod-card-view-all">
               <button class="btn-add-wishlist" title="Thêm vào yêu thích">
                 <i class="fa-regular fa-heart"></i>
               </button>
               <span class="badge-sale">Hot</span>
               <div class="prod-img-wrap">
-                <img src="{{p.images.first.image_url}}" alt="LG" />
+                <img src="{{p.images.first.image_url}}" alt="{{ p.name }}" />
               </div>
               <h3 class="prod-name">{{p.name}}</h3>
               <div class="prod-specs-box">
+                {% if p.is_laptop %}
                 <span
                   ><i class="fa-solid fa-vr-cardboard"></i>VGA: {{p.laptop_config.vga}}
                   </span
                 >
                 <span><i class="fa-solid fa-microchip"></i>CPU: {{p.laptop_config.cpu}}</span>
+                {% else %}
+                <span
+                  ><i class="fa-regular fa-copyright"></i>Brand: {{p.brand}}
+                  </span
+                >
+                <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
+                {% endif %}
               </div>
               <div class="prod-footer">
                 <div class="price-box">
-                  <span class="price-current">{{p.price_vn}}</span
-                  ><span class="price-old">{{p.discount_price_vn}}</span>
+                  {% if p.discount_price and p.discount_price < p.price %}
+                    <span class="price-current">{{ p.discount_price_vn }}</span>
+                    <span class="price-old">{{ p.price_vn }}</span>
+                  {% else %}
+                    <span class="price-current">{{ p.price_vn }}</span>
+                  {% endif %}
                 </div>
                 <button class="btn-buy-now">Mua ngay</button>
               </div>
