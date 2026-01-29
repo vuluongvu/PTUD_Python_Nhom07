@@ -52,3 +52,5 @@ def product_detail(request, slug):
     related_products = Product.objects.filter(category=product.category).exclude(slug=slug).order_by('?')[:4] 
     context = {'p': product}
     return render(request, 'products/product-detail.html', context)
+
+# order products

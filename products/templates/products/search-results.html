@@ -25,18 +25,18 @@ Kết quả tìm kiếm - LapStore
 
   <!-- Bộ lọc nhanh -->
   <div class="filter-bar">
-    <button class="filter-btn active">
-      <i class="fa-solid fa-arrow-down-wide-short"></i> Liên quan
-    </button>
-    <button class="filter-btn">
+    <a href="?q={{ query }}" class="filter-btn {% if not sort_param or sort_param == 'default' %}active{% endif %}">
+      <i class="fa-solid fa-sort"></i> Mặc định
+    </a>
+    <a href="?q={{ query }}&sort=price_asc" class="filter-btn {% if sort_param == 'price_asc' %}active{% endif %}">
       <i class="fa-solid fa-arrow-up-1-9"></i> Giá thấp - cao
-    </button>
-    <button class="filter-btn">
+    </a>
+    <a href="?q={{ query }}&sort=price_desc" class="filter-btn {% if sort_param == 'price_desc' %}active{% endif %}">
       <i class="fa-solid fa-arrow-down-9-1"></i> Giá cao - thấp
-    </button>
-    <button class="filter-btn">
+    </a>
+    <a href="?q={{ query }}&sort=discount" class="filter-btn {% if sort_param == 'discount' %}active{% endif %}">
       <i class="fa-solid fa-percent"></i> Khuyến mãi
-    </button>
+    </a>
   </div>
 </div>
 
@@ -92,17 +92,17 @@ Kết quả tìm kiếm - LapStore
 <div class="pagination">
   {% if page_obj.has_previous %}
   <a
-    href="?q={{ query }}&page={{ page_obj.previous_page_number }}"
+    href="?q={{ query }}&page={{ page_obj.previous_page_number }}{% if sort_param %}&sort={{ sort_param }}{% endif %}"
     class="page-link"
     ><i class="fa-solid fa-chevron-left"></i
   ></a>
   {% endif %} {% for num in page_obj.paginator.page_range %} {% if page_obj.number == num %}
   <a href="#" class="page-link active">{{ num }}</a>
   {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-  <a href="?q={{ query }}&page={{ num }}" class="page-link">{{ num }}</a>
+  <a href="?q={{ query }}&page={{ num }}{% if sort_param %}&sort={{ sort_param }}{% endif %}" class="page-link">{{ num }}</a>
   {% endif %} {% endfor %} {% if page_obj.has_next %}
   <a
-    href="?q={{ query }}&page={{ page_obj.next_page_number }}"
+    href="?q={{ query }}&page={{ page_obj.next_page_number }}{% if sort_param %}&sort={{ sort_param }}{% endif %}"
     class="page-link"
     ><i class="fa-solid fa-chevron-right"></i
   ></a>
