@@ -17,7 +17,7 @@
       <img
         id="mainImage"
         src="{{p.images.first.image_url}}"
-        alt="MacBook"
+        alt="{{ p.name }}"
       />
     </div>
     <div class="thumb-list">
@@ -65,6 +65,7 @@
     </div>
 
     <!-- DJANGO: Loop Variants (Colors) -->
+    {% if p.is_lap %}
     <div class="option-group">
       <label class="option-label">Màu sắc</label>
       <div class="option-list">
@@ -76,9 +77,10 @@
     <div class="option-group">
       <label class="option-label">Cấu hình (RAM / SSD)</label>
       <div class="option-list">
-        <button class="opt-btn active">{{ p.laptop_config.ram|slice:":4" }} / {{ p.laptop_config.rom }}</button>
+        <button class="opt-btn active">{{ p.laptop_config.ram_desc|slice:":4" }} / {{ p.laptop_config.storage_desc }}</button>
       </div>
     </div>
+    {% endif %}
 
     <div class="promo-box">
       <div class="promo-head">
@@ -130,11 +132,19 @@
     <p style="margin-bottom: 15px; color: #4b5563">
       {{p.description}}
     </p>
-    <img
-      src="https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/l/a/laptop_asus_rog_zephyrus_g16_gu605cm-qr078w_-_3.png"
-      style="border-radius: 12px; 
-      margin-top: 10px; "
-    />
+    {% for img in p.images.all %}
+      {% if img.image_url_feature %}
+        <img
+          src="{{ img.image_url_feature }}"
+          style=
+         " border-radius: 12px; 
+          margin-top: 10px;
+          max-witdh: 790px;
+          max-height: 500px;"
+          alt="Đặc điểm nổi bật"
+        />
+      {% endif %}
+    {% endfor %}
   </div>
 
   <div class="content-block">
@@ -147,15 +157,15 @@
       </tr>
       <tr>
         <td>RAM</td>
-        <td>{{p.laptop_config.ram}}</td>
+        <td>{{p.laptop_config.ram_desc}}</td>
       </tr>
       <tr>
         <td>Ổ cứng</td>
-        <td>{{p.laptop_config.rom}}</td>
+        <td>{{p.laptop_config.storage_desc}}</td>
       </tr>
       <tr>
         <td>Màn hình</td>
-        <td>{{p.laptop_config.screen}}</td>
+        <td>{{p.laptop_config.screen_desc}}</td>
       </tr>
       <tr>
         <td>Card màn hình</td>

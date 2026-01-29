@@ -11,12 +11,10 @@ def view_all_products(request):
     """View hiển thị tất cả sản phẩm có phân trang."""
     products_list = Product.objects.filter(status=True).order_by('-created_at')
     
-   
     paginator = Paginator(products_list, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-   
+
     context = {
         'products': page_obj,  
         'page_obj': page_obj,  
@@ -33,7 +31,7 @@ def search_results(request):
     else:
         products_list = Product.objects.none()
 
-    # Phân trang: 12 sản phẩm/trang
+    # Phân trag: 12 sản phẩm/trang
     paginator = Paginator(products_list, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

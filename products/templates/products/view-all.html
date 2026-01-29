@@ -220,11 +220,16 @@
               </div>
               <h3 class="prod-name">{{p.name}}</h3>
               <div class="prod-specs-box">
-                <span
-                  ><i class="fa-solid fa-vr-cardboard"></i>VGA: {{p.laptop_config.vga}}
+               {% if p.is_lap %}
+                <span><i class="fa-solid fa-microchip"></i>{{p.laptop_config.cpu}}</span>
+                <span><i class="fa-solid fa-vr-cardboard"></i>{{p.laptop_config.vga}}</span>
+                {% else %}
+                   <span
+                  ><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
                   </span
                 >
-                <span><i class="fa-solid fa-microchip"></i>CPU: {{p.laptop_config.cpu}}</span>
+                <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
+                {% endif %}
               </div>
               <div class="prod-footer">
                 <div class="price-box">

@@ -23,7 +23,6 @@ LapStore{% endblock %}
               alt="Hero 2"
             />
           </div>
-          
 
           <button class="slider-btn prev">
             <i class="fa-solid fa-chevron-left"></i>
@@ -33,7 +32,7 @@ LapStore{% endblock %}
           </button>
           <div class="slider-dots"></div>
 
-          <!-- ============= DOUBLE sub slides ==============-->
+          <!-- ============= DOUBLE Sub slides ==============-->
         </article>
           <!--Subslide-->
           <div class="bento-item card-sub js-slider" style="grid-column: 1 / 2; grid-row: 2 / 3;">
@@ -80,8 +79,7 @@ LapStore{% endblock %}
       </section>
       <!--end Subslide-->
 
-    
-        <!--=============== Phân loại theo Linh kiện máy tính, PC ===================-->
+      <!--=============== Phân loại theo Linh kiện máy tính, PC ===================-->
       <div class="cat-section">
         <div class="cat-title-small">Linh Kiện Máy Tính & PC</div>
         <nav class="cat-scroll">
@@ -195,8 +193,16 @@ LapStore{% endblock %}
               </div>
               <h3 class="prod-name">{{p.name}}</h3>
               <div class="prod-specs-box">
+                {% if p.is_lap %}
                 <span><i class="fa-solid fa-microchip"></i>{{p.laptop_config.cpu}}</span>
                 <span><i class="fa-solid fa-vr-cardboard"></i>{{p.laptop_config.vga}}</span>
+                {% else %}
+                   <span
+                  ><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
+                  </span
+                >
+                <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
+                {% endif %}
               </div>
               <div class="prod-footer">
                 <div class="price-box">
@@ -207,11 +213,10 @@ LapStore{% endblock %}
               </div>
             </article>
           </a>
-          {% endfor %}
+           {% endfor %}
 
         </div>
       </section>
-
 
       <!--=============== Dãy sản phẩm bán chạy ==================-->
       <section>
@@ -233,7 +238,6 @@ LapStore{% endblock %}
         <div class="flash-grid">
           
           <!--SẢN PHẨM HOME-->
-         
            {% for p in products|slice:5 %}
          <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card pod-card-view-all" >
@@ -246,11 +250,19 @@ LapStore{% endblock %}
               </div>
               <h3 class="prod-name">{{p.name}}</h3>
               <div class="prod-specs-box">
-                <span
+                {% if p.is_lap %}
+                  <span
                   ><i class="fa-solid fa-vr-cardboard"></i>VGA: {{p.laptop_config.vga}}
                   </span
                 >
                 <span><i class="fa-solid fa-microchip"></i>CPU: {{p.laptop_config.cpu}}</span>
+                {% else %}
+                   <span
+                  ><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
+                  </span
+                >
+                <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
+                {% endif %}
               </div>
               <div class="prod-footer">
                 <div class="price-box">
@@ -262,11 +274,9 @@ LapStore{% endblock %}
             </article>
           </a>
            {% endfor %}
-
         </div>
       </section>
       <!-- ======================= end Dãy sản phẩm bán chạy ===================-->
-
       
       <!-- ===================== Banner Home =====================-->
       <section class="promo-banner">
