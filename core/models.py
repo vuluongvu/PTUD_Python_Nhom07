@@ -17,13 +17,13 @@ class Profile(TimeStampedModel):
     ROLE_CHOICES = (
         ('user', 'User'),
         ('admin', 'Admin'),
-        ('staff', 'Staff'), # Thêm role Staff
+        ('staff', 'Staff'),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     full_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
-    avatar = models.URLField(max_length=500, blank=True, null=True) # Thêm avatar
+    avatar = models.URLField(max_length=500, blank=True, null=True) 
     status = models.BooleanField(default=True)
 
     def __str__(self):
@@ -33,10 +33,10 @@ class Address(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
     receiver_name = models.CharField(max_length=100)
     receiver_phone = models.CharField(max_length=15)
-    province = models.CharField(max_length=100, blank=True) # Nên tách ra để tính ship
+    province = models.CharField(max_length=100, blank=True) 
     district = models.CharField(max_length=100, blank=True) 
     ward = models.CharField(max_length=100, blank=True)
-    specific_address = models.CharField(max_length=255, blank=True) # Địa chỉ cụ thể (số nhà, đường)
+    specific_address = models.CharField(max_length=255, blank=True) 
     is_default = models.BooleanField(default=False)
 
     @property
@@ -44,7 +44,6 @@ class Address(TimeStampedModel):
         return f"{self.specific_address}, {self.ward}, {self.district}, {self.province}"
 
     def save(self, *args, **kwargs):
-        # Logic: Nếu địa chỉ này là mặc định, bỏ mặc định các địa chỉ khác của user này
         if self.is_default:
             with transaction.atomic():
                 Address.objects.filter(user=self.user, is_default=True).exclude(pk=self.pk).update(is_default=False)
@@ -87,7 +86,7 @@ class Warranty(models.Model):
     policy = models.TextField()
 
     def __str__(self):
-        return f"{self.period} months"
+        return f"{self.period} Tháng"
 
 class Product(TimeStampedModel):
     name = models.CharField(max_length=200, db_index=True) 
@@ -270,7 +269,6 @@ class Review(TimeStampedModel):
 
     class Meta:
         unique_together = ('user', 'product') # Quan trọng: Mỗi người chỉ review 1 lần/sp
-        pass
 
 class WishList(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist')
@@ -329,6 +327,7 @@ class AccessoryConfig(models.Model):
         ('ram', 'RAM PC'),
         ('other', 'Khác'),
     )
+    
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='other')
     connect_type = models.CharField(max_length=50, blank=True, verbose_name="Kết nối")
     is_led_rgb = models.BooleanField(default=False)

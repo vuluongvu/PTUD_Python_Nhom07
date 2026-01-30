@@ -1740,6 +1740,15 @@ footer {
     justify-content: center;
     font-weight: 700;
     color: var(--text-sub);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .reviewer-name {
@@ -2086,7 +2095,6 @@ footer {
     font-size: 13px;
     color: var(--text-sub);
 }
-
 
 /* order css add btn*/
 .btn-add-wishlist {
