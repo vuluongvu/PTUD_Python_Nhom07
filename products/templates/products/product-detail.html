@@ -46,7 +46,7 @@
     <div class="prod-meta">
       <!-- DJANGO: {{ product.rating }} -->
       <div class="rating">
-        <i class="fa-solid fa-star"></i> 5 ({{p.reviews.count}} đánh giá)
+        <i class="fa-solid fa-star"></i> {{p.avg_rating}} ({{p.reviews.count}} đánh giá)
       </div>
       <div>Trạng thái: 
         {% if p.inventory and p.inventory.quantity > 0 %}
@@ -199,7 +199,7 @@
   <div class="review-dashboard">
     <!-- DJANGO: Avg rating star -->
     <div class="rating-summary">
-      <div class="average-score">4.9/5</div>
+      <div class="average-score">{{p.avg_rating}}</div>
       <div class="stars-display">
         <i class="fa-solid fa-star"></i>
         <i class="fa-solid fa-star"></i>
@@ -237,60 +237,38 @@
   </div>
 
   <div class="review-list">
+
     <!-- DJANGO: Loop Reviews -->
-    <div class="review-item">
+     {% for r in p.reviews.all %}
+     <div class="review-item">
       <div class="reviewer-info">
-        <div class="avatar">CR</div>
+        <div class="avatar">
+          {% if r.user.profile.avatar %}
+            <img src="{{ r.user.profile.avatar }}" alt="{{ r.user.username }}">
+          {% else %}
+            {{ r.user.username|slice:":1"|upper }}
+          {% endif %}
+        </div>
         <div>
-          <div class="reviewer-name">Cristiano Ronaldo</div>
-          <div class="review-time">2 ngày trước</div>
+          <div class="reviewer-name">{{ r.user.profile.full_name|default:r.user.username }}</div>
+          <div class="review-time">{{ r.created_at|date:"d/m/Y" }}</div>
         </div>
       </div>
       <div class="review-rating">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-        ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-        ><i class="fa-solid fa-star"></i>
+        {% for i in "12345" %}
+          {% if forloop.counter <= r.rating %}
+            <i class="fa-solid fa-star"></i>
+          {% else %}
+            <i class="fa-regular fa-star" style="color:#e5e7eb"></i>
+          {% endif %}
+        {% endfor %}
       </div>
       <p class="review-text">
-       Đẳng cấp quá trời quá đất, tại sao lại có cái máy ngon đến vậy, chơi black myth wukong với elden ring thì gọi là bá cháy
+       {{ r.comment }}
       </p>
     </div>
-
-    <div class="review-item">
-      <div class="reviewer-info">
-        <div class="avatar" style="background: #fcd34d; color: #000">LM</div>
-        <div>
-          <div class="reviewer-name">Lionel Messi</div>
-          <div class="review-time">1 tuần trước</div>
-        </div>
-      </div>
-      <div class="review-rating">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-        ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-        ><i class="fa-regular fa-star"></i>
-      </div>
-      <p class="review-text">
-        Sản phẩm tốt trong tầm giá. Tuy nhiên hộp hơi móp một chút do vận chuyển.
-      </p>
-    </div>
-
-    <div class="review-item">
-      <div class="reviewer-info">
-        <div class="avatar" style="background: #FF6699; color: #000">LM</div>
-        <div>
-          <div class="reviewer-name">Trần Mạnh Trung</div>
-          <div class="review-time">2 tuần trước</div>
-        </div>
-      </div>
-      <div class="review-rating">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-        ><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i
-        ><i class="fa-regular fa-star"></i>
-      </div>
-      <p class="review-text">
-        quá đẳng cấp trong tầm giá,thật sự tuyệt vời
-      </p>
-    </div>
+     {% endfor %}
+    
   </div>
 </div>
 

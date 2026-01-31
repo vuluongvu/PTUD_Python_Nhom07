@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng nhập - LapStore</title>
+    <title>Đăng ký - LapStore</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -38,55 +38,64 @@
         </p>
       </div>
 
-
-      <div class="auth-tabs">
-        <button class="tab-btn active"  id="tab-login" >
+      <div class="auth-tabs"> 
+        <button class="tab-btn" onclick="window.location.href='{% url 'users:login' %}'" id="tab-login">
           Đăng nhập
         </button>
-        <button class="tab-btn" onclick="window.location.href='{% url 'users:register' %}'" id="tab-register">
+        <button class="tab-btn active"  id="tab-register">
           Đăng ký
         </button>
       </div>
 
-      <div id="form-login" class="form-container active">
-        <form id="login-form-element" method="POST" action="{% url 'users:login' %}">
+      <div id="form-register" class="form-container active">
+        <form id="register-form-element" method="POST" action="{% url 'users:register' %}">
           {% csrf_token %} 
           <div class="form-group">
+            <i class="fa-regular fa-user input-icon"></i>
+            <input type="text" id="reg-fullname" name="full_name" class="form-input" placeholder="Họ và tên" required autofocus>
+          </div>
+
+          <div class="form-group">
             <i class="fa-regular fa-envelope input-icon"></i>
-            <input type="text" id="input-login-username" name="username" class="form-input" placeholder="Tên đăng nhập" required autofocus>
+            <input type="email" id="reg-email" name="email" class="form-input" placeholder="Email của bạn" required>
           </div>
           
           <div class="form-group">
             <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" id="input-login-password" name="password" class="form-input" placeholder="Mật khẩu" required>
+            <input type="password" id="reg-password" name="password" class="form-input" placeholder="Mật khẩu" required>
           </div>
           
-          <p class="login-error-message" id= "login-error-message"> </p>
-
-          <div class="auth-options">
-            <label class="remember-label">
-              <input type="checkbox" name="remember_me" style="accent-color: #ff0000;"/> Nhớ tài khoản
-            </label>
-            <a href="#">Quên mật khẩu?</a>
+          <div class="form-group">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="reg-confirm-password" name="confirm_password" class="form-input" placeholder="Nhập lại mật khẩu" required>
           </div>
-
-          <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
+          <button type="submit" class="btn-submit">ĐĂNG KÝ NGAY</button>
         </form>
       </div>
+
+      <div class="divider"><span>Hoặc tiếp tục với</span></div>
+      <div class="social-login">
+        <button class="btn-social">
+          <img src="https://i.pinimg.com/564x/fb/52/e3/fb52e39c5910bdbcc3b98d58d6ca6944.jpg" width="18" alt="Google" /> Google
+        </button>
+        <button class="btn-social">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="18" alt="Facebook" /> Facebook
+        </button>
+      </div>
     </div>
+
     {% if messages %}
         <script>
-          // Đợi trang tải xong rồi mới chạy script
           document.addEventListener('DOMContentLoaded', function() {
             {% for message in messages %}
-              {% if message.tags == 'success' %}
-                alert("{{ message|escapejs }}"); // Hiển thị alert cho message thành công
+              {% if message.tags == 'error' %}
+                alert("Lỗi: {{ message|escapejs }}"); // Hiển thị alert cho message lỗi
               {% endif %}
             {% endfor %}
           });
         </script>
       {% endif %}
-
+    
     {% block extra_js %}{% endblock %}
 
     <script src="{% static 'users/js/main.js' %}"></script>

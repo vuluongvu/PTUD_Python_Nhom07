@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Avg, Count
 
 from core.models import Product
 
@@ -46,9 +46,17 @@ def search_results(request):
 def product_detail(request, slug):
     product = get_object_or_404(
         Product.objects.select_related('laptop_config', 'accessory_config', 'brand', 'category', 'inventory')
-                       .prefetch_related('images', 'reviews'), 
+                       .prefetch_related('images', 'reviews', 'reviews__user__profile')
+                       .annotate(avg_rating=Avg('reviews__rating'), review_count=Count('reviews')), 
         slug=slug
     )
     related_products = Product.objects.filter(category=product.category).exclude(slug=slug).order_by('?')[:4] 
-    context = {'p': product}
+    
+    context = {
+        'p': product,
+        'related_products': related_products,
+        'avg_rating': round(product.avg_rating or 0, 1),
+        'review_count': product.review_count,
+        'profile': related_products,
+    }
     return render(request, 'products/product-detail.html', context)

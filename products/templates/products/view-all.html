@@ -146,7 +146,7 @@
       <ul class="filter-list">
         <li>
           <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Core i3</label
+            ><input type="checkbox" class="filter-checkbox" /> Ryzen 7</label
           >
         </li>
         <li>
@@ -172,6 +172,38 @@
         </li>
       </ul>
     </div>
+
+    <div class="filter-group">
+      <h3 class="filter-title">Khác</h3>
+      <ul class="filter-list">
+        <li>
+          <label class="filter-label"
+            ><input type="checkbox" class="filter-checkbox" /> RTX 3000 Series</label
+          >
+        </li>
+        <li>
+          <label class="filter-label"
+            ><input type="checkbox" class="filter-checkbox" /> RTX 4000 Series </label
+          >
+        </li>
+        <li>
+          <label class="filter-label"
+            ><input type="checkbox" class="filter-checkbox" /> RTX 5000 Series</label
+          >
+        </li>
+        <li>
+          <label class="filter-label"
+            ><input type="checkbox" class="filter-checkbox" /> Amd Radeon</label
+          >
+        </li>
+        <li>
+          <label class="filter-label"
+            ><input type="checkbox" class="filter-checkbox" /> Apple
+            M1/M2</label
+          >
+        </li>
+      </ul>
+    </div>
   </aside>
 
   <div class="main-content">
@@ -179,7 +211,7 @@
     <div class="search-header-block">
       <div class="search-title">
         <h1>Tất cả sản phẩm</h1>
-        <span class="search-count">Hiển thị 1-12 trên 48 sản phẩm</span>
+        <span class="search-count">Hiển thị 12 trên {{products|length}} sản phẩm</span>
       </div>
 
       <!-- Nút mở filter mobile -->
@@ -190,7 +222,7 @@
       <!-- Bộ lọc nhanh -->
       <div class="filter-bar">
         <button class="filter-btn active">
-          <i class="fa-solid fa-arrow-down-wide-short"></i> Mới nhất
+          <i class="fa-solid fa-sort"></i> Mặc định
         </button>
         <button class="filter-btn">
           <i class="fa-solid fa-arrow-up-1-9"></i> Giá thấp - cao
