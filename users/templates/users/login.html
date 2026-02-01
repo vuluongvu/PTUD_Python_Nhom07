@@ -74,20 +74,7 @@
         </form>
       </div>
     </div>
-    {% if messages %}
-        <script>
-          // Đợi trang tải xong rồi mới chạy script
-          document.addEventListener('DOMContentLoaded', function() {
-            {% for message in messages %}
-              {% if message.tags == 'success' %}
-                alert("{{ message|escapejs }}"); // Hiển thị alert cho message thành công
-              {% endif %}
-            {% endfor %}
-          });
-        </script>
-      {% endif %}
-
-    {% block extra_js %}{% endblock %}
+    
 
     <script src="{% static 'users/js/main.js' %}"></script>
   </body>

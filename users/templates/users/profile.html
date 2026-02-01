@@ -1,0 +1,90 @@
+{% extends 'core/base.html' %} {% load static %} {% block title %}Hồ sơ -
+LapStore{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
+{% endblock %}
+{% block content %}
+<div class="breadcrumb">
+  <a href="{% url 'core:home' %}">Trang chủ</a>
+</div>
+    <div class="profile-page">
+      <div class="container">
+        <div class="main-container">
+        <aside class="sidebar-left">
+            <div class="profile-snippet">
+                <img src="{{ avatar }}" alt="Avatar">
+                <h3>{{ first_name|default:username }}</h3>
+               
+            </div>
+            <div class="nav-menu">
+                <a href="#" class="nav-item active"><i class="fas fa-user-shield"></i> Thông tin cá nhân</a>
+                <a href="#" class="nav-item"><i class="fas fa-box-open"></i> Đơn hàng của tôi</a>
+                <a href="#" class="nav-item"><i class="fas fa-wallet"></i> Ví thanh toán</a>
+                <a href="{% url 'users:logout' %}" class="nav-item" id='logout'><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            </div>
+        </aside>
+                <script> 
+                    const logoutBtn = document.getElementById('logout');
+                    logoutBtn.addEventListener('click', function(event) {
+                        event.preventDefault(); 
+                        const confirmed = confirm("Bạn có chắc chắn muốn đăng xuất không?");
+                        if (confirmed) {
+                            window.location.href = logoutBtn.href; 
+                        }
+                    });
+
+                </script>
+
+        <main class="content-card">
+            <h2 class="section-title">Cài đặt tài khoản</h2>
+            <p class="section-subtitle">Thay đổi thông tin liên hệ và tùy chỉnh bảo mật tài khoản của bạn.</p>
+
+            <form method="post" action="">
+              {% csrf_token %}
+                <div class="info-grid">
+                    <div class="input-group">
+                        <label>Họ và tên</label>
+                        <input type="text" name="first_name" value="{{ first_name }}">
+                    </div>
+                    <div class="input-group">
+                        <label>Tên</label>
+                        <input type="text" name="last_name" value="{{ last_name|default:'' }}">
+                    </div>
+                     <div class="input-group">
+                        <label>Số điện thoại</label>
+                        <input type="tel" value="{{phone_number|default:''}}">
+                    </div> 
+                    <div class="input-group">
+                        <label>Địa chỉ Email</label>
+                        <input type="email" value="{{ email }}" disabled style="background: #f8f9fa; cursor: not-allowed;">
+                    </div>
+                    <div class="input-group">
+                        <label>Ngày sinh</label>
+                        <input type="date" value="{{date}}">
+                    </div>
+                    <div class="input-group">
+                        <label>Giới tính</label>
+                        <select>
+                            <option>Nam</option>
+                            <option>Nữ</option>
+                            <option>Khác</option>
+                        </select>
+                    </div>
+                    <div class="input-group full-row">
+                        <label>Địa chỉ nhận hàng mặc định</label>
+                        <input type="text" placeholder="Số nhà, tên đường, Phường/Xã..." value="{{ address.0.street_address|default:'' }}">
+                    </div>
+                    <div class="input-group full-row">
+                        <label>Ghi chú cho shipper</label>
+                        <input type="text" placeholder="Ví dụ: Gọi trước khi giao, giao giờ hành chính...">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">CẬP NHẬT HỒ SƠ</button>
+            </form>
+          </main>
+        </div>
+      </div>
+    </div>
+  
+{% endblock %}

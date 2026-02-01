@@ -16,7 +16,7 @@
       <!-- DJANGO: ảnh -->
       <img
         id="mainImage"
-        src="{{p.images.first.image_url}}"
+        src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
         alt="{{ p.name }}"
       />
     </div>
@@ -46,9 +46,10 @@
     <div class="prod-meta">
       <!-- DJANGO: {{ product.rating }} -->
       <div class="rating">
-        <i class="fa-solid fa-star"></i> {{p.avg_rating}} ({{p.reviews.count}} đánh giá)
+        <i class="fa-solid fa-star"></i> {{ p.avg_rating|default:0|floatformat:1 }} ({{p.reviews.count}} đánh giá)
       </div>
-      <div>Trạng thái: 
+      <div>
+        Trạng thái: 
         {% if p.inventory and p.inventory.quantity > 0 %}
           Còn hàng
         {% else  %}
@@ -150,6 +151,7 @@
   <div class="content-block">
     <h3 class="block-title">Thông số kỹ thuật</h3>
     <!-- DJANGO: Loop specifications -->
+    {% if p.is_laptop %}
     <table class="specs-table">
       <tr>
         <td>CPU</td>
@@ -187,8 +189,19 @@
         <td>Led phím: </td>
         <td>Có</td>
       </tr>
-
     </table>
+    {% else %}
+    <table class='specs-table'>
+      <tr>
+       <td>Hãng sản xuất </td>
+       <td>{{p.brand}}</td>
+      </tr>
+      <tr>
+        <td>Tên chi tiết</td>
+       <td>{{p.accessory_config.}}</td>
+      </tr>
+    </table>
+    {% endif %}
   </div>
 </div>
 
@@ -199,7 +212,11 @@
   <div class="review-dashboard">
     <!-- DJANGO: Avg rating star -->
     <div class="rating-summary">
-      <div class="average-score">{{p.avg_rating}}</div>
+
+        <div class="average-score">
+          {{p.avg_rating|default:0|floatformat:1}}
+        </div>
+
       <div class="stars-display">
         <i class="fa-solid fa-star"></i>
         <i class="fa-solid fa-star"></i>
@@ -208,7 +225,7 @@
         <i class="fa-solid fa-star-half-stroke"></i>
       </div>
       <div class="total-reviews">{{p.reviews_set.count}} đánh giá</div>
-    </div>
+  </div>
 
     <!-- DJANGO: Review Form (POST) -->
     <div class="review-form-box">
@@ -239,18 +256,18 @@
   <div class="review-list">
 
     <!-- DJANGO: Loop Reviews -->
-     {% for r in p.reviews.all %}
+     {% for r in reviews|slice:4 %}
      <div class="review-item">
       <div class="reviewer-info">
         <div class="avatar">
-          {% if r.user.profile.avatar %}
-            <img src="{{ r.user.profile.avatar }}" alt="{{ r.user.username }}">
+          {% if r.avatar %}
+            <img src="{{ r.avatar }}" alt="{{ r.username }}">
           {% else %}
-            {{ r.user.username|slice:":1"|upper }}
+            {{ r.username|slice:":1"|upper }}
           {% endif %}
         </div>
         <div>
-          <div class="reviewer-name">{{ r.user.profile.full_name|default:r.user.username }}</div>
+          <div class="reviewer-name">{{ r.full_name|default:r.username }}</div>
           <div class="review-time">{{ r.created_at|date:"d/m/Y" }}</div>
         </div>
       </div>
@@ -293,3 +310,4 @@
   </button>
 </div>
 {% endblock %}
+  

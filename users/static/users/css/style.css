@@ -54,6 +54,16 @@ body {
     color: #fcd34d;
 }
 
+/*avatar*/
+.action-btn img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    margin-bottom: 10px;
+}
+
 .subtitle {
     font-size: 13px;
     color: #6b7280;
@@ -116,6 +126,10 @@ body {
     font-size: 16px;
 }
 
+.input-group {
+    margin-bottom: 20px;
+}
+
 .btn-submit {
     width: 100%;
     padding: 14px;
@@ -126,7 +140,6 @@ body {
     border-radius: 12px;
     cursor: pointer;
     font-size: 15px;
-    margin-top: 10px;
     transition: var(--trans);
 }
 
@@ -252,4 +265,8 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.error-message span {
+    font-size: 13px;
 }

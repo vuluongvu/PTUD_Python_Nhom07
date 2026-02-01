@@ -308,6 +308,15 @@ header {
     transition: var(--trans);
 }
 
+/* Make avatar images fill the action button and be circular */
+.action-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
 .action-btn:hover {
     background: var(--primary);
     color: white;

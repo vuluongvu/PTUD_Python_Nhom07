@@ -268,7 +268,7 @@ class Review(TimeStampedModel):
     comment = models.TextField()
 
     class Meta:
-        unique_together = ('user', 'product') # Quan trọng: Mỗi người chỉ review 1 lần/sp
+        unique_together = ('user', 'product') 
 
 class WishList(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist')
@@ -277,7 +277,7 @@ class WishList(TimeStampedModel):
     class Meta:
         unique_together = ('user', 'product')
 
-# --- CẤU HÌNH LAPTOP (QUAN TRỌNG: Cải tiến bộ lọc) ---
+# --- CẤU HÌNH LAPTOP ---
 class LaptopConfig(models.Model):
     product = models.OneToOneField(
         Product, 
@@ -320,18 +320,19 @@ class AccessoryConfig(models.Model):
     TYPE_CHOICES = (
         ('mouse', 'Chuột'),
         ('keyboard', 'Bàn phím'),
-        ('headphone', 'Tai nghe'),
         ('screen', 'Màn hình rời'),
         ('vga', 'Card đồ họa'),
         ('cpu', 'CPU'),
         ('ram', 'RAM PC'),
-        ('other', 'Khác'),
     )
     
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='other')
     connect_type = models.CharField(max_length=50, blank=True, verbose_name="Kết nối")
     is_led_rgb = models.BooleanField(default=False)
-    detail = models.TextField(verbose_name="Thông số chi tiết", blank=True) # Có thể blank
-
+    detail_1 = models.TextField(verbose_name="Thông số chi tiết 1", blank=True)
+    detail_2 = models.TextField(verbose_name="Thông số chi tiết 2", blank=True)
+    detail_3 = models.TextField(verbose_name="Thông số chi tiết 3", blank=True)
+    detail_4 = models.TextField(verbose_name="Thông số chi tiết 4", blank=True)
+    detail_5 = models.TextField(verbose_name="Thông số chi tiết 5", blank=True)
     def __str__(self):
         return f"Linh kiện: {self.type} - {self.product.name}"

@@ -6,9 +6,8 @@ from core.models import Product
 
 
 # Create your views here.
-
 def view_all_products(request):
-    """View hiển thị tất cả sản phẩm có phân trang."""
+   
     products_list = Product.objects.filter(status=True).order_by('-created_at')
     
     paginator = Paginator(products_list, 12)
@@ -31,7 +30,7 @@ def search_results(request):
     else:
         products_list = Product.objects.none()
 
-    # Phân trag: 12 sản phẩm/trang
+    # Phân trang: 12 sản phẩm/trang
     paginator = Paginator(products_list, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -51,12 +50,34 @@ def product_detail(request, slug):
         slug=slug
     )
     related_products = Product.objects.filter(category=product.category).exclude(slug=slug).order_by('?')[:4] 
-    
+    avatar_url = None
+
+    if request.user.is_authenticated:
+        user_profile = getattr(request.user, 'profile', None)        
+        if user_profile and user_profile.avatar:
+            try:
+                avatar_url = user_profile.avatar.url
+            except AttributeError:
+                avatar_url = str(user_profile.avatar)
+                
     context = {
         'p': product,
         'related_products': related_products,
         'avg_rating': round(product.avg_rating or 0, 1),
         'review_count': product.review_count,
         'profile': related_products,
+        'avatar': avatar_url,
+        # build safe reviews list to avoid accessing missing profile in templates
+        'reviews': [
+            {
+                'avatar': (getattr(getattr(r.user, 'profile', None), 'avatar', None)) or None,
+                'username': r.user.username,
+                'full_name': (getattr(getattr(r.user, 'profile', None), 'full_name', None)) or r.user.username,
+                'created_at': r.created_at,
+                'rating': r.rating,
+                'comment': r.comment,
+            }
+            for r in product.reviews.all()
+        ],
     }
     return render(request, 'products/product-detail.html', context)
