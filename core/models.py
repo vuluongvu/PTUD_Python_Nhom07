@@ -268,7 +268,7 @@ class Review(TimeStampedModel):
     comment = models.TextField()
 
     class Meta:
-        unique_together = ('user', 'product') # Quan trọng: Mỗi người chỉ review 1 lần/sp
+        unique_together = ('user', 'product') 
 
 class WishList(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist')
@@ -277,7 +277,7 @@ class WishList(TimeStampedModel):
     class Meta:
         unique_together = ('user', 'product')
 
-# --- CẤU HÌNH LAPTOP (QUAN TRỌNG: Cải tiến bộ lọc) ---
+# --- CẤU HÌNH LAPTOP ---
 class LaptopConfig(models.Model):
     product = models.OneToOneField(
         Product, 

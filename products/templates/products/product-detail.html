@@ -16,7 +16,7 @@
       <!-- DJANGO: ảnh -->
       <img
         id="mainImage"
-        src="{{p.images.first.image_url}}"
+        src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
         alt="{{ p.name }}"
       />
     </div>
@@ -256,18 +256,18 @@
   <div class="review-list">
 
     <!-- DJANGO: Loop Reviews -->
-     {% for r in p.reviews.all|slice:4 %}
+     {% for r in reviews|slice:4 %}
      <div class="review-item">
       <div class="reviewer-info">
         <div class="avatar">
-          {% if r.user.profile.avatar %}
-            <img src="{{ r.user.profile.avatar }}" alt="{{ r.user.username }}">
+          {% if r.avatar %}
+            <img src="{{ r.avatar }}" alt="{{ r.username }}">
           {% else %}
-            {{ r.user.username|slice:":1"|upper }}
+            {{ r.username|slice:":1"|upper }}
           {% endif %}
         </div>
         <div>
-          <div class="reviewer-name">{{ r.user.profile.full_name|default:r.user.username }}</div>
+          <div class="reviewer-name">{{ r.full_name|default:r.username }}</div>
           <div class="review-time">{{ r.created_at|date:"d/m/Y" }}</div>
         </div>
       </div>

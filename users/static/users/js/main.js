@@ -56,7 +56,6 @@ if (loginForm) {
   });
 }
 
-
 // 3. ==== Validate Register ========
 const registerForm = $("#register-form-element");
 const errorRegisterMessage = $("#register-error-message");
@@ -79,35 +78,50 @@ if (registerForm) {
 
     // 1. Check trống
     if (!fullName || !email || !password || !confirmPass) {
-      errorRegisterMessage.innerHTML = xmarkAndErrorMessage(
-        errorMessageNullRegister,
-      );
-      errorRegisterMessage.classList.add("error-message");
+      if (errorRegisterMessage) {
+        errorRegisterMessage.innerHTML = xmarkAndErrorMessage(
+          errorMessageNullRegister,
+        );
+        errorRegisterMessage.classList.add("error-message");
+      } else {
+        alert(errorMessageNullRegister);
+      }
       hasError = true;
     }
     // 2. Check định dạng email
     else if (!emailRegex.test(email)) {
-      errorRegisterMessage.innerHTML = xmarkAndErrorMessage(errorMessageEmail);
-      errorRegisterMessage.classList.add("error-message");
+      if (errorRegisterMessage) {
+        errorRegisterMessage.innerHTML =
+          xmarkAndErrorMessage(errorMessageEmail);
+        errorRegisterMessage.classList.add("error-message");
+      } else {
+        alert(errorMessageEmail);
+      }
       hasError = true;
     }
     // 3. Check độ dài pass
     else if (password.length < 8) {
-      errorRegisterMessage.innerHTML =
-        xmarkAndErrorMessage(errorMessagePassword);
-      errorRegisterMessage.classList.add("error-message");
+      if (errorRegisterMessage) {
+        errorRegisterMessage.innerHTML =
+          xmarkAndErrorMessage(errorMessagePassword);
+        errorRegisterMessage.classList.add("error-message");
+      } else {
+        alert(errorMessagePassword);
+      }
       hasError = true;
     }
     // 4. Check khớp pass
     else if (password !== confirmPass) {
-      errorRegisterMessage.innerHTML = xmarkAndErrorMessage(
-        errorMessageConfirmPass,
-      );
-      errorRegisterMessage.classList.add("error-message");
+      if (errorRegisterMessage) {
+        errorRegisterMessage.innerHTML = xmarkAndErrorMessage(
+          errorMessageConfirmPass,
+        );
+        errorRegisterMessage.classList.add("error-message");
+      } else {
+        alert(errorMessageConfirmPass);
+      }
       hasError = true;
     }
-
     if (hasError) e.preventDefault();
   });
 }
-

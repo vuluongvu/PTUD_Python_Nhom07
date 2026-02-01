@@ -69,6 +69,7 @@
             <i class="fa-solid fa-lock input-icon"></i>
             <input type="password" id="reg-confirm-password" name="confirm_password" class="form-input" placeholder="Nhập lại mật khẩu" required>
           </div>
+          <p class="register-error-message" id="register-error-message"></p>
           <button type="submit" class="btn-submit">ĐĂNG KÝ NGAY</button>
         </form>
       </div>
@@ -88,7 +89,7 @@
         <script>
           document.addEventListener('DOMContentLoaded', function() {
             {% for message in messages %}
-              {% if message.tags == 'error' %}
+              {% if message.tags == 'error'%}
                 alert("Lỗi: {{ message|escapejs }}"); // Hiển thị alert cho message lỗi
               {% endif %}
             {% endfor %}

@@ -248,7 +248,7 @@
               </button>
               <span class="badge-sale">Hot</span>
               <div class="prod-img-wrap">
-                <img src="{{p.images.first.image_url}}" alt="LG" />
+                <img src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}" alt="LG" />
               </div>
               <h3 class="prod-name">{{p.name}}</h3>
               <div class="prod-specs-box">

@@ -34,9 +34,6 @@ Kết quả tìm kiếm - LapStore
     <a href="?q={{ query }}&sort=price_desc" class="filter-btn {% if sort_param == 'price_desc' %}active{% endif %}">
       <i class="fa-solid fa-arrow-down-9-1"></i> Giá cao - thấp
     </a>
-    <a href="?q={{ query }}&sort=discount" class="filter-btn {% if sort_param == 'discount' %}active{% endif %}">
-      <i class="fa-solid fa-percent"></i> Khuyến mãi
-    </a>
   </div>
 </div>
 
@@ -52,7 +49,7 @@ Kết quả tìm kiếm - LapStore
               </button>
               <span class="badge-sale">Hot</span>
               <div class="prod-img-wrap">
-                <img src="{{p.images.first.image_url}}" alt="{{ p.name }}" />
+                <img src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}" alt="{{ p.name }}" />
               </div>
               <h3 class="prod-name">{{p.name}}</h3>
               <div class="prod-specs-box">

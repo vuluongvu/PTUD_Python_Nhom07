@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'users.context_processors.user_profile_data',
             ],
         },
     },
@@ -120,3 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+# redirect sau khi login nếu không có ?next=
+LOGIN_REDIRECT_URL = 'core:home'
+LOGIN_URL = 'users:login'
+LOGOUT_REDIRECT_URL = 'core:home'
