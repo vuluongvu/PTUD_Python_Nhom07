@@ -1,10 +1,10 @@
 # Laptop_Store
 
-Ứng dụng cửa hàng laptop đơn giản xây dựng bằng Django.
+Phát triển website bán laptop và linh kiện máy tính sử dụng ngôn ngữ lập trình Python
 
 ## Giới thiệu
 
-- Mô tả: Hệ thống quản lý sản phẩm (laptop, phụ kiện), người dùng, và đơn hàng.
+- Mô tả: HPhát triển website bán laptop và linh kiện máy tính sử dụng ngôn ngữ lập trình Python.
 - Cấu trúc chính: ứng dụng `core`, `products`, `orders`, `users`.
 
 ## Yêu cầu
@@ -71,4 +71,4 @@ python manage.py test
 
 ---
 
-_README này là bản tóm tắt nhanh; tôi có thể mở rộng thêm phần hướng dẫn cấu hình môi trường, CI, hoặc hướng dẫn triển khai nếu bạn muốn._
+\_README này là bản tóm tắt nhanh; tôi có thể mở rộng thêm phần hướng dẫn cấu hình môi trường, CI, hoặc hướng dẫn triển khai.
