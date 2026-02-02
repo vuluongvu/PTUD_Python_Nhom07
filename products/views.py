@@ -43,13 +43,24 @@ def search_results(request):
     return render(request, 'products/search-results.html', context)
 
 def product_detail(request, slug):
+    
     product = get_object_or_404(
         Product.objects.select_related('laptop_config', 'accessory_config', 'brand', 'category', 'inventory')
                        .prefetch_related('images', 'reviews', 'reviews__user__profile')
                        .annotate(avg_rating=Avg('reviews__rating'), review_count=Count('reviews')), 
         slug=slug
     )
-    related_products = Product.objects.filter(category=product.category).exclude(slug=slug).order_by('?')[:4] 
+    sort_by = request.GET.get('sort', 'id')
+    
+    # Chỉ lấy sản phẩm cùng danh mục để sort cho nhẹ
+    related_query = Product.objects.filter(category=product.category).exclude(slug=slug)
+
+    if sort_by == 'price_asc':
+        related_products = related_query.order_by('price')
+    elif sort_by == 'price_desc':
+        related_products = related_query.order_by('-price')
+    else:
+        related_products = related_query.order_by('?')[:4]
     avatar_url = None
 
     if request.user.is_authenticated:
@@ -67,7 +78,6 @@ def product_detail(request, slug):
         'review_count': product.review_count,
         'profile': related_products,
         'avatar': avatar_url,
-        # build safe reviews list to avoid accessing missing profile in templates
         'reviews': [
             {
                 'avatar': (getattr(getattr(r.user, 'profile', None), 'avatar', None)) or None,
@@ -79,5 +89,6 @@ def product_detail(request, slug):
             }
             for r in product.reviews.all()
         ],
+        'products_by_price': related_products,
     }
     return render(request, 'products/product-detail.html', context)
