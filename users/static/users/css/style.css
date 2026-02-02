@@ -16,9 +16,7 @@
 
 body {
     background-color: var(--bg-body);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    /* don't force global centering - interferes with site layouts (profile, dashboards, etc.) */
     min-height: 100vh;
     padding: 20px;
     background-image: radial-gradient(#cb1c22 0.5px, transparent 0.5px), radial-gradient(#cb1c22 0.5px, var(--bg-body) 0.5px);

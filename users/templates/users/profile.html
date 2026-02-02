@@ -1,5 +1,7 @@
-{% extends 'core/base.html' %} {% load static %} {% block title %}Hồ sơ -
-LapStore{% endblock %}
+{% extends 'core/base.html' %}
+{% block nav_user_active %}active{% endblock %}
+{% load static %} 
+{% block title %}Hồ sơ - LapStore{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
 {% endblock %}
@@ -17,10 +19,10 @@ LapStore{% endblock %}
                
             </div>
             <div class="nav-menu">
-                <a href="#" class="nav-item active"><i class="fas fa-user-shield"></i> Thông tin cá nhân</a>
-                <a href="#" class="nav-item"><i class="fas fa-box-open"></i> Đơn hàng của tôi</a>
-                <a href="#" class="nav-item"><i class="fas fa-wallet"></i> Ví thanh toán</a>
-                <a href="{% url 'users:logout' %}" class="nav-item" id='logout'><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                <a href="#" class="nav-item-profile active"><i class="fas fa-user-shield"></i> Thông tin cá nhân</a>
+                <a href="#" class="nav-item-profile"><i class="fas fa-box-open"></i> Đơn hàng của tôi</a>
+                <a href="#" class="nav-item-profile"><i class="fas fa-wallet"></i> Ví thanh toán</a>
+                <a href="{% url 'users:logout' %}" class="nav-item-profile" id='logout'><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
             </div>
         </aside>
                 <script> 
