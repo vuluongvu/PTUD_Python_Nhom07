@@ -93,6 +93,13 @@ class Product(TimeStampedModel):
     slug = models.SlugField(max_length=250, unique=True, blank=True)
     description = models.TextField()
     is_lap = models.BooleanField(default=False)
+    is_vga = models.BooleanField(default=False)
+    is_cpu = models.BooleanField(default=False)
+    is_keyboard = models.BooleanField(default=False)
+    is_ram = models.BooleanField(default=False)
+    is_headphone = models.BooleanField(default=False)
+    is_mouse = models.BooleanField(default=False)
+    is_screen = models.BooleanField(default=False)
     
     # Giá bán
     price = models.DecimalField(
@@ -329,10 +336,10 @@ class AccessoryConfig(models.Model):
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='other')
     connect_type = models.CharField(max_length=50, blank=True, verbose_name="Kết nối")
     is_led_rgb = models.BooleanField(default=False)
-    detail_1 = models.TextField(verbose_name="Thông số chi tiết 1", blank=True)
-    detail_2 = models.TextField(verbose_name="Thông số chi tiết 2", blank=True)
-    detail_3 = models.TextField(verbose_name="Thông số chi tiết 3", blank=True)
-    detail_4 = models.TextField(verbose_name="Thông số chi tiết 4", blank=True)
-    detail_5 = models.TextField(verbose_name="Thông số chi tiết 5", blank=True)
+    detail_1 = models.TextField(verbose_name="Thông số chi tiết 1", blank=True, max_length=50)
+    detail_2 = models.TextField(verbose_name="Thông số chi tiết 2", blank=True, max_length=50)
+    detail_3 = models.TextField(verbose_name="Thông số chi tiết 3", blank=True, max_length=50)
+    detail_4 = models.TextField(verbose_name="Thông số chi tiết 4", blank=True, max_length=50)
+    detail_5 = models.TextField(verbose_name="Thông số chi tiết 5", blank=True, max_length=50)
     def __str__(self):
         return f"Linh kiện: {self.type} - {self.product.name}"

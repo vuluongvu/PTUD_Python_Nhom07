@@ -190,17 +190,125 @@
         <td>Có</td>
       </tr>
     </table>
-    {% else %}
+    {% elif p.is_vga %}
     <table class='specs-table'>
       <tr>
        <td>Hãng sản xuất </td>
        <td>{{p.brand}}</td>
       </tr>
       <tr>
-        <td>Tên chi tiết</td>
-       <td>{{p.accessory_config.}}</td>
+        <td>
+          Công nghệ
+        </td>
+       <td>{{p.accessory_config.detail_1}}</td>
       </tr>
+      <tr>
+        <td>
+          Nhân CUDA
+        </td>
+       <td>{{p.accessory_config.detail_2}}</td>
+      </tr>
+
+      <tr>
+        <td>
+          Bộ nhớ
+        </td>
+       <td>{{p.accessory_config.detail_3}}</td>
+      </tr>
+
+      <tr>
+        <td>
+          Xung nhịp
+        </td>
+       <td>{{p.accessory_config.detail_4}}</td>
+      </tr>
+
+      <tr>
+        <td>
+          Kết nối
+        </td>
+       <td>{{p.accessory_config.detail_5}}</td>
+
     </table>
+    {% elif p.is_cpu %}
+    <table class='specs-table'>
+      <tr>
+       <td>Hãng sản xuất </td>
+       <td>{{p.brand}}</td>
+      </tr>
+      <tr>
+        <td>
+          Số nhân
+        </td>
+       <td>{{p.accessory_config.detail_1}}</td>
+      </tr>
+      <tr>
+        <td>
+          Số luồng
+        </td>
+       <td>{{p.accessory_config.detail_2}}</td>
+      </tr>
+      
+      <tr>
+       
+        <td>
+         TDP Max
+        </td>
+       <td>{{p.accessory_config.detail_3}}</td>
+      </tr>
+
+      <tr>
+        <td>
+          Tốc độ tối đa
+        </td>
+       <td>{{p.accessory_config.detail_4}}</td>
+      </tr>
+
+      <tr>
+        <td>
+         Xung nhịp tối đa
+        </td>
+       <td>{{p.accessory_config.detail_5}}</td>
+       </table>
+    {% elif p.is_ram %}
+    <table class='specs-table'>
+      <tr>
+       <td>Hãng sản xuất </td>
+       <td>{{p.brand}}</td>
+      </tr>
+      <tr>
+        <td>
+          Dung luợng
+        </td>
+       <td>{{p.accessory_config.detail_1}}</td>
+      </tr>
+      <tr>
+        <td>
+          Tốc độ
+        </td>
+       <td>{{p.accessory_config.detail_2}}</td>
+      </tr>
+      <tr>
+        <td>
+          Điện áp
+        </td>
+       <td>{{p.accessory_config.detail_3}}</td>
+      </tr>
+      <tr>
+        <td>
+          Loại RAM
+        </td>
+       <td>{{p.accessory_config.detail_4}}</td>
+      </tr>
+      <tr>
+        <td>
+          Độ trễ
+        </td>
+       <td>{{p.accessory_config.detail_5}}</td>
+      </tr>
+      </table>
+
+    
     {% endif %}
   </div>
 </div>

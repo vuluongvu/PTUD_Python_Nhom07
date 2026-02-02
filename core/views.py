@@ -4,10 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
+from django.db.models import Q
 
-# core/views.py
+
 def home(request):
     products = Product.objects.all()
-    # Không cần tính toán avatar ở đây nữa vì đã có context_processor lo
-    return render(request, 'core/home.html', {'products': products})
+    components = Product.objects.filter(Q(is_vga=True) | Q(is_cpu=True) | Q(is_ram=True))[:5]
+    return render(request, 'core/home.html', {'products': products, 'components': components})
+
