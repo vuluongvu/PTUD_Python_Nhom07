@@ -19,6 +19,9 @@ body {
     /* don't force global centering - interferes with site layouts (profile, dashboards, etc.) */
     min-height: 100vh;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-image: radial-gradient(#cb1c22 0.5px, transparent 0.5px), radial-gradient(#cb1c22 0.5px, var(--bg-body) 0.5px);
     background-size: 20px 20px;
 }
