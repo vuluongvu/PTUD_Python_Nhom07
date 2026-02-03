@@ -60,18 +60,6 @@
                         <label>Địa chỉ Email</label>
                         <input type="email" value="{{ email }}" disabled style="background: #f8f9fa; cursor: not-allowed;">
                     </div>
-                    <div class="input-group">
-                        <label>Ngày sinh</label>
-                        <input type="date" value="{{date}}">
-                    </div>
-                    <div class="input-group">
-                        <label>Giới tính</label>
-                        <select>
-                            <option>Nam</option>
-                            <option>Nữ</option>
-                            <option>Khác</option>
-                        </select>
-                    </div>
                     <div class="input-group full-row">
                         <label>Địa chỉ nhận hàng mặc định</label>
                         <input type="text" placeholder="Số nhà, tên đường, Phường/Xã..." value="{{ address.0.street_address|default:'' }}">

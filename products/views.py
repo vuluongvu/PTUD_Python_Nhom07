@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg, Count
-
-from core.models import Product
+from django.http import JsonResponse
+from core.models import Product, Review
 
 
 # Create your views here.
@@ -50,9 +50,55 @@ def product_detail(request, slug):
                        .annotate(avg_rating=Avg('reviews__rating'), review_count=Count('reviews')), 
         slug=slug
     )
-    sort_by = request.GET.get('sort', 'id')
+
+    #  Xử lý Avatar người dùng 
+    avatar_url = None
+    if request.user.is_authenticated:
+        user_profile = getattr(request.user, 'profile', None)        
+        if user_profile and user_profile.avatar:
+            try:
+                avatar_url = user_profile.avatar.url
+            except:
+                avatar_url = str(user_profile.avatar)
+
+    # XỬ LÝ POST (Bình luận AJAX)
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error', 'message': 'Bạn cần đăng nhập!'}, status=403)
+
+        rating = request.POST.get('rating')
+        content = request.POST.get('content')
+
+        if not rating or not content:
+            return JsonResponse({'status': 'error', 'message': 'Vui lòng nhập đủ thông tin!'}, status=400)
+
+        try:
+            # Lưu Review 
+            new_review = Review.objects.create(
+                product=product,
+                user=request.user,
+                rating=int(rating),
+                comment=content 
+            )
+
+            return JsonResponse({
+                'status': 'success',
+                'username': request.user.username,
+                'full_name': getattr(request.user.profile, 'full_name', request.user.username),
+                'avatar': avatar_url,
+                'rating': new_review.rating,
+                'comment': new_review.comment,
+                'created_at': 'Vừa xong'
+            })
+        except Exception as e:
+           
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    # XỬ LÝ GET 
+    # Khai báo giá trị mặc định để tránh  UnboundLocalError
+    related_products = Product.objects.none() 
     
-    # Chỉ lấy sản phẩm cùng danh mục để sort cho nhẹ
+    sort_by = request.GET.get('sort', 'id')
     related_query = Product.objects.filter(category=product.category).exclude(slug=slug)
 
     if sort_by == 'price_asc':
@@ -61,16 +107,7 @@ def product_detail(request, slug):
         related_products = related_query.order_by('-price')
     else:
         related_products = related_query.order_by('?')[:4]
-    avatar_url = None
 
-    if request.user.is_authenticated:
-        user_profile = getattr(request.user, 'profile', None)        
-        if user_profile and user_profile.avatar:
-            try:
-                avatar_url = user_profile.avatar.url
-            except AttributeError:
-                avatar_url = str(user_profile.avatar)
-                
     context = {
         'p': product,
         'related_products': related_products,
