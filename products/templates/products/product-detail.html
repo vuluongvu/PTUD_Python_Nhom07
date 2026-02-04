@@ -1,19 +1,18 @@
 {% extends 'core/base.html' %} 
 {% load static %} 
-{% block title %}{{p.name}}
-{% endblock %} 
+
+{% block title %}{{ p.name }}{% endblock %} 
+
 {% block content %}
-<!-- DJANGO: dynamic -->
 <div class="breadcrumb">
   <a href="{% url 'core:home' %}">Trang chủ</a> /
-  <a href="{% url 'products:view-all-products' %}">Laptop</a> /
-  <a href="#">{{p.brand}}</a>
+  <a href="{% url 'products:view-all-products' %}">Tất cả sản phẩm</a> /
+  <a href="#">{{ p.brand }}</a>
 </div>
 
 <div class="detail-grid">
   <div class="gallery-box">
     <div class="main-img-wrap">
-      <!-- DJANGO: ảnh -->
       <img
         id="mainImage"
         src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
@@ -21,17 +20,14 @@
       />
     </div>
     <div class="thumb-list">
-      <!-- DJANGO: Loop product images -->
         {% if p.images.first %}
-        <div class="thumb-item active" 
-            onclick="changeImage(this, '{{ p.images.first.image_url }}')">
+        <div class="thumb-item active" onclick="changeImage(this, '{{ p.images.first.image_url }}')">
             <img src="{{ p.images.first.image_url }}" alt="Ảnh gốc" />
         </div>
         {% endif %}
 
         {% for img in p.images.all|slice:"1:" %}
-        <div class="thumb-item" 
-            onclick="changeImage(this, '{{ img.image_url }}')">
+        <div class="thumb-item" onclick="changeImage(this, '{{ img.image_url }}')">
             <img src="{{ img.image_url }}" alt="Ảnh phụ" />
         </div>
         {% endfor %}
@@ -39,42 +35,36 @@
   </div>
 
   <div class="prod-info">
-    <h1 class="prod-title">
-      {{p.name}}
-    </h1>
+    <h1 class="prod-title">{{ p.name }}</h1>
 
     <div class="prod-meta">
-      <!-- DJANGO: {{ product.rating }} -->
       <div class="rating">
-        <i class="fa-solid fa-star"></i> {{ p.avg_rating|default:0|floatformat:1 }} ({{p.reviews.count}} đánh giá)
+        <i class="fa-solid fa-star"></i> {{ p.avg_rating|default:0|floatformat:1 }} ({{ p.reviews.count }} đánh giá)
       </div>
       <div>
         Trạng thái: 
         {% if p.inventory and p.inventory.quantity > 0 %}
-          Còn hàng
-        {% else  %}
-          Hết hàng
+          <span style="color: green; font-weight: bold;">Còn hàng</span>
+        {% else %}
+          <span style="color: red; font-weight: bold;">Hết hàng</span>
         {% endif %}
       </div>
     </div>
 
     <div class="price-row">
-      <!-- DJANGO  -->
-      <span class="current-price">{{p.price_vn}}</span>
-      <span class="old-price">{{p.discount_price_vn}}</span>
+      <span class="current-price">{{ p.price_vn }}</span>
+      <span class="old-price">{{ p.discount_price_vn }}</span>
       <span class="discount-tag">-15%</span>
     </div>
 
-    <!-- DJANGO: Loop Variants (Colors) -->
     {% if p.is_lap %}
     <div class="option-group">
       <label class="option-label">Màu sắc</label>
       <div class="option-list">
-        <button class="opt-btn active">Đen (black)</button>
+        <button class="opt-btn active">Đen (Black)</button>
       </div>
     </div>
 
-    <!-- DJANGO: Loop Variants (Config) -->
     <div class="option-group">
       <label class="option-label">Cấu hình (RAM / SSD)</label>
       <div class="option-list">
@@ -88,38 +78,19 @@
         <i class="fa-solid fa-gift"></i> Ưu đãi Lì Xì Tết
       </div>
       <ul class="promo-list">
-        <li>
-          <i class="fa-solid fa-check-circle"></i> Giảm thêm 500.000đ cho Học
-          sinh - Sinh viên.
-        </li>
-        <li>
-          <i class="fa-solid fa-check-circle"></i> Tặng Túi chống sốc cao cấp
-          trị giá 350.000đ.
-        </li>
-        <li>
-          <i class="fa-solid fa-check-circle"></i> Giảm 20% khi mua kèm Chuột
-          Magic Mouse.
-        </li>
-        <li>
-          <i class="fa-solid fa-check-circle"></i> Hỗ trợ cài đặt phần mềm miễn
-          phí trọn đời.
-        </li>
+        <li><i class="fa-solid fa-check-circle"></i> Giảm thêm 500.000đ cho Học sinh - Sinh viên.</li>
+        <li><i class="fa-solid fa-check-circle"></i> Tặng Túi chống sốc cao cấp trị giá 350.000đ.</li>
+        <li><i class="fa-solid fa-check-circle"></i> Giảm 20% khi mua kèm Chuột Magic Mouse.</li>
+        <li><i class="fa-solid fa-check-circle"></i> Hỗ trợ cài đặt phần mềm miễn phí trọn đời.</li>
       </ul>
     </div>
 
     <div class="action-group">
-      <!-- DJANGO: Add to cart form/action -->
-      <button
-        class="btn-main btn-buy"
-        onclick="window.location.href = '{% url 'orders:cart' %}'"
-      >
+      <button class="btn-main btn-buy" onclick="window.location.href = '{% url 'orders:cart' %}'">
         MUA NGAY
         <span>(Giao hàng tận nơi hoặc nhận tại cửa hàng)</span>
       </button>
-      <button
-        class="btn-main btn-cart"
-        onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')"
-      >
+      <button class="btn-main btn-cart" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">
         <i class="fa-solid fa-cart-plus"></i>
       </button>
     </div>
@@ -129,19 +100,14 @@
 <div class="content-grid">
   <div class="content-block">
     <h3 class="block-title">Đặc điểm nổi bật</h3>
-    <!-- DJANGO: {{ product.description|safe }} -->
     <p style="margin-bottom: 15px; color: #4b5563">
-      {{p.description}}
+      {{ p.description }}
     </p>
     {% for img in p.images.all %}
       {% if img.image_url_feature %}
         <img
           src="{{ img.image_url_feature }}"
-          style=
-         " border-radius: 12px; 
-          margin-top: 10px;
-          max-witdh: 790px;
-          max-height: 500px;"
+          style="border-radius: 12px; margin-top: 10px; max-width: 100%; height: auto;"
           alt="Đặc điểm nổi bật"
         />
       {% endif %}
@@ -150,193 +116,73 @@
 
   <div class="content-block">
     <h3 class="block-title">Thông số kỹ thuật</h3>
-    <!-- DJANGO: Loop specifications -->
+    
     {% if p.is_laptop %}
     <table class="specs-table">
-      <tr>
-        <td>CPU</td>
-        <td>{{p.laptop_config.cpu}}</td>
-      </tr>
-      <tr>
-        <td>RAM</td>
-        <td>{{p.laptop_config.ram_desc}}</td>
-      </tr>
-      <tr>
-        <td>Ổ cứng</td>
-        <td>{{p.laptop_config.storage_desc}}</td>
-      </tr>
-      <tr>
-        <td>Màn hình</td>
-        <td>{{p.laptop_config.screen_desc}}</td>
-      </tr>
-      <tr>
-        <td>Card màn hình</td>
-        <td>{{p.laptop_config.vga}}</td>
-      </tr>
-      <tr>
-        <td>Cổng kết nối</td>
-        <td>Đầy đủ</td>
-      </tr>
-      <tr>
-        <td>Pin</td>
-        <td>{{p.laptop_config.battery}}</td>
-      </tr>
-      <tr>
-        <td>Trọng lượng</td>
-        <td>{{p.laptop_config.weight}} kg</td>
-      </tr>
-      <tr>
-        <td>Led phím: </td>
-        <td>Có</td>
-      </tr>
+      <tr><td>CPU</td><td>{{ p.laptop_config.cpu }}</td></tr>
+      <tr><td>RAM</td><td>{{ p.laptop_config.ram_desc }}</td></tr>
+      <tr><td>Ổ cứng</td><td>{{ p.laptop_config.storage_desc }}</td></tr>
+      <tr><td>Màn hình</td><td>{{ p.laptop_config.screen_desc }}</td></tr>
+      <tr><td>Card màn hình</td><td>{{ p.laptop_config.vga }}</td></tr>
+      <tr><td>Cổng kết nối</td><td>Đầy đủ</td></tr>
+      <tr><td>Pin</td><td>{{ p.laptop_config.battery }}</td></tr>
+      <tr><td>Trọng lượng</td><td>{{ p.laptop_config.weight }} kg</td></tr>
+      <tr><td>Led phím</td><td>Có</td></tr>
     </table>
+    
     {% elif p.is_vga %}
     <table class='specs-table'>
-      <tr>
-       <td>Hãng sản xuất </td>
-       <td>{{p.brand}}</td>
-      </tr>
-      <tr>
-        <td>
-          Công nghệ
-        </td>
-       <td>{{p.accessory_config.detail_1}}</td>
-      </tr>
-      <tr>
-        <td>
-          Nhân CUDA
-        </td>
-       <td>{{p.accessory_config.detail_2}}</td>
-      </tr>
-
-      <tr>
-        <td>
-          Bộ nhớ
-        </td>
-       <td>{{p.accessory_config.detail_3}}</td>
-      </tr>
-
-      <tr>
-        <td>
-          Xung nhịp
-        </td>
-       <td>{{p.accessory_config.detail_4}}</td>
-      </tr>
-
-      <tr>
-        <td>
-          Kết nối
-        </td>
-       <td>{{p.accessory_config.detail_5}}</td>
-
+      <tr><td>Hãng sản xuất</td><td>{{ p.brand }}</td></tr>
+      <tr><td>Công nghệ</td><td>{{ p.accessory_config.detail_1 }}</td></tr>
+      <tr><td>Nhân CUDA</td><td>{{ p.accessory_config.detail_2 }}</td></tr>
+      <tr><td>Bộ nhớ</td><td>{{ p.accessory_config.detail_3 }}</td></tr>
+      <tr><td>Xung nhịp</td><td>{{ p.accessory_config.detail_4 }}</td></tr>
+      <tr><td>Kết nối</td><td>{{ p.accessory_config.detail_5 }}</td></tr>
     </table>
+
     {% elif p.is_cpu %}
     <table class='specs-table'>
-      <tr>
-       <td>Hãng sản xuất </td>
-       <td>{{p.brand}}</td>
-      </tr>
-      <tr>
-        <td>
-          Số nhân
-        </td>
-       <td>{{p.accessory_config.detail_1}}</td>
-      </tr>
-      <tr>
-        <td>
-          Số luồng
-        </td>
-       <td>{{p.accessory_config.detail_2}}</td>
-      </tr>
-      
-      <tr>
-       
-        <td>
-         TDP Max
-        </td>
-       <td>{{p.accessory_config.detail_3}}</td>
-      </tr>
+      <tr><td>Hãng sản xuất</td><td>{{ p.brand }}</td></tr>
+      <tr><td>Số nhân</td><td>{{ p.accessory_config.detail_1 }}</td></tr>
+      <tr><td>Số luồng</td><td>{{ p.accessory_config.detail_2 }}</td></tr>
+      <tr><td>TDP Max</td><td>{{ p.accessory_config.detail_3 }}</td></tr>
+      <tr><td>Tốc độ tối đa</td><td>{{ p.accessory_config.detail_4 }}</td></tr>
+      <tr><td>Xung nhịp tối đa</td><td>{{ p.accessory_config.detail_5 }}</td></tr>
+    </table>
 
-      <tr>
-        <td>
-          Tốc độ tối đa
-        </td>
-       <td>{{p.accessory_config.detail_4}}</td>
-      </tr>
-
-      <tr>
-        <td>
-         Xung nhịp tối đa
-        </td>
-       <td>{{p.accessory_config.detail_5}}</td>
-       </table>
     {% elif p.is_ram %}
     <table class='specs-table'>
-      <tr>
-       <td>Hãng sản xuất </td>
-       <td>{{p.brand}}</td>
-      </tr>
-      <tr>
-        <td>
-          Dung luợng
-        </td>
-       <td>{{p.accessory_config.detail_1}}</td>
-      </tr>
-      <tr>
-        <td>
-          Tốc độ
-        </td>
-       <td>{{p.accessory_config.detail_2}}</td>
-      </tr>
-      <tr>
-        <td>
-          Điện áp
-        </td>
-       <td>{{p.accessory_config.detail_3}}</td>
-      </tr>
-      <tr>
-        <td>
-          Loại RAM
-        </td>
-       <td>{{p.accessory_config.detail_4}}</td>
-      </tr>
-      <tr>
-        <td>
-          Độ trễ
-        </td>
-       <td>{{p.accessory_config.detail_5}}</td>
-      </tr>
-      </table>
-
-    
+      <tr><td>Hãng sản xuất</td><td>{{ p.brand }}</td></tr>
+      <tr><td>Dung lượng</td><td>{{ p.accessory_config.detail_1 }}</td></tr>
+      <tr><td>Tốc độ</td><td>{{ p.accessory_config.detail_2 }}</td></tr>
+      <tr><td>Điện áp</td><td>{{ p.accessory_config.detail_3 }}</td></tr>
+      <tr><td>Loại RAM</td><td>{{ p.accessory_config.detail_4 }}</td></tr>
+      <tr><td>Độ trễ</td><td>{{ p.accessory_config.detail_5 }}</td></tr>
+    </table>
     {% endif %}
   </div>
 </div>
 
-<!-- Review Section -->
 <div class="content-block review-section" style="margin-bottom: 50px">
   <h3 class="block-title">Đánh giá & Nhận xét</h3>
 
   <div class="review-dashboard">
-    <!-- DJANGO: Avg rating star -->
     <div class="rating-summary">
-
         <div class="average-score">
-          {{p.avg_rating|default:0|floatformat:1}}
+          {{ p.avg_rating|default:0|floatformat:1 }}
         </div>
+        <div class="stars-display">
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star-half-stroke"></i>
+        </div>
+        <div class="total-reviews">{{ p.reviews_set.count }} đánh giá</div>
+    </div>
 
-      <div class="stars-display">
-        <i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star"></i>
-        <i class="fa-solid fa-star-half-stroke"></i>
-      </div>
-      <div class="total-reviews">{{p.reviews_set.count}} đánh giá</div>
-  </div>
-
-    <!-- DJANGO: Review Form (POST) -->
     <div class="review-form-box">
+      {% csrf_token %}
       <h4>Viết đánh giá của bạn</h4>
       <div class="form-rating-select">
         <span>Bạn cảm thấy thế nào:</span>
@@ -348,22 +194,12 @@
           <i class="fa-regular fa-star" data-value="5"></i>
         </div>
       </div>
-      <textarea
-        class="review-textarea"
-        placeholder="Mời bạn chia sẻ cảm nhận về sản phẩm..."
-      ></textarea>
-      <button
-        class="btn-submit-review"
-        onclick="alert('Cảm ơn bạn đã đánh giá!')"
-      >
-        Gửi đánh giá
-      </button>
+      <textarea class="review-textarea" placeholder="Mời bạn chia sẻ cảm nhận về sản phẩm..."></textarea>
+      <button class="btn-submit-review">Gửi đánh giá</button>
     </div>
   </div>
 
   <div class="review-list">
-
-    <!-- DJANGO: Loop Reviews -->
      {% for r in reviews|slice:4 %}
      <div class="review-item">
       <div class="reviewer-info">
@@ -388,21 +224,24 @@
           {% endif %}
         {% endfor %}
       </div>
-      <p class="review-text">
-       {{ r.comment }}
-      </p>
-    </div>
+      <p class="review-text">{{ r.comment }}</p>
+     </div>
      {% endfor %}
-    
   </div>
 </div>
 
-<!-- Video Section -->
- 
 <div class="content-block video-section" style="margin-bottom: 50px">
   <h3 class="block-title">Video đánh giá chi tiết</h3>
   <div class="video-container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/rqz3sc67_jc?si=Lm6_bjLFVILMZ69G" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe 
+        width="560" height="400" 
+        src="{{ p.images.first.image_video_url }}" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" 
+        allowfullscreen>
+    </iframe>
   </div>
 </div>
 
@@ -410,12 +249,121 @@
   <button class="m-btn m-add" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">
     <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
   </button>
-  <button
-    class="m-btn m-buy"
-    onclick="window.location.href = '{% url 'orders:cart' %}'"
-  >
+  <button class="m-btn m-buy" onclick="window.location.href = '{% url 'orders:cart' %}'">
     Mua Ngay
   </button>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const starInputContainer = document.querySelector('.star-input');
+    const stars = starInputContainer.querySelectorAll('i');
+    const reviewTextarea = document.querySelector('.review-textarea');
+    const submitBtn = document.querySelector('.btn-submit-review');
+    const reviewListContainer = document.querySelector('.review-list'); 
+    
+    let currentRating = 0;
+
+    // Logic chọn sao
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            currentRating = this.getAttribute('data-value');
+            stars.forEach(s => {
+                const sValue = s.getAttribute('data-value');
+                if (sValue <= currentRating) {
+                    s.classList.replace('fa-regular', 'fa-solid'); 
+                    s.style.color = '#f5b301'; 
+                } else {
+                    s.classList.replace('fa-solid', 'fa-regular'); 
+                    s.style.color = '#ccc';
+                }
+            });
+        });
+    });
+
+    //  Logic gửi đánh giá
+    submitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const contentValue = reviewTextarea.value.trim();
+
+        if (currentRating === 0) {
+            alert('Vui lòng chọn số sao!');
+            return;
+        }
+        if (contentValue === "") {
+            alert('Vui lòng nhập bình luận!');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('rating', currentRating);
+        formData.append('content', contentValue);
+        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Cảm ơn bạn đã đánh giá!');
+
+
+                const avatarHTML = data.avatar 
+                    ? `<img src="${data.avatar}" alt="${data.username}">` 
+                    : `<div class="avatar-placeholder" style="width:40px;height:40px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;">${data.username.charAt(0).toUpperCase()}</div>`;
+
+                let starsHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= data.rating) {
+                        starsHTML += '<i class="fa-solid fa-star"></i>';
+                    } else {
+                        starsHTML += '<i class="fa-regular fa-star" style="color:#e5e7eb"></i>';
+                    }
+                }
+
+                const newReviewHTML = `
+                    <div class="review-item" style="animation: fadeIn 0.5s; border-bottom: 1px solid #eee; margin-bottom: 15px; padding-bottom: 10px;">
+                        <div class="reviewer-info" style="display:flex; gap:10px; align-items:center;">
+                            <div class="avatar" style="width:40px;height:40px;border-radius:50%;overflow:hidden;display:flex;justify-content:center;align-items:center;">${avatarHTML}</div>
+                            <div>
+                                <div class="reviewer-name" style="font-weight:bold;">${data.full_name}</div>
+                                <div class="review-time" style="font-size:12px; color:#888;">Vừa xong</div>
+                            </div>
+                        </div>
+                        <div class="review-rating" style="margin: 5px 0;">${starsHTML}</div>
+                        <p class="review-text">${data.comment}</p>
+                    </div>`;
+
+                // Chèn lên đầu danh sách
+                reviewListContainer.insertAdjacentHTML('afterbegin', newReviewHTML);
+
+                // Ẩn dòng thông báo rỗng
+                const noReviewMsg = reviewListContainer.querySelector('p');
+                if (noReviewMsg && noReviewMsg.textContent.includes("chưa có đánh giá")) {
+                    noReviewMsg.remove();
+                }
+
+                // Reset form
+                reviewTextarea.value = '';
+                currentRating = 0;
+                stars.forEach(s => {
+                    s.classList.replace('fa-solid', 'fa-regular');
+                    s.style.color = '#ccc';
+                });
+
+            } else {
+                alert('Lỗi: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi hệ thống:', error);
+            alert('Có lỗi xảy ra khi gửi bình luận.');
+        });
+    });
+});
+</script>
+
 {% endblock %}
-  

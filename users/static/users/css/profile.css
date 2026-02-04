@@ -73,8 +73,9 @@
     /* expand to available height */
 }
 
-.nav-item {
-    display: inline-flex;
+.nav-item-profile {
+    display: flex;
+    width: 100%;
     align-items: center;
     padding: 34px 16px;
     border-radius: 10px;
@@ -90,7 +91,7 @@
     justify-content: start;
 }
 
-.nav-item i {
+.nav-item-profile i {
     width: 28px;
     color: var(--text-secondary);
     margin-right: 12px;
@@ -98,12 +99,12 @@
     text-align: center;
 }
 
-.nav-item:hover {
+.nav-item-profile:hover {
     background: #f6f7f8;
     transform: translateY(-1px);
 }
 
-.nav-item.active {
+.nav-item-profile.active {
     background: #fff7f7;
     color: var(--primary);
 }
@@ -239,7 +240,7 @@
         font-size: 18px;
     }
 
-    .nav-item {
+    .nav-item-profile {
         padding: 16px 12px;
     }
 
