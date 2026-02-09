@@ -47,42 +47,89 @@ thích - LapStore{% endblock %} {% block extra_css %}
 <div class="flash-grid">
   <!-- DJANGO: Loop Wishlist Items -->
   <!-- Sản phẩm -->
-  <article class="prod-card">
-    <button class="btn-remove-wish" title="Xóa khỏi yêu thích">
+  {% for item in wishlist %}
+  <article class="prod-card" id="wishlist-item-{{ item.product.id }}">
+    <button class="btn-remove-wish" 
+            title="Xóa khỏi yêu thích" 
+            onclick="toggleWishlist(event, '{{ item.product.id }}')">
       <i class="fa-solid fa-xmark"></i>
     </button>
-    <span class="badge-sale">-50%</span>
-    <a href="#">
+
+    {% if item.product.discount_price_vn %}
+      <span class="badge-sale">Giảm giá</span>
+    {% endif %}
+
+    <a href="{% url 'products:product-detail' item.product.slug %}">
       <div class="prod-img-wrap">
         <img
-          src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/t/a/tai-nghe-chup-tai-rapoo-vh520c_1.jpg"
-          alt="Product"
+          src="{% if item.product.images.first %}{{ item.product.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
+          alt="{{ item.product.name }}"
         />
       </div>
     </a>
-    <h3 class="prod-name">Tai nghe Gaming DareU EH722s</h3>
+
+    <h3 class="prod-name">{{ item.product.name }}</h3>
+
     <div class="prod-specs-box">
-      <span><i class="fa-solid fa-headphones"></i> 7.1 Sound</span>
-      <span><i class="fa-solid fa-microphone"></i> Mic chống ồn</span>
+        {% if item.product.is_lap %}
+            <span><i class="fa-solid fa-microchip"></i> {{ item.product.laptop_config.cpu }}</span>
+            <span><i class="fa-solid fa-vr-cardboard"></i> {{ item.product.laptop_config.vga }}</span>
+        {% else %}
+            <span><i class="fa-solid fa-copyright"></i> Brand: {{ item.product.brand }}</span>
+            <span><i class="fa-solid fa-shield"></i> BH: {{ item.product.warranty }}</span>
+        {% endif %}
     </div>
+
     <div class="prod-footer">
       <div class="price-box">
-        <span class="price-current">299.000đ</span>
-        <span class="price-old">599.000đ</span>
+        <span class="price-current">{{ item.product.price_vn }}</span>
+        {% if item.product.discount_price_vn %}
+            <span class="price-old">{{ item.product.discount_price_vn }}</span>
+        {% endif %}
       </div>
       <button class="btn-buy-now">Mua ngay</button>
     </div>
   </article>
+{% empty %}
+  <div class="empty-wishlist" style="grid-column: 1/-1; text-align: center; padding: 40px;">
+    <p>Heo chưa có sản phẩm yêu thích nào ở đây cả!</p>
+    <a href="{% url 'core:home' %}" class="btn-red">Đi mua sắm ngay</a>
+  </div>
+{% endfor %}
   <!-- DJANGO: End Loop -->
 </div>
+{% endblock %}
+{% block extra_js %}
 <script>
-  const btnRemoveWishlistAll = document.querySelectorAll(".btn-remove-wish");
+function toggleWishlist(event, productId) {
+    event.preventDefault();
+    
+    // Lấy CSRF Token từ cookie của Django
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
 
-btnRemoveWishlistAll.forEach((btnRemoveWish) => {
-  btnRemoveWish.addEventListener("click", function (e) {
-    alert("Đã xóa khỏi danh sách yêu thích");
-    e.preventDefault();
-  });
-});
+    // Chú ý: Dùng đúng 'orders:toggle_wishlist' vì bạn để ở app orders
+    fetch("{% url 'orders:toggle_wishlist' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'id': productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'removed') {
+            // Xóa cái card sản phẩm ngay lập tức để user thấy đã xóa thành công
+            const item = document.getElementById(`wishlist-item-${productId}`);
+            if (item) {
+                item.style.transition = "all 0.3s ease";
+                item.style.opacity = "0";
+                item.style.transform = "scale(0.8)";
+                setTimeout(() => item.remove(), 300);
+            }
+        }
+    })
+    .catch(error => console.error('Lỗi rồi Heo ơi:', error));
+}
 </script>
 {% endblock %}
