@@ -91,3 +91,23 @@ def logout_view(request):
     logout(request)
     messages.success(request, "Đăng xuất thành công!")
     return redirect('core:home')
+
+def order_detail_view(request):
+    try:
+        from core.models import Profile
+    except Exception:
+        Profile = None
+
+    profile = None
+    if Profile is not None:
+        profile, created = Profile.objects.get_or_create(user=request.user)
+
+    context = {
+        'username': request.user.username,
+        'email': request.user.email,
+        'first_name': request.user.first_name,
+        'address': Address.objects.filter(user=request.user) if Address else [],
+        'avatar': profile.avatar if profile and getattr(profile, 'avatar', None) else None,
+        'phone_number': profile.phone_number if profile and getattr(profile, 'phone_number', None) else '',
+    }
+    return render(request, 'users/order-detail.html', context)

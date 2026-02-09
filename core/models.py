@@ -280,7 +280,7 @@ class Review(TimeStampedModel):
 class WishList(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
+    
     class Meta:
         unique_together = ('user', 'product')
 
