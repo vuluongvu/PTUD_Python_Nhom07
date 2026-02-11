@@ -3,14 +3,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 try:
-    from core.models import Address
+    from core.models import Address, Order, Profile
 except Exception:
     Address = None
-
+    Order = None
+    Profile = None
 
 # Create your views here.
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -98,23 +99,23 @@ def logout_view(request):
     logout(request)
     messages.success(request, "Đăng xuất thành công!")
     return redirect('core:home')
-
-def order_detail_view(request):
-    try:
-        from core.models import Profile
-    except Exception:
-        Profile = None
-
+@login_required
+def order_list_view(request):
+    """
+    Hiển thị danh sách các đơn hàng của người dùng.
+    """
+    orders = []
+    if Order:
+        orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    
     profile = None
     if Profile is not None:
         profile, created = Profile.objects.get_or_create(user=request.user)
 
     context = {
         'username': request.user.username,
-        'email': request.user.email,
         'first_name': request.user.first_name,
-        'address': Address.objects.filter(user=request.user) if Address else [],
         'avatar': profile.avatar if profile and getattr(profile, 'avatar', None) else None,
-        'phone_number': profile.phone_number if profile and getattr(profile, 'phone_number', None) else '',
+        'orders': orders,
     }
     return render(request, 'users/order-detail.html', context)

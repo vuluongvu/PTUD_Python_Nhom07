@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 {% block nav_user_active %}active{% endblock %}
-{% load static %} 
+{% load static humanize %} 
 {% block title %}Đơn hàng của tôi - LapStore{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
@@ -15,14 +15,14 @@
         <div class="main-container">
         <aside class="sidebar-left">
             <div class="profile-snippet">
-                <img src="{{ avatar }}" alt="Avatar">
+                <img src="{{ avatar|default:'https://via.placeholder.com/100' }}" alt="Avatar">
                 <h3>{{ first_name|default:username }}</h3>
                
             </div>
             <div class="nav-menu">
                 <a href="{% url "users:profile" %}" class="nav-item-profile"><i class="fas fa-user-shield"></i> Thông tin cá nhân</a>
-                <a href="{% url "users:order_detail" %}" class="nav-item-profile active"><i class="fas fa-box-open"></i> Đơn hàng của tôi</a>
-                <a href="{% url "users:order_detail" %}" class="nav-item-profile"><i class="fas fa-wallet"></i> Ví thanh toán</a>
+                <a href="{% url "users:order_list" %}" class="nav-item-profile active"><i class="fas fa-box-open"></i> Đơn hàng của tôi</a>
+                <a href="#" class="nav-item-profile"><i class="fas fa-wallet"></i> Ví thanh toán</a>
                 <a href="{% url 'users:logout' %}" class="nav-item-profile" id='logout'><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
             </div>
         </aside>
@@ -40,135 +40,113 @@
 
         <main class="content-card">
             <h2 class="section-title">Đơn hàng của tôi</h2>
-          
-    <div class="card" style="margin-top: 20px;">
-        <div class="order-header">
-            <div>
-                <h2>Đơn hàng #Y34XDHR</h2>
-                <span style="color: #666; font-size: 14px;">Ngày đặt: 21/01/2026</span> </br>
-                <span style="color: #666; font-size: 14px;">Trạng thái: Giao hàng thành công  <i class="fas fa-check-circle" style="color: green;"></i></span>
-            </div>
-            <div class="order-meta">
-                <span>Dự kiến giao: <strong>24/01/2026</strong></span>
-                <span>Vận chuyển: <strong>Giao hàng nhanh</strong></span>
-            </div>
-        </div>
-
-        <div class="track-order">
-            <div class="track-bar"></div>
-            <div class="track-bar-fill" style="width: 66%;"></div> <div class="track-steps">
-                <div class="step active">
-                    <div class="step-icon"><i class="fas fa-file-alt"></i></div>
-                    <div class="step-text">Đã xác nhận</div>
-                    <div class="step-desc">10:30 AM</div>
-                </div>
-                
-                <div class="step active">
-                    <div class="step-icon"><i class="fas fa-box"></i></div>
-                    <div class="step-text">Đã đóng gói</div>
-                    <div class="step-desc">02:15 PM</div>
-                </div>
-                
-                <div class="step active">
-                    <div class="step-icon"><i class="fas fa-truck"></i></div>
-                    <div class="step-text">Đang giao</div>
-                    <div class="step-desc">Đang xử lý</div>
-                </div>
-                
-                <div class="step">
-                    <div class="step-icon"><i class="fas fa-home"></i></div>
-                    <div class="step-text">Đã giao</div>
-                    <div class="step-desc">Dự kiến</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="order-body">
-            <div class="order-items">
-                <h3 style="margin-bottom: 20px; font-size: 18px;">Sản phẩm</h3>
-                <table class="item-list">
-                    <thead>
-                        <tr>
-                            <th width="60%">Sản phẩm</th>
-                            <th width="20%" style="text-align: center;">SL</th>
-                            <th width="20%" style="text-align: right;">Giá</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="product-info">
-                                    <img src="https://via.placeholder.com/60" alt="Product">
-                                    <div class="product-details">
-                                        <h4>Laptop Gaming Asus TUF</h4>
-                                        <p>Màu: Đen | RAM: 16GB</p>
-                                    </div>
+            {% if orders %}
+                {% for order in orders %}
+                <div class="card" style="margin-top: 20px;">
+                    <div class="order-header">
+                        <div>
+                            <h2>Đơn hàng #{{ order.id }}</h2>
+                            <span style="color: #666; font-size: 14px;">Ngày đặt: {{ order.created_at|date:"d/m/Y" }}</span> <br>
+                            <span style="color: #666; font-size: 14px;">Trạng thái: {{ order.get_order_status_display }}
+                                {% if order.order_status == 'delivered' %}
+                                    <i class="fas fa-check-circle" style="color: green;"></i>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="order-meta">
+                            <span>Tổng tiền: <strong>{{ order.total_amount|intcomma }}đ</strong></span>
+                            {% if order.payment %}
+                            <span>Thanh toán: <strong>{{ order.payment.get_payment_method_display }}</strong></span>
+                            {% endif %}
+                        </div>
+                    </div>
+            
+                    <div class="order-body">
+                        <div class="order-items">
+                            <h3 style="margin-bottom: 20px; font-size: 18px;">Sản phẩm</h3>
+                            <table class="item-list">
+                                <thead>
+                                    <tr>
+                                        <th width="60%">Sản phẩm</th>
+                                        <th width="20%" style="text-align: center;">SL</th>
+                                        <th width="20%" style="text-align: right;">Giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order.items.all %}
+                                    <tr>
+                                        <td>
+                                            <div class="product-info">
+                                                <img src="{{ item.product.images.first.image_url|default:'https://via.placeholder.com/60' }}" alt="{{ item.product_name }}">
+                                                <div class="product-details">
+                                                    <h4>{{ item.product_name }}</h4>
+                                                    {# <p>Màu: Đen | RAM: 16GB</p> #}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center;">x{{ item.quantity }}</td>
+                                        <td style="text-align: right; color: var(--primary); font-weight: bold;">{{ item.subtotal|intcomma }}đ</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+            
+                        <div class="order-summary">
+                            <div class="info-box">
+                                <h3>Địa chỉ nhận hàng</h3>
+                                <p class="address-text">
+                                    <strong>{{ order.shipping_name }}</strong><br>
+                                    {{ order.shipping_phone }}<br>
+                                    {{ order.shipping_address }}
+                                </p>
+                            </div>
+            
+                            <div class="info-box" style="background: #fafafa; padding: 20px; border-radius: 8px;">
+                                <h3>Thanh toán</h3>
+                                {# Tính Tạm tính (subtotal) bằng cách lấy Tổng cộng cộng với giá trị giảm giá (nếu có) #}
+                                {% with discount_value=order.coupon.discount_value|default:0 %}
+                                <div class="info-row">
+                                    <span>Tạm tính:</span>
+                                    <span>{{ order.total_amount|add:discount_value|intcomma }}đ</span>
                                 </div>
-                            </td>
-                            <td style="text-align: center;">x1</td>
-                            <td style="text-align: right; color: var(--primary); font-weight: bold;">20.000.000đ</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="product-info">
-                                    <img src="https://via.placeholder.com/60" alt="Product">
-                                    <div class="product-details">
-                                        <h4>Chuột Logitech G102</h4>
-                                        <p>Màu: Trắng</p>
-                                    </div>
+                                {% endwith %}
+                                <div class="info-row">
+                                    <span>Phí vận chuyển:</span>
+                                    <span>0đ</span> {# Hardcoded for now #}
                                 </div>
-                            </td>
-                            <td style="text-align: center;">x2</td>
-                            <td style="text-align: right; color: var(--primary); font-weight: bold;">800.000đ</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="order-summary">
-                
-                <div class="info-box">
-                    <h3>Địa chỉ nhận hàng</h3>
-                    <p class="address-text">
-                        <strong>Elden lord</strong><br>
-                        (+84) 912 345 678<br>
-                        Số 123, , Đống Đa, Hà Nội
-                    </p>
+                                {% if order.coupon %}
+                                <div class="info-row">
+                                    <span>Giảm giá:</span>
+                                    <span style="color: #28a745;">-{{ order.coupon.discount_value|intcomma }}đ</span>
+                                </div>
+                                {% endif %}
+                                <div class="info-row total">
+                                    <span>Tổng cộng:</span>
+                                    <span>{{ order.total_amount|intcomma }}đ</span>
+                                </div>
+                                {% if order.payment %}
+                                <div style="margin-top: 10px; font-size: 13px; color: #666; text-align: right;">
+                                    {% if order.payment.payment_status == 'completed' %}
+                                        <i class="fas fa-check-circle" style="color: green;"></i> Đã thanh toán qua {{ order.payment.get_payment_method_display }}
+                                    {% else %}
+                                        <i class="fas fa-clock" style="color: orange;"></i> {{ order.payment.get_payment_status_display }}
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="info-box" style="background: #fafafa; padding: 20px; border-radius: 8px;">
-                    <h3>Thanh toán</h3>
-                    <div class="info-row">
-                        <span>Tạm tính:</span>
-                        <span>20.800.000đ</span>
-                    </div>
-                    <div class="info-row">
-                        <span>Phí vận chuyển:</span>
-                        <span>30.000đ</span>
-                    </div>
-                    <div class="info-row">
-                        <span>Giảm giá:</span>
-                        <span style="color: #28a745;">-50.000đ</span>
-                    </div>
-                    <div class="info-row total">
-                        <span>Tổng cộng:</span>
-                        <span>20.780.000đ</span>
-                    </div>
-                    <div style="margin-top: 10px; font-size: 13px; color: #666; text-align: right;">
-                        <i class="fas fa-check-circle" style="color: green;"></i> Đã thanh toán qua MoMo
-                    </div>
-                     
+                {% endfor %}
+            {% else %}
+                <div class="card" style="margin-top: 20px; text-align: center; padding: 40px;">
+                    <p>Bạn chưa có đơn hàng nào.</p>
+                    <a href="{% url 'core:home' %}" class="btn-cta" style="margin-top: 20px;">Bắt đầu mua sắm</a>
                 </div>
-
-            </div>
-        </div>
-    </div>
-</div>
+            {% endif %}
           </main>
         </div>
       </div>
     </div>
-  
 {% endblock %}
-
-

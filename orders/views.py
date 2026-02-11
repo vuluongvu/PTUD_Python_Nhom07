@@ -3,8 +3,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from core.views import toggle_wishlist
-from core.models import Product, WishList, Cart
+from core.models import Product, WishList, Cart, Order, OrderItem
 from django.db.models import Q, Count
+from django.contrib import messages
 app_name = 'orders'
 
 # Create your views here.
@@ -50,8 +51,48 @@ def checkout(request):
         # Nếu không có giỏ hàng, cũng không cho vào
         return redirect('orders:cart')
 
+    if request.method == 'POST':
+        # Lấy dữ liệu từ form
+        shipping_name = request.POST.get('fullname')
+        shipping_phone = request.POST.get('phone')
+        street_address = request.POST.get('address')
+        ward_text = request.POST.get('ward_text')
+        district_text = request.POST.get('district_text')
+        province_text = request.POST.get('province_text')
+        payment_method = request.POST.get('payment')
+
+        # Ghép các thành phần địa chỉ lại
+        address_parts = [part for part in [street_address, ward_text, district_text, province_text] if part]
+        full_address = ", ".join(address_parts)
+
+        # Tạo đơn hàng
+        new_order = Order.objects.create(
+            user=request.user,
+            shipping_name=shipping_name,
+            shipping_phone=shipping_phone,
+            shipping_address=full_address,
+            total_amount=sum((item.product.final_price or 0) * (item.quantity or 0) for item in cart_items)
+        )
+
+        # Chuyển các sản phẩm từ giỏ hàng sang chi tiết đơn hàng
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=new_order,
+                product=item.product,
+                product_name=item.product.name,
+                quantity=item.quantity,
+                unit_price=(item.product.final_price or 0)
+            )
+
+        # Xóa giỏ hàng sau khi đã đặt hàng thành công
+        user_cart.delete()
+
+        messages.success(request, f"Đặt hàng thành công! Mã đơn hàng của bạn là #{new_order.id}.")
+        return redirect('users:order_list')
+
+
     # Tính tổng tiền
-    total_amount = sum(item.product.final_price * item.quantity for item in cart_items)
+    total_amount = sum((item.product.final_price or 0) * (item.quantity or 0) for item in cart_items)
 
     context = {
         'cart_items': cart_items,

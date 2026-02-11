@@ -2105,6 +2105,27 @@ footer {
     color: var(--text-sub);
 }
 
+/* Nút Đặt Hàng */
+.btn-checkout {
+    width: 100%;
+    background: var(--gradient-red);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: var(--trans);
+}
+
+.btn-checkout:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(203, 28, 34, 0.3);
+}
+
 /* order css add btn*/
 .btn-add-wishlist {
     position: absolute;
