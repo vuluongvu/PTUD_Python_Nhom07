@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg, Count
 from django.http import JsonResponse
-from core.models import Product, Review
+from core.models import Cart, Product, Review
 
 
 # Create your views here.
@@ -129,3 +129,29 @@ def product_detail(request, slug):
         'products_by_price': related_products,
     }
     return render(request, 'products/product-detail.html', context)
+
+def toggle_cart(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'login_required', 'message': 'Bạn phải đăng nhập!'}, status=200)
+
+    if request.method == "POST":
+        product_id = request.POST.get('id')
+        product = get_object_or_404(Product, id=product_id)
+
+        # Lấy hoặc tạo giỏ hàng cho user
+        user_cart, created = Cart.objects.get_or_create(user=request.user)
+
+        # Kiểm tra sản phẩm đã có trong CartItem chưa
+        cart_item, item_created = user_cart.items.get_or_create(
+            product=product
+        )
+
+        if not item_created:
+            # Nếu item đã tồn tại (không phải vừa được tạo), thì xóa nó đi
+            cart_item.delete()
+            return JsonResponse({'status': 'removed', 'message': 'Đã xóa khỏi giỏ!'})
+        else:
+            # Nếu item vừa được tạo, nghĩa là đã thêm thành công
+            return JsonResponse({'status': 'added', 'message': 'Đã thêm vào giỏ!'})
+
+    return JsonResponse({'status': 'error', 'message': 'Chỉ chấp nhận POST'}, status=400)

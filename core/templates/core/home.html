@@ -378,25 +378,25 @@ function toggleWishlist(event, productId) {
     })
     .then(response => response.json())
     .then(data => {
+        // Xử lý khi chưa đăng nhập
+        if (data.status === 'login_required') {
+            alert(data.message); // Heo có thể dùng SweetAlert2 cho đẹp hơn
+            window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
+            return;
+        }
+
+        // Logic đổi màu tim hoặc xóa card cũ của Heo
         const heartIcon = document.getElementById(`heart-icon-${productId}`);
-        
         if (data.status === 'added') {
-            // Khi thêm: Đổi thành tim đặc và màu đỏ
             if (heartIcon) {
                 heartIcon.classList.remove('fa-regular');
                 heartIcon.classList.add('fa-solid', 'text-danger');
-                // Thêm hiệu ứng nhịp tim cho xịn
-                heartIcon.style.transform = "scale(1.3)";
-                setTimeout(() => heartIcon.style.transform = "scale(1)", 200);
             }
         } else if (data.status === 'removed') {
-            // Khi xóa: Trả về tim rỗng
             if (heartIcon) {
                 heartIcon.classList.remove('fa-solid', 'text-danger');
                 heartIcon.classList.add('fa-regular');
             }
-            
-            // Nếu đang ở trang danh sách Wishlist thì ẩn luôn card như nãy
             const productCard = document.getElementById(`wishlist-item-${productId}`);
             if (productCard) productCard.remove();
         }

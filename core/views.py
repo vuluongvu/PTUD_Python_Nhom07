@@ -29,11 +29,17 @@ def wishlist_list(request):
     })
     
 def toggle_wishlist(request):
+    # Kiểm tra xem user đã đăng nhập chưa
+    if not request.user.is_authenticated:
+        return JsonResponse({
+            'status': 'login_required',
+            'message': 'Bạn phải đăng nhập để thêm sản phẩm vào danh sách yêu thích!'
+        }, status=200)
+
     if request.method == "POST":
         product_id = request.POST.get('id')
         product = get_object_or_404(Product, id=product_id)
         
-        # Chú ý viết hoa đúng tên Model: WishList
         wishlist_item = WishList.objects.filter(user=request.user, product=product)
 
         if wishlist_item.exists():

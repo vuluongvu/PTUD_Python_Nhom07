@@ -90,9 +90,9 @@
         MUA NGAY
         <span>(Giao hàng tận nơi hoặc nhận tại cửa hàng)</span>
       </button>
-      <button class="btn-main btn-cart" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">
-        <i class="fa-solid fa-cart-plus"></i>
-      </button>
+      <button class="btn-main btn-cart" onclick="toggleCart(event, '{{ p.id }}')">
+    <i class="fa-solid fa-cart-plus"></i>
+  </button>
     </div>
   </div>
 </div>
@@ -364,6 +364,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-</script>
 
+function toggleCart(event, productId) {
+    event.preventDefault();
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
+
+    fetch("{% url 'products:toggle_cart' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'id': productId })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Lỗi Server (500)");
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message);
+        if (data.status === 'login_required') window.location.href = "/login/";
+        else location.reload();
+    })
+    .catch(error => {
+        console.error('Lỗi nè Heo:', error);
+        alert(error.message);
+    });
+}
+</script>
 {% endblock %}

@@ -24,6 +24,35 @@ thích - LapStore{% endblock %} {% block extra_css %}
     color: white;
     transform: scale(1.1);
   }
+
+
+ .empty-cart-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    padding: 40px;  
+}
+  .empty-cart-message img {
+    width: 150px;
+    margin-bottom: 20px;
+  }
+  .empty-cart-message h3 {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .empty-cart-message p {
+    color: var(--text-sub);
+    margin-bottom: 20px;
+  }
+  .btn-back-home {
+    background: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 99px;
+    text-decoration: none;
+    font-weight: 600;
+  }
 </style>
 
 {% endblock %} {% block content %}
@@ -40,11 +69,20 @@ thích - LapStore{% endblock %} {% block extra_css %}
 
 <div class="section-head">
   <h2 style="font-size: 24px; font-weight: 800">
-    Sản phẩm <span style="color: var(--primary)">Yêu thích</span> (3)
+    Sản phẩm <span style="color: var(--primary)">Yêu thích</span> ({{product_count}})
   </h2>
 </div>
 
-<div class="flash-grid">
+  {% if needs_login %}
+          <div class="login-prompt" style="text-align: center; padding: 100px;">
+        <div class="empty-cart-message">
+    <h3>Mục yêu thích của bạn đang trống</h3>
+    <p>Hãy khám phá thêm các sản phẩm và thêm vào mục yêu thích nhé!</p>
+    <a href="{% url 'core:home' %}" class="btn-back-home">Tiếp tục mua sắm</a>
+  </div>
+    </div>
+    {% endif %}
+    <div class="flash-grid">
   <!-- DJANGO: Loop Wishlist Items -->
   <!-- Sản phẩm -->
   {% for item in wishlist %}
@@ -90,14 +128,10 @@ thích - LapStore{% endblock %} {% block extra_css %}
       <button class="btn-buy-now">Mua ngay</button>
     </div>
   </article>
-{% empty %}
-  <div class="empty-wishlist" style="grid-column: 1/-1; text-align: center; padding: 40px;">
-    <p>Heo chưa có sản phẩm yêu thích nào ở đây cả!</p>
-    <a href="{% url 'core:home' %}" class="btn-red">Đi mua sắm ngay</a>
-  </div>
 {% endfor %}
   <!-- DJANGO: End Loop -->
 </div>
+
 {% endblock %}
 {% block extra_js %}
 <script>
@@ -129,7 +163,7 @@ function toggleWishlist(event, productId) {
             }
         }
     })
-    .catch(error => console.error('Lỗi rồi Heo ơi:', error));
+    .catch(error => console.error('Lỗi: ', error));
 }
 </script>
 {% endblock %}
