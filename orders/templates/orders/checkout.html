@@ -1,52 +1,9 @@
-{% extends 'core/base.html' %} {% load static %} {% block title %}Thanh toán -
+{% extends 'core/base.html' %} {% load static %} {% load humanize %} {% block title %}Thanh toán -
 LapStore{% endblock %} {% block extra_css %}{% endblock %}
 {% block mobile_menu %}{% endblock %} 
-{% block mobile_bottom_nav %}{% endblock %} {% block header %}
-<header>
-  <div class="container">
-    <nav
-      class="nav-island checkout-nav"
-      style="display: flex; align-items: center; justify-content: space-between"
-    >
-      <div class="nav-left">
-        <a href="{% url 'core:home' %}" class="logo">
-          <i class="fa-solid fa-dragon"></i>
-          <span>Lap<span style="font-weight: 300">Store</span></span>
-        </a>
-      </div>
 
-      <!-- Tiêu đề trang thanh toán -->
-      <div
-        class="checkout-title"
-        style="
-          font-weight: 800;
-          font-size: 18px;
-          color: var(--primary);
-          text-transform: uppercase;
-        "
-      >
-        Thanh toán an toàn
-      </div>
+{% block content %}
 
-      <div class="nav-actions">
-        <a
-          href="{% url 'orders:cart' %}"
-          style="
-            font-size: 14px;
-            color: var(--text-sub);
-            text-decoration: underline;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-          "
-        >
-          <i class="fa-solid fa-chevron-left"></i> Giỏ hàng
-        </a>
-      </div>
-    </nav>
-  </div>
-</header>
-{% endblock %} {% block content %}
 <div style="margin-top: -10px; margin-bottom: 20px">
   <p style="font-size: 13px; color: var(--text-sub)">
     <a href="{% url 'core:home' %}">Trang chủ</a>
@@ -215,44 +172,26 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
           padding-bottom: 15px;
         "
       >
-        Đơn hàng (3 sản phẩm)
+        Đơn hàng ({{ product_count }} sản phẩm)
       </h3>
 
       <!-- DJANGO: Loop Cart Items (Read only) -->
       <div class="checkout-items">
-        <div class="c-item">
-          <div class="c-img">
-            <img
-              src="https://placehold.co/100x100?text=MacBook"
-              alt="Product"
-            />
-            <span class="c-qty">1</span>
+        {% for item in cart_items %}
+          <div class="c-item">
+            <div class="c-img">
+              <img
+                src="{% if item.product.images.first %}{{ item.product.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
+                alt="{{ item.product.name }}"
+              />
+              <span class="c-qty">{{ item.quantity }}</span>
+            </div>
+            <div class="c-info">
+              <div class="c-name">{{ item.product.name }}</div>
+              <div class="c-price">{{ item.product.final_price|floatformat:0|intcomma }}đ</div>
+            </div>
           </div>
-          <div class="c-info">
-            <div class="c-name">MacBook Air 13 inch M1 2020</div>
-            <div class="c-price">18.490.000đ</div>
-          </div>
-        </div>
-        <div class="c-item">
-          <div class="c-img">
-            <img src="https://placehold.co/100x100?text=Mouse" alt="Product" />
-            <span class="c-qty">1</span>
-          </div>
-          <div class="c-info">
-            <div class="c-name">Chuột Gaming Logitech G102</div>
-            <div class="c-price">399.000đ</div>
-          </div>
-        </div>
-        <div class="c-item">
-          <div class="c-img">
-            <img src="https://placehold.co/100x100?text=RAM" alt="Product" />
-            <span class="c-qty">2</span>
-          </div>
-          <div class="c-info">
-            <div class="c-name">RAM Corsair Vengeance LPX 16GB</div>
-            <div class="c-price">1.780.000đ</div>
-          </div>
-        </div>
+        {% endfor %}
       </div>
 
       <div class="coupon-box" style="margin-top: 20px">
@@ -262,7 +201,7 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
 
       <div class="summary-row" style="margin-top: 15px">
         <span>Tạm tính</span>
-        <span>20.669.000đ</span>
+        <span>{{ total_amount|floatformat:0|intcomma }}đ</span>
       </div>
       <div class="summary-row">
         <span>Phí vận chuyển</span>
@@ -275,7 +214,7 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
 
       <div class="summary-row total">
         <span>Tổng cộng</span>
-        <span class="total-price-big">20.669.000đ</span>
+        <span class="total-price-big">{{ total_amount|floatformat:0|intcomma }}đ</span>
       </div>
 
       <button
@@ -302,13 +241,4 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
     </div>
   </div>
 </div>
-{% endblock %} {% block footer %}
-<footer>
-  <div
-    class="container"
-    style="text-align: center; padding: 20px 0; color: #9ca3af; font-size: 13px"
-  >
-    © 2026 FPT Future Store. All rights reserved.
-  </div>
-</footer>
-{% endblock %}
+{% endblock %} 

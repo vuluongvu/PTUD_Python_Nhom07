@@ -1,43 +1,9 @@
+{% extends 'users/base.html' %}
 {% load static %}
-<!doctype html>
-<html lang="vi">  
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng ký - LapStore</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'core/favicon/apple-icon-57x57.png' %}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'core/favicon/apple-icon-60x60.png' %}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'core/favicon/apple-icon-72x72.png' %}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'core/favicon/apple-icon-76x76.png' %}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'core/favicon/apple-icon-114x114.png' %}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'core/favicon/apple-icon-120x120.png' %}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'core/favicon/apple-icon-144x144.png' %}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'core/favicon/apple-icon-152x152.png' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'core/favicon/apple-icon-180x180.png' %}">
-    <link rel="icon" type="image/png" sizes="192x192"  href="{% static 'core/favicon/android-icon-192x192.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'core/favicon/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'core/favicon/favicon-96x96.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'core/favicon/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'core/favicon/manifest.json' %}">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="{% static 'core/favicon/ms-icon-144x144.png' %}">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" href="{% static 'users/css/style.css' %}">
-  </head>
-  <body>
-    <div class="auth-card">
-      <div class="auth-header">
-        <a href="{% url 'core:home' %}" class="logo">
-          <i class="fa-brands fa-shopify" style="color: #ff1a1a;"></i> LapStore
-        </a>
-        <p class="subtitle">
-          Hệ thống bán lẻ công nghệ hàng đầu
-        </p>
-      </div>
 
+{% block title %}Đăng ký - LapStore{% endblock %}
+
+{% block content %}
       <div class="auth-tabs"> 
         <button class="tab-btn" onclick="window.location.href='{% url 'users:login' %}'" id="tab-login">
           Đăng nhập
@@ -73,32 +39,4 @@
           <button type="submit" class="btn-submit">ĐĂNG KÝ NGAY</button>
         </form>
       </div>
-
-      <div class="divider"><span>Hoặc tiếp tục với</span></div>
-      <div class="social-login">
-        <button class="btn-social">
-          <img src="https://i.pinimg.com/564x/fb/52/e3/fb52e39c5910bdbcc3b98d58d6ca6944.jpg" width="18" alt="Google" /> Google
-        </button>
-        <button class="btn-social">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="18" alt="Facebook" /> Facebook
-        </button>
-      </div>
-    </div>
-
-    {% if messages %}
-        <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            {% for message in messages %}
-              {% if message.tags == 'error'%}
-                alert("Lỗi: {{ message|escapejs }}"); // Hiển thị alert cho message lỗi
-              {% endif %}
-            {% endfor %}
-          });
-        </script>
-      {% endif %}
-    
-    {% block extra_js %}{% endblock %}
-
-    <script src="{% static 'users/js/main.js' %}"></script>
-  </body>
-</html>
+{% endblock %}

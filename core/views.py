@@ -44,9 +44,11 @@ def toggle_wishlist(request):
 
         if wishlist_item.exists():
             wishlist_item.delete()
-            status = "removed"
+            status = 'removed'
+            message = 'Đã xóa khỏi danh sách yêu thích.'
         else:
             WishList.objects.create(user=request.user, product=product)
-            status = "added"
+            status = 'added'
+            message = 'Đã thêm vào danh sách yêu thích!'
             
-        return JsonResponse({'status': status})
+        return JsonResponse({'status': status, 'message': message})

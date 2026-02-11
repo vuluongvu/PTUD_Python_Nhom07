@@ -86,13 +86,17 @@
     </div>
 
     <div class="action-group">
-      <button class="btn-main btn-buy" onclick="window.location.href = '{% url 'orders:cart' %}'">
+      <button class="btn-main btn-buy" onclick="buyNow(event, '{{ p.id }}')">
         MUA NGAY
         <span>(Giao hàng tận nơi hoặc nhận tại cửa hàng)</span>
       </button>
-      <button class="btn-main btn-cart" onclick="toggleCart(event, '{{ p.id }}')">
-    <i class="fa-solid fa-cart-plus"></i>
-  </button>
+      <button class="btn-main btn-cart {% if is_in_cart %}in-cart{% endif %}" onclick="toggleCart(event, '{{ p.id }}')">
+        {% if is_in_cart %}
+          <span>Đã thêm vào giỏ hàng <i class="fa-solid fa-check-circle"></i></span>
+        {% else %}
+          <span>Thêm vào giỏ hàng</span>
+        {% endif %}
+      </button>
     </div>
   </div>
 </div>
@@ -246,10 +250,14 @@
 </div>
 
 <div class="mobile-bar">
-  <button class="m-btn m-add" onclick="alert('Đã thêm sản phẩm vào giỏ hàng!')">
-    <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
+  <button class="m-btn m-add {% if is_in_cart %}in-cart{% endif %}" onclick="toggleCart(event, '{{ p.id }}')">
+    {% if is_in_cart %}
+      <i class="fa-solid fa-check"></i> Đã có trong giỏ
+    {% else %}
+      <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
+    {% endif %}
   </button>
-  <button class="m-btn m-buy" onclick="window.location.href = '{% url 'orders:cart' %}'">
+  <button class="m-btn m-buy" onclick="buyNow(event, '{{ p.id }}')">
     Mua Ngay
   </button>
 </div>
@@ -264,21 +272,38 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let currentRating = 0;
 
-    // Logic chọn sao
+    // Hàm helper để cập nhật giao diện sao
+    function updateStars(rating) {
+        stars.forEach(s => {
+            const sValue = s.getAttribute('data-value');
+            if (sValue <= rating) {
+                s.classList.replace('fa-regular', 'fa-solid'); 
+                s.style.color = '#f5b301'; 
+            } else {
+                s.classList.replace('fa-solid', 'fa-regular'); 
+                s.style.color = '#ccc';
+            }
+        });
+    }
+
+    // Logic xử lý sao
     stars.forEach(star => {
+        // Khi di chuột vào một sao
+        star.addEventListener('mouseover', function() {
+            const hoverRating = this.getAttribute('data-value');
+            updateStars(hoverRating);
+        });
+
+        // Khi click để chốt rating
         star.addEventListener('click', function() {
             currentRating = this.getAttribute('data-value');
-            stars.forEach(s => {
-                const sValue = s.getAttribute('data-value');
-                if (sValue <= currentRating) {
-                    s.classList.replace('fa-regular', 'fa-solid'); 
-                    s.style.color = '#f5b301'; 
-                } else {
-                    s.classList.replace('fa-solid', 'fa-regular'); 
-                    s.style.color = '#ccc';
-                }
-            });
+            updateStars(currentRating); // Cập nhật lại để giữ màu sau khi click
         });
+    });
+
+    // Khi di chuột ra khỏi toàn bộ khu vực sao, trả về trạng thái đã click
+    starInputContainer.addEventListener('mouseout', function() {
+        updateStars(currentRating);
     });
 
     //  Logic gửi đánh giá
@@ -288,11 +313,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const contentValue = reviewTextarea.value.trim();
 
         if (currentRating === 0) {
-            alert('Vui lòng chọn số sao!');
+            Swal.fire('Chưa hợp lệ', 'Vui lòng chọn số sao đánh giá!', 'warning');
             return;
         }
         if (contentValue === "") {
-            alert('Vui lòng nhập bình luận!');
+            Swal.fire('Chưa hợp lệ', 'Vui lòng nhập nội dung bình luận!', 'warning');
             return;
         }
 
@@ -308,7 +333,13 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Cảm ơn bạn đã đánh giá!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Cảm ơn bạn đã gửi đánh giá về sản phẩm.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
 
 
                 const avatarHTML = data.avatar 
@@ -355,12 +386,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
             } else {
-                alert('Lỗi: ' + data.message);
+                Swal.fire('Lỗi', data.message, 'error');
             }
         })
         .catch(error => {
             console.error('Lỗi hệ thống:', error);
-            alert('Có lỗi xảy ra khi gửi bình luận.');
+            Swal.fire('Lỗi hệ thống', 'Có lỗi xảy ra khi gửi bình luận.', 'error');
         });
     });
 });
@@ -368,6 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleCart(event, productId) {
     event.preventDefault();
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
+    const cartButton = event.currentTarget; // Lấy chính nút đã được click
 
     fetch("{% url 'products:toggle_cart' %}", { 
         method: "POST",
@@ -382,14 +414,135 @@ function toggleCart(event, productId) {
         return response.json();
     })
     .then(data => {
-        alert(data.message);
-        if (data.status === 'login_required') window.location.href = "/login/";
-        else location.reload();
+        if (data.status === 'login_required') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu đăng nhập',
+                text: data.message,
+                confirmButtonText: 'Đăng nhập ngay'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
+                }
+            });
+        } else {
+            // Cập nhật giao diện nút mà không cần reload
+            if (data.status === 'added') {
+                cartButton.classList.add('in-cart');
+                // Chỉ cập nhật nút trên desktop nếu nó được click
+                if (cartButton.classList.contains('btn-main')) {
+                    cartButton.innerHTML = `<span>Đã thêm vào giỏ hàng <i class="fa-solid fa-check-circle"></i></span>`;
+                }
+            } else if (data.status === 'removed') {
+                cartButton.classList.remove('in-cart');
+                if (cartButton.classList.contains('btn-main')) {
+                    cartButton.innerHTML = `<span>Thêm vào giỏ hàng</span>`;
+                }
+            }
+
+            // Cập nhật nút trên thanh mobile nếu có
+            updateMobileCartButton(data.status);
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: data.status === 'added' ? 'success' : 'info',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 2500
+            });
+        }
     })
     .catch(error => {
-        console.error('Lỗi nè Heo:', error);
-        alert(error.message);
+        console.error('Lỗi:', error);
+        Swal.fire('Lỗi', 'Không thể thêm vào giỏ hàng lúc này.', 'error');
     });
 }
+
+function updateMobileCartButton(status) {
+    const mobileButton = document.querySelector('.mobile-bar .m-btn.m-add');
+    if (!mobileButton) return;
+
+    if (status === 'added') {
+        mobileButton.classList.add('in-cart');
+        mobileButton.innerHTML = `<i class="fa-solid fa-check"></i> Đã có trong giỏ`;
+    } else if (status === 'removed') {
+        mobileButton.classList.remove('in-cart');
+        mobileButton.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ`;
+    }
+}
+
+function buyNow(event, productId) {
+    event.preventDefault();
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
+
+    fetch("{% url 'products:toggle_cart' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        // Gửi thêm action='add_only' để backend biết chỉ thêm, không xóa
+        body: new URLSearchParams({ 'id': productId, 'action': 'add_only' })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Lỗi Server");
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'login_required') {
+            Swal.fire('Yêu cầu đăng nhập', data.message, 'warning').then(() => {
+                window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
+            });
+        } else {
+            // Dù thêm mới hay đã có sẵn, đều chuyển đến trang giỏ hàng
+            window.location.href = "{% url 'orders:cart' %}";
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi khi thực hiện Mua Ngay:', error);
+        Swal.fire('Lỗi', 'Không thể thực hiện thao tác này.', 'error');
+    });
+}
+
+function changeImage(element, imageUrl) {
+    document.getElementById('mainImage').src = imageUrl;
+    
+    // Xóa active ở tất cả thumb
+    document.querySelectorAll('.thumb-item').forEach(item => item.classList.remove('active'));
+    
+    // Thêm active cho thumb được click
+    element.classList.add('active');
+}
 </script>
+
+<style>
+  .btn-main {
+    font-size: 14px; /* Giảm kích thước chữ chính */
+    padding: 14px 20px; /* Điều chỉnh padding cho cân đối */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .btn-main span {
+    font-size: 11px; /* Giảm kích thước chữ phụ */
+    font-weight: 400;
+    opacity: 0.9;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .btn-cart > span {
+    font-size: 14px; /* Đảm bảo chữ trong nút giỏ hàng đồng bộ */
+    font-weight: 700; /* Đặt font-weight cố định */
+  }
+
+  .btn-cart.in-cart .fa-check-circle {
+    color: #22c540; /* Màu xanh lá cây */
+  }
+</style>
 {% endblock %}

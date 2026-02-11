@@ -160,14 +160,7 @@
     </header>
     {% endblock %}
 {% if messages %}
-  <div class="container mt-3">
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" id="msg-alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  </div>
+  <!-- Các thông báo sẽ được xử lý bằng SweetAlert2 ở cuối file -->
 {% endif %}
     <!-- MOBILE MENU SIDEBAR (Dùng chung) -->
     {% block mobile_menu %}
@@ -320,17 +313,30 @@
     </button>
 
     <!-- Scripts -->
-     {% if messages %}
-        <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            {% for message in messages %}
-              alert('{{ message|escapejs }}'); // Hiển thị alert cho message
-            {% endfor %}
-          });
-        </>
-      {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% if messages %}
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          {% for message in messages %}
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: '{{ message.tags }}', // success, error, warning, info
+              title: '{{ message|escapejs }}',
+              showConfirmButton: false,
+              timer: 3500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            });
+          {% endfor %}
+        });
+      </script>
+    {% endif %}
 
     <script src="{% static 'core/js/main.js' %}"></script>
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}{% endblock %} 
   </body>
 </html>

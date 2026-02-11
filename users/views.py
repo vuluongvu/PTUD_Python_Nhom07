@@ -20,7 +20,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             welcome_name = user.first_name or user.username
-            messages.success(request, f"Đăng nhập thành công! Chào mừng {welcome_name}.")
+            messages.success(request, f"Đăng nhập thành công! \n Xin chào  {welcome_name}.")
             return redirect('core:home')
         else:
             messages.error(request, "Email hoặc mật khẩu không đúng.")
@@ -36,6 +36,13 @@ def register_view(request):
         confirm_password = request.POST.get('confirm_password')
         
         # Server-side validation
+        if not all([full_name, email, password, confirm_password]):
+            messages.error(request, "Vui lòng điền đầy đủ tất cả các trường.")
+            return redirect('users:register')
+        if '@' not in email or '.' not in email:
+            messages.error(request, "Định dạng email không hợp lệ.")
+            return redirect('users:register')
+            
         if password != confirm_password:
             messages.error(request, "Mật khẩu và xác nhận mật khẩu không khớp.")
             return redirect('users:register')

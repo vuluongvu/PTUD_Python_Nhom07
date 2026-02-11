@@ -50,6 +50,11 @@ def product_detail(request, slug):
                        .annotate(avg_rating=Avg('reviews__rating'), review_count=Count('reviews')), 
         slug=slug
     )
+    
+    is_in_cart = False
+    if request.user.is_authenticated:
+        user_cart, created = Cart.objects.get_or_create(user=request.user)
+        is_in_cart = user_cart.items.filter(product=product).exists()
 
     #  Xử lý Avatar người dùng 
     avatar_url = None
@@ -111,6 +116,7 @@ def product_detail(request, slug):
     context = {
         'p': product,
         'related_products': related_products,
+        'is_in_cart': is_in_cart,
         'avg_rating': round(product.avg_rating or 0, 1),
         'review_count': product.review_count,
         'profile': related_products,
@@ -136,22 +142,30 @@ def toggle_cart(request):
 
     if request.method == "POST":
         product_id = request.POST.get('id')
+        action = request.POST.get('action', 'toggle') # Mặc định là 'toggle'
         product = get_object_or_404(Product, id=product_id)
 
         # Lấy hoặc tạo giỏ hàng cho user
         user_cart, created = Cart.objects.get_or_create(user=request.user)
 
         # Kiểm tra sản phẩm đã có trong CartItem chưa
-        cart_item, item_created = user_cart.items.get_or_create(
+        cart_item, item_created = user_cart.items.get_or_create( # Dùng get_or_create để đảm bảo sản phẩm được thêm nếu chưa có
             product=product
         )
 
-        if not item_created:
+        if action == 'add_only':
+            # Nếu là hành động "Mua ngay", chỉ đảm bảo sản phẩm có trong giỏ và không làm gì khác
+            return JsonResponse({'status': 'added', 'message': 'Sản phẩm đã sẵn sàng trong giỏ.'})
+
+        # Logic cho nút "Thêm vào giỏ hàng" (toggle)
+        if not item_created: # Nếu sản phẩm đã có trong giỏ
             # Nếu item đã tồn tại (không phải vừa được tạo), thì xóa nó đi
             cart_item.delete()
-            return JsonResponse({'status': 'removed', 'message': 'Đã xóa khỏi giỏ!'})
-        else:
+            # Tính lại tổng tiền sau khi xóa
+            new_total = sum(item.product.final_price * item.quantity for item in user_cart.items.all())
+            return JsonResponse({'status': 'removed', 'message': 'Đã xóa khỏi giỏ!', 'new_total': new_total})
+        elif item_created: # Nếu sản phẩm vừa được thêm
             # Nếu item vừa được tạo, nghĩa là đã thêm thành công
-            return JsonResponse({'status': 'added', 'message': 'Đã thêm vào giỏ!'})
+            return JsonResponse({'status': 'added', 'message': 'Đã thêm vào giỏ!', 'product_name': product.name})
 
     return JsonResponse({'status': 'error', 'message': 'Chỉ chấp nhận POST'}, status=400)

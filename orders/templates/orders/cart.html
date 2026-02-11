@@ -349,7 +349,7 @@
       </div>
 
       {% for item in cart_items %}
-      <div class="cart-item">
+      <div class="cart-item" id="cart-item-{{ item.product.id }}">
         <input type="checkbox" class="custom-checkbox" checked />
         <div class="item-img">
           <img
@@ -417,7 +417,7 @@
       </div>
       <div class="summary-row">
         <span>Tạm tính ({{ product_count }} sản phẩm)</span>
-        <span>0đ</span>
+        <span id="subtotal-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
       </div>
       <div class="summary-row">
         <span>Giảm giá</span>
@@ -425,7 +425,7 @@
       </div>
       <div class="summary-row total">
         <span>Tổng cộng</span>
-        <span class="total-price-big">0đ</span>
+        <span class="total-price-big" id="total-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
       </div>
       <p
         style="
@@ -446,7 +446,7 @@
   <div class="mobile-checkout-bar">
     <div class="mc-total">
       <span>Tổng cộng:</span>
-      <span class="mc-price">0đ</span>
+      <span class="mc-price" id="mobile-total-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
     </div>
     <a href="{% url 'orders:checkout' %}" class="mc-btn"
       >Mua Hàng ({{ product_count }})</a
@@ -478,15 +478,52 @@ function toggleCart(event, productId) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === 'login_required') {
-            alert(data.message);
-            window.location.href = "/login/"; // Chuyển hướng nếu chưa đăng nhập
-        } else {
-            alert(data.message);
-            location.reload(); 
+        if (data.status === 'removed') {
+            // Hiển thị thông báo toast
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 2000
+            });
+
+            // Xóa item khỏi DOM với hiệu ứng mờ dần
+            const itemElement = document.getElementById(`cart-item-${productId}`);
+            if (itemElement) {
+                itemElement.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+                itemElement.style.opacity = "0";
+                itemElement.style.transform = "translateX(20px)";
+                setTimeout(() => {
+                    itemElement.remove();
+                    updateTotalPrice(data.new_total);
+                }, 300);
+            }
         }
     })
-    .catch(error => console.error('Lỗi nè Heo:', error));
+    .catch(error => {
+        console.error('Lỗi khi xóa sản phẩm:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Có lỗi xảy ra, không thể xóa sản phẩm!',
+        });
+    });
+}
+
+function updateTotalPrice(newTotal) {
+    // Định dạng số thành chuỗi tiền tệ VND
+    const formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(newTotal).replace('₫', 'đ');
+
+    // Cập nhật các element hiển thị giá
+    const subtotalElement = document.getElementById('subtotal-price');
+    const totalElement = document.getElementById('total-price');
+    const mobileTotalElement = document.getElementById('mobile-total-price');
+
+    if (subtotalElement) subtotalElement.innerText = formattedPrice;
+    if (totalElement) totalElement.innerText = formattedPrice;
+    if (mobileTotalElement) mobileTotalElement.innerText = formattedPrice;
 }
 </script>
 {% endblock %}

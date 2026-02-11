@@ -153,6 +153,13 @@ function toggleWishlist(event, productId) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'removed') {
+            // Hiển thị thông báo toast
+            Swal.fire({
+                toast: true, position: 'top-end', icon: 'success',
+                title: data.message, showConfirmButton: false,
+                timer: 2000
+            });
+
             // Xóa cái card sản phẩm ngay lập tức để user thấy đã xóa thành công
             const item = document.getElementById(`wishlist-item-${productId}`);
             if (item) {
