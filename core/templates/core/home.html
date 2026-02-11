@@ -176,14 +176,13 @@ LapStore{% endblock %}
         <div class="flash-grid">
           
           <!--Sản phẩm đơn giờ vàng -->
-         {% for p in products|slice:4 %}
+         {% for p in flash_sale_laptops %}
           <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card">
             <button class="btn-add-wishlist" 
         title="Thêm vào yêu thích" 
         onclick="toggleWishlist(event, '{{ p.id }}')">
-          <i id="heart-{{ p.id }}" 
-          class="fa-heart {% if p.id in wishlist_ids %}fas text-danger{% else %}fa-regular{% endif %}">
+          <i id="heart-{{ p.id }}" class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
         </i>
       </button>
               <span class="badge-sale" style="background: red"
@@ -242,14 +241,13 @@ LapStore{% endblock %}
         <div class="flash-grid">
           
           <!--SẢN PHẨM HOME-->
-           {% for p in products|slice:5 %}
+           {% for p in bestselling_products %}
          <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card pod-card-view-all" >
               <button class="btn-add-wishlist" 
         title="Thêm vào yêu thích" 
         onclick="toggleWishlist(event, '{{ p.id }}')">
-          <i id="heart-{{ p.id }}" 
-          class="fa-heart {% if p.id in wishlist_ids %}fas text-danger{% else %}fa-regular{% endif %}">
+          <i id="heart-{{ p.id }}" class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
         </i>
       </button>
               <span class="badge-sale">Bán chạy</span>
@@ -310,10 +308,8 @@ LapStore{% endblock %}
              <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card pod-card-view-all" >
              <button class="btn-add-wishlist" 
-        title="Thêm vào yêu thích" 
-        onclick="toggleWishlist(event, '{{ p.id }}')">
-          <i id="heart-{{ p.id }}" 
-          class="fa-heart {% if p.id in wishlist_ids %}fas text-danger{% else %}fa-regular{% endif %}">
+        title="Thêm vào yêu thích" onclick="toggleWishlist(event, '{{ p.id }}')">
+          <i id="heart-{{ p.id }}" class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
         </i>
       </button>
               <span class="badge-sale">Ưu đãi</span>

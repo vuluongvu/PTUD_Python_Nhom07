@@ -10,19 +10,26 @@ from django.db.models import Q
 
 
 def home(request):
-    # Tối ưu: Chỉ lấy 10 sản phẩm mới nhất, và prefetch ảnh để giảm query
-    products = Product.objects.filter(status=True).order_by('-created_at').prefetch_related('images')[:10]
+
+    all_new_products = Product.objects.filter(status=True).order_by('-created_at').prefetch_related('images')
+    
+    # mục giờ vàng
+    flash_sale_laptops = all_new_products.filter(is_lap=True)[:4]
+    
+    # bán chạy laptop   
+    bestselling_products = all_new_products.filter(is_lap=True, price__gt=20000000 )[:5]
+
     wishlist_ids = []
     if request.user.is_authenticated:
-        # Lấy list các ID sản phẩm đã thích
+        
         wishlist_ids = WishList.objects.filter(user=request.user).values_list('product_id', flat=True)
     components = Product.objects.filter(Q(is_vga=True) | Q(is_cpu=True) | Q(is_ram=True))[:5]
-    return render(request, 'core/home.html', {'products': products, 'components': components, 'wishlist_ids': wishlist_ids})
+    context = {'flash_sale_laptops': flash_sale_laptops, 'bestselling_products': bestselling_products, 'components': components, 'wishlist_ids': wishlist_ids}
+    return render(request, 'core/home.html', context)
 
-@login_required # Đảm bảo chỉ user đã đăng nhập mới xem được
+@login_required 
 def wishlist_list(request):
-    # Lấy tất cả các item trong wishlist của user hiện tại
-    # Dùng select_related('product') để tối ưu query (lấy luôn thông tin sản phẩm)
+   
     user_wishlist = WishList.objects.filter(user=request.user).select_related('product')
     
     return render(request, 'users/wishlist.html', {
@@ -30,7 +37,7 @@ def wishlist_list(request):
     })
     
 def toggle_wishlist(request):
-    # Kiểm tra xem user đã đăng nhập chưa
+    
     if not request.user.is_authenticated:
         return JsonResponse({
             'status': 'login_required',
