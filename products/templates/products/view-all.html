@@ -1,13 +1,65 @@
-{% extends 'core/base.html' %} {% load static %} 
+{% extends 'core/base.html' %} {% load static %} {% load product_tags %}
 {% block title %}Tất cả sản phẩm - LapStore
 {% endblock %} 
 
 {% block extra_css %}
+
 <style>
-  @media (min-width: 769px) {
-    .flash-grid.view-all-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  /* CSS để tùy chỉnh radio button giống checkbox */
+  .filter-group .filter-label {
+      position: relative;
+      padding-left: 32px; /* Tăng khoảng trống cho box tùy chỉnh */
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      min-height: 20px;
+  }
+
+  /* Ẩn input gốc (cả radio và checkbox) */
+  .filter-label .filter-radio,
+  .filter-label .filter-checkbox {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+  }
+
+  /* Tạo box tùy chỉnh */
+  .filter-label .checkmark {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 20px; /* Tăng kích thước box */
+      width: 20px;  /* Tăng kích thước box */
+      background-color: #fff;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      transition: all 0.2s;
+  }
+
+  /* Khi input được chọn, đổi màu box và hiển thị dấu tích */
+  .filter-label input:checked + .checkmark {
+      background-color: var(--primary);
+      border-color: var(--primary);
+  }
+
+  .filter-label input:checked + .checkmark::after {
+      content: "";
+      position: absolute;
+      display: block;
+      /* Vị trí của dấu tích - căn chỉnh lại cho cân đối */
+      left: 5px;
+      top: 1px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2.5px 2.5px 0;
+      transform: rotate(45deg);
   }
 </style>
+
 {% endblock %}
 
 {% block content %}
@@ -24,194 +76,74 @@
 
 <div class="view-all-container">
   <!-- Sidebar Filter -->
-  <aside class="sidebar">
-    <!-- DJANGO: Dynamic Filters (Brands, Categories, etc.) -->
-    <div class="sidebar-header-mobile">
-      <h3>Bộ lọc</h3>
-      <button class="sidebar-close">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
-    <div class="filter-group">
-      <h3 class="filter-title">Khoảng giá</h3>
-      <ul class="filter-list">
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Dưới 10
-            triệu</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> 10 - 15
-            triệu</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> 15 - 20
-            triệu</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> 20 - 30
-            triệu</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Trên 30
-            triệu</label
-          >
-        </li>
-      </ul>
-    </div>
+  <form id="filterForm" method="GET" action="{% url 'products:view-all-products' %}">
+    <aside class="sidebar">
+      <div class="sidebar-header-mobile">
+        <h3>Bộ lọc</h3>
+        <button type="button" class="sidebar-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
 
-    <div class="filter-group">
-      <h3 class="filter-title">Thương hiệu</h3>
-      <ul class="filter-list">
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> MacBook</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Asus</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Dell</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> HP</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Lenovo</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Acer</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> MSI</label
-          >
-        </li>
-      </ul>
-    </div>
+      <!-- Filter by Price -->
+      <div class="filter-group">
+        <h3 class="filter-title">Khoảng giá</h3>
+        <ul class="filter-list">
+          {% for range in price_ranges %}
+            <li>
+              <label class="filter-label">
+                <input type="radio" name="price" value="{{ range.value }}" class="filter-radio" {% if selected_price == range.value %}checked{% endif %}>
+                <span class="checkmark"></span>
+                {{ range.label }}
+              </label>
+            </li>
+          {% endfor %}
+           <li><label class="filter-label"><input type="radio" name="price" value="" class="filter-radio" {% if not selected_price %}checked{% endif %}><span class="checkmark"></span>Tất cả</label></li>
+        </ul>
+      </div>
 
-    <div class="filter-group">
-      <h3 class="filter-title">Nhu cầu</h3>
-      <ul class="filter-list">
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Gaming</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Văn phòng</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Đồ họa - Kỹ
-            thuật</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Mỏng nhẹ</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Sinh viên</label
-          >
-        </li>
-      </ul>
-    </div>
+      <!-- Filter by Brand -->
+      <div class="filter-group">
+        <h3 class="filter-title">Thương hiệu</h3>
+        <ul class="filter-list">
+          {% for brand in all_brands %}
+          <li>
+            <label class="filter-label">
+              <input type="checkbox" name="brand" value="{{ brand.id }}" class="filter-checkbox" {% if brand.id|stringformat:"s" in selected_brands %}checked{% endif %}>
+              <span class="checkmark"></span>
+              {{ brand.name }}
+            </label>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
 
-    <div class="filter-group">
-      <h3 class="filter-title">CPU</h3>
-      <ul class="filter-list">
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Ryzen 7</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Core i5</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Core i7</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Ryzen 5</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Apple
-            M1/M2</label
-          >
-        </li>
-      </ul>
-    </div>
+      <!-- Filter by Category -->
+      <div class="filter-group">
+        <h3 class="filter-title">Nhu cầu</h3>
+        <ul class="filter-list">
+          {% for category in all_categories %}
+          <li>
+            <label class="filter-label">
+              <input type="checkbox" name="category" value="{{ category.id }}" class="filter-checkbox" {% if category.id|stringformat:"s" in selected_categories %}checked{% endif %}>
+              <span class="checkmark"></span>
+              {{ category.name }}
+            </label>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      
+      <input type="hidden" name="sort" value="{{ sort_param|default:'default' }}">
+      <button type="submit" class="btn-apply-filters" style="display: none;">Áp dụng bộ lọc</button>
 
-    <div class="filter-group">
-      <h3 class="filter-title">Khác</h3>
-      <ul class="filter-list">
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> RTX 3000 Series</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> RTX 4000 Series </label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> RTX 5000 Series</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Amd Radeon</label
-          >
-        </li>
-        <li>
-          <label class="filter-label"
-            ><input type="checkbox" class="filter-checkbox" /> Apple
-            M1/M2</label
-          >
-        </li>
-      </ul>
-    </div>
-  </aside>
+    </aside>
+  </form>
 
   <div class="main-content">
     <!-- Header trang -->
     <div class="search-header-block">
       <div class="search-title">
         <h1>Tất cả sản phẩm</h1>
-        <span class="search-count">Hiển thị 12 trên {{products|length}} sản phẩm</span>
+        <span class="search-count">Tìm thấy {{ page_obj.paginator.count }} sản phẩm</span>
       </div>
 
       <!-- Nút mở filter mobile -->
@@ -221,27 +153,30 @@
 
       <!-- Bộ lọc nhanh -->
       <div class="filter-bar">
-    <a href="?sort=default" class="filter-btn">
+    <a href="?{% url_replace sort='default' %}" class="filter-btn {% if not sort_param or sort_param == 'default' %}active{% endif %}">
         <i class="fa-solid fa-sort"></i> Mặc định
     </a>
-    <a href="?sort=price_asc" class="filter-btn">
+    <a href="?{% url_replace sort='price_asc' %}" class="filter-btn {% if sort_param == 'price_asc' %}active{% endif %}">
         <i class="fa-solid fa-arrow-up-1-9"></i> Giá thấp - cao
     </a>
-    <a href="?sort=price_desc" class="filter-btn">
+    <a href="?{% url_replace sort='price_desc' %}" class="filter-btn {% if sort_param == 'price_desc' %}active{% endif %}">
         <i class="fa-solid fa-arrow-down-9-1"></i> Giá cao - thấp
     </a>
-</div>
+    </div>
     </div>
 
     <!-- Lưới sản phẩm -->
     <div class="flash-grid view-all-grid" style="margin-bottom: 40px;">
      
-
         {% for p in products %}
          <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card pod-card-view-all">
-              <button class="btn-add-wishlist" title="Thêm vào yêu thích">
-                <i class="fa-regular fa-heart"></i>
+              <button class="btn-add-wishlist" 
+                      title="Thêm vào yêu thích"
+                      onclick="toggleWishlist(event, '{{ p.id }}')">
+                <i id="heart-{{ p.id }}" 
+                   class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
+                </i>
               </button>
               <span class="badge-sale">Hot</span>
               <div class="prod-img-wrap">
@@ -265,21 +200,18 @@
                   <span class="price-current">{{p.price_vn}}</span
                   ><span class="price-old">{{p.discount_price_vn}}</span>
                 </div>
-                <button class="btn-buy-now">Mua ngay</button>
+                <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
               </div>
             </article>
           </a>
            {% endfor %}
-     
-           
-
     </div>
 
     <!-- Phân trang -->
     <!-- DJANGO: Pagination Logic -->
     <div class="pagination" style="margin-top: 20px;">
       {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}" class="page-link">
+      <a href="?{% url_replace page=page_obj.previous_page_number %}" class="page-link">
         <i class="fa-solid fa-chevron-left"></i>
       </a>
       {% endif %}
@@ -288,12 +220,12 @@
         {% if page_obj.number == num %}
           <a href="#" class="page-link active">{{ num }}</a>
         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-          <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+          <a href="?{% url_replace page=num %}" class="page-link">{{ num }}</a>
         {% endif %}
       {% endfor %}
 
       {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}" class="page-link">
+      <a href="?{% url_replace page=page_obj.next_page_number %}" class="page-link">
         <i class="fa-solid fa-chevron-right"></i>
       </a>
       {% endif %}
@@ -303,4 +235,88 @@
 
 <!-- Overlay cho sidebar mobile -->
 <div class="sidebar-overlay"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterForm = document.getElementById('filterForm');
+    const filterInputs = filterForm.querySelectorAll('.filter-checkbox, .filter-radio');
+
+    filterInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            filterForm.submit();
+        });
+    });
+});
+
+function toggleWishlist(event, productId) {
+    event.preventDefault();
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
+
+    fetch("{% url 'core:toggle_wishlist' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'id': productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'login_required') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu đăng nhập',
+                text: data.message,
+                confirmButtonText: 'Đăng nhập ngay'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname + window.location.search;
+                }
+            });
+            return;
+        }
+        
+        Swal.fire({
+            toast: true, position: 'top-end', icon: 'success',
+            title: data.message, showConfirmButton: false,
+            timer: 2000
+        });
+
+        const heartIcon = document.getElementById(`heart-${productId}`);
+        if (data.status === 'added') {
+            heartIcon.classList.remove('fa-regular');
+            heartIcon.classList.add('fa-solid', 'text-danger');
+        } else if (data.status === 'removed') {
+            heartIcon.classList.remove('fa-solid', 'text-danger');
+            heartIcon.classList.add('fa-regular');
+        }
+    });
+}
+
+function toggleCart(event, productId) {
+    event.preventDefault();
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
+
+    fetch("{% url 'products:toggle_cart' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'id': productId, 'action': 'add_only' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'login_required') {
+            Swal.fire('Yêu cầu đăng nhập', data.message, 'warning').then(() => {
+                window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname + window.location.search;
+            });
+        } else {
+            window.location.href = "{% url 'orders:cart' %}";
+        }
+    });
+}
+</script>
 {% endblock %}

@@ -10,7 +10,8 @@ from django.db.models import Q
 
 
 def home(request):
-    products = Product.objects.all()
+    # Tối ưu: Chỉ lấy 10 sản phẩm mới nhất, và prefetch ảnh để giảm query
+    products = Product.objects.filter(status=True).order_by('-created_at').prefetch_related('images')[:10]
     wishlist_ids = []
     if request.user.is_authenticated:
         # Lấy list các ID sản phẩm đã thích
