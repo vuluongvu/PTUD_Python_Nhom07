@@ -1,16 +1,19 @@
-/* Profile styles using global theme variables */
-.profile-page {
-    padding-bottom: 48px;
+* {
+    box-sizing: border-box;
 }
 
-.container {
+/* Profile styles using global theme variables */
+
+.profile-page .container {
+    max-width: 1320px;
+    margin: 0 auto;
+    box-sizing: border-box;
     padding: 0;
 }
 
 .profile-page .main-container {
     display: grid;
     grid-template-columns: 260px 1fr;
-    /* sidebar + content */
     gap: 28px;
     align-items: stretch;
     /* make columns equal height so nav fills vertically */
@@ -23,7 +26,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    align-items: stretch;
+    /* align-items: stretch; */
 }
 
 .profile-snippet {
@@ -60,6 +63,7 @@
     margin-bottom: 8px;
 }
 
+
 .nav-menu {
     background: var(--bg-white);
     border-radius: var(--radius-card);
@@ -69,8 +73,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    flex: 1 1 auto;
-    /* expand to available height */
+    height: fit-content;
 }
 
 .nav-item-profile {
@@ -248,3 +251,4 @@
         grid-template-columns: 1fr;
     }
 }
+

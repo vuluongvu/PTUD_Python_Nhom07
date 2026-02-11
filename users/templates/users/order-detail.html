@@ -1,0 +1,174 @@
+{% extends 'core/base.html' %}
+{% block nav_user_active %}active{% endblock %}
+{% load static %} 
+{% block title %}Đơn hàng của tôi - LapStore{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'users/css/order-detail.css' %}">
+{% endblock %}
+{% block content %}
+<div class="breadcrumb">
+  <a href="{% url 'core:home' %}">Trang chủ</a>
+</div>
+    <div class="profile-page">
+      <div class="container">
+        <div class="main-container">
+        <aside class="sidebar-left">
+            <div class="profile-snippet">
+                <img src="{{ avatar }}" alt="Avatar">
+                <h3>{{ first_name|default:username }}</h3>
+               
+            </div>
+            <div class="nav-menu">
+                <a href="{% url "users:profile" %}" class="nav-item-profile"><i class="fas fa-user-shield"></i> Thông tin cá nhân</a>
+                <a href="{% url "users:order_detail" %}" class="nav-item-profile active"><i class="fas fa-box-open"></i> Đơn hàng của tôi</a>
+                <a href="{% url "users:order_detail" %}" class="nav-item-profile"><i class="fas fa-wallet"></i> Ví thanh toán</a>
+                <a href="{% url 'users:logout' %}" class="nav-item-profile" id='logout'><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            </div>
+        </aside>
+                <script> 
+                    const logoutBtn = document.getElementById('logout');
+                    logoutBtn.addEventListener('click', function(event) {
+                        event.preventDefault(); 
+                        const confirmed = confirm("Bạn có chắc chắn muốn đăng xuất không?");
+                        if (confirmed) {
+                            window.location.href = logoutBtn.href; 
+                        }
+                    });
+
+                </script>
+
+        <main class="content-card">
+            <h2 class="section-title">Đơn hàng của tôi</h2>
+          
+    <div class="card" style="margin-top: 20px;">
+        <div class="order-header">
+            <div>
+                <h2>Đơn hàng #Y34XDHR</h2>
+                <span style="color: #666; font-size: 14px;">Ngày đặt: 21/01/2026</span> </br>
+                <span style="color: #666; font-size: 14px;">Trạng thái: Giao hàng thành công  <i class="fas fa-check-circle" style="color: green;"></i></span>
+            </div>
+            <div class="order-meta">
+                <span>Dự kiến giao: <strong>24/01/2026</strong></span>
+                <span>Vận chuyển: <strong>Giao hàng nhanh</strong></span>
+            </div>
+        </div>
+
+        <div class="track-order">
+            <div class="track-bar"></div>
+            <div class="track-bar-fill" style="width: 66%;"></div> <div class="track-steps">
+                <div class="step active">
+                    <div class="step-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="step-text">Đã xác nhận</div>
+                    <div class="step-desc">10:30 AM</div>
+                </div>
+                
+                <div class="step active">
+                    <div class="step-icon"><i class="fas fa-box"></i></div>
+                    <div class="step-text">Đã đóng gói</div>
+                    <div class="step-desc">02:15 PM</div>
+                </div>
+                
+                <div class="step active">
+                    <div class="step-icon"><i class="fas fa-truck"></i></div>
+                    <div class="step-text">Đang giao</div>
+                    <div class="step-desc">Đang xử lý</div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-home"></i></div>
+                    <div class="step-text">Đã giao</div>
+                    <div class="step-desc">Dự kiến</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-body">
+            <div class="order-items">
+                <h3 style="margin-bottom: 20px; font-size: 18px;">Sản phẩm</h3>
+                <table class="item-list">
+                    <thead>
+                        <tr>
+                            <th width="60%">Sản phẩm</th>
+                            <th width="20%" style="text-align: center;">SL</th>
+                            <th width="20%" style="text-align: right;">Giá</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="product-info">
+                                    <img src="https://via.placeholder.com/60" alt="Product">
+                                    <div class="product-details">
+                                        <h4>Laptop Gaming Asus TUF</h4>
+                                        <p>Màu: Đen | RAM: 16GB</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="text-align: center;">x1</td>
+                            <td style="text-align: right; color: var(--primary); font-weight: bold;">20.000.000đ</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="product-info">
+                                    <img src="https://via.placeholder.com/60" alt="Product">
+                                    <div class="product-details">
+                                        <h4>Chuột Logitech G102</h4>
+                                        <p>Màu: Trắng</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="text-align: center;">x2</td>
+                            <td style="text-align: right; color: var(--primary); font-weight: bold;">800.000đ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="order-summary">
+                
+                <div class="info-box">
+                    <h3>Địa chỉ nhận hàng</h3>
+                    <p class="address-text">
+                        <strong>Elden lord</strong><br>
+                        (+84) 912 345 678<br>
+                        Số 123, , Đống Đa, Hà Nội
+                    </p>
+                </div>
+
+                <div class="info-box" style="background: #fafafa; padding: 20px; border-radius: 8px;">
+                    <h3>Thanh toán</h3>
+                    <div class="info-row">
+                        <span>Tạm tính:</span>
+                        <span>20.800.000đ</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Phí vận chuyển:</span>
+                        <span>30.000đ</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Giảm giá:</span>
+                        <span style="color: #28a745;">-50.000đ</span>
+                    </div>
+                    <div class="info-row total">
+                        <span>Tổng cộng:</span>
+                        <span>20.780.000đ</span>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 13px; color: #666; text-align: right;">
+                        <i class="fas fa-check-circle" style="color: green;"></i> Đã thanh toán qua MoMo
+                    </div>
+                     
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+          </main>
+        </div>
+      </div>
+    </div>
+  
+{% endblock %}
+
+

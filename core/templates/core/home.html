@@ -176,12 +176,15 @@ LapStore{% endblock %}
         <div class="flash-grid">
           
           <!--Sản phẩm đơn giờ vàng -->
-         {% for p in products|slice:4 %}
+         {% for p in flash_sale_laptops %}
           <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card">
-              <button class="btn-add-wishlist" title="Thêm vào yêu thích">
-                <i class="fa-regular fa-heart"></i>
-              </button>
+            <button class="btn-add-wishlist" 
+        title="Thêm vào yêu thích" 
+        onclick="toggleWishlist(event, '{{ p.id }}')">
+          <i id="heart-{{ p.id }}" class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
+        </i>
+      </button>
               <span class="badge-sale" style="background: red"
                 >Best Seller</span
               >
@@ -209,7 +212,7 @@ LapStore{% endblock %}
                   <span class="price-current">{{p.price_vn}}</span
                   ><span class="price-old">{{p.discount_price_vn}}</span>
                 </div>
-                <button class="btn-buy-now">Mua ngay</button>
+                <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
               </div>
             </article>
           </a>
@@ -238,12 +241,15 @@ LapStore{% endblock %}
         <div class="flash-grid">
           
           <!--SẢN PHẨM HOME-->
-           {% for p in products|slice:5 %}
+           {% for p in bestselling_products %}
          <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card pod-card-view-all" >
-              <button class="btn-add-wishlist" title="Thêm vào yêu thích">
-                <i class="fa-regular fa-heart"></i>
-              </button>
+              <button class="btn-add-wishlist" 
+        title="Thêm vào yêu thích" 
+        onclick="toggleWishlist(event, '{{ p.id }}')">
+          <i id="heart-{{ p.id }}" class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
+        </i>
+      </button>
               <span class="badge-sale">Bán chạy</span>
               <div class="prod-img-wrap">
                 <img src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}" alt="LG" />
@@ -269,7 +275,7 @@ LapStore{% endblock %}
                   <span class="price-current">{{p.price_vn}}</span
                   ><span class="price-old">{{p.discount_price_vn}}</span>
                 </div>
-                <button class="btn-buy-now">Mua ngay</button>
+                <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
               </div>
             </article>
           </a>
@@ -301,9 +307,11 @@ LapStore{% endblock %}
            {% for p in components %}
              <a href="{% url 'products:product-detail' p.slug %}">
             <article class="prod-card pod-card-view-all" >
-              <button class="btn-add-wishlist" title="Thêm vào yêu thích">
-                <i class="fa-regular fa-heart"></i>
-              </button>
+             <button class="btn-add-wishlist" 
+        title="Thêm vào yêu thích" onclick="toggleWishlist(event, '{{ p.id }}')">
+          <i id="heart-{{ p.id }}" class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
+        </i>
+      </button>
               <span class="badge-sale">Ưu đãi</span>
               <div class="prod-img-wrap">
                 <img src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}" alt="LG" />
@@ -321,7 +329,7 @@ LapStore{% endblock %}
                   <span class="price-current">{{p.price_vn}}</span
                   ><span class="price-old">{{p.discount_price_vn}}</span>
                 </div>
-                <button class="btn-buy-now">Mua ngay</button>
+                <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
               </div>
             </article>
           </a>
@@ -349,4 +357,98 @@ LapStore{% endblock %}
       </section>
       <script src="{% static 'core/js/main.js' %}"></script>
       
+{% endblock %}
+{% block extra_js %}
+<script>
+function toggleWishlist(event, productId) {
+    event.preventDefault();
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
+
+    fetch("{% url 'core:toggle_wishlist' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'id': productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Xử lý khi chưa đăng nhập
+        if (data.status === 'login_required') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu đăng nhập',
+                text: data.message,
+                confirmButtonText: 'Đăng nhập ngay'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
+                }
+            });
+            return;
+        }
+        
+        // Hiển thị thông báo toast
+        Swal.fire({
+            toast: true, position: 'top-end', icon: 'success',
+            title: data.message, showConfirmButton: false,
+            timer: 2000
+        });
+
+        // Logic đổi màu tim hoặc xóa card cũ của Heo
+        const heartIcon = document.getElementById(`heart-${productId}`);
+        if (data.status === 'added') {
+            if (heartIcon) {
+                heartIcon.classList.remove('fa-regular');
+                heartIcon.classList.add('fa-solid', 'text-danger');
+            }
+        } else if (data.status === 'removed') {
+            if (heartIcon) {
+                heartIcon.classList.remove('fa-solid', 'text-danger');
+                heartIcon.classList.add('fa-regular');
+            }
+            const productCard = document.getElementById(`wishlist-item-${productId}`);
+            if (productCard) productCard.remove();
+        }
+    });
+}
+</script>
+<script>
+function toggleCart(event, productId) {
+    event.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
+
+    fetch("{% url 'products:toggle_cart' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'id': productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Xử lý khi chưa đăng nhập
+        if (data.status === 'login_required') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu đăng nhập',
+                text: data.message,
+                confirmButtonText: 'Đăng nhập ngay'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
+                }
+            });
+            return;
+        }
+        
+        // Nếu thêm sản phẩm thành công, chuyển hướng đến trang giỏ hàng
+        if (data.status === 'added') {
+            window.location.href = "{% url 'orders:cart' %}";
+        }
+    });
+}
+</script>
 {% endblock %}

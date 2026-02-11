@@ -24,6 +24,35 @@ thích - LapStore{% endblock %} {% block extra_css %}
     color: white;
     transform: scale(1.1);
   }
+
+
+ .empty-cart-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    padding: 40px;  
+}
+  .empty-cart-message img {
+    width: 150px;
+    margin-bottom: 20px;
+  }
+  .empty-cart-message h3 {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .empty-cart-message p {
+    color: var(--text-sub);
+    margin-bottom: 20px;
+  }
+  .btn-back-home {
+    background: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 99px;
+    text-decoration: none;
+    font-weight: 600;
+  }
 </style>
 
 {% endblock %} {% block content %}
@@ -40,49 +69,108 @@ thích - LapStore{% endblock %} {% block extra_css %}
 
 <div class="section-head">
   <h2 style="font-size: 24px; font-weight: 800">
-    Sản phẩm <span style="color: var(--primary)">Yêu thích</span> (3)
+    Sản phẩm <span style="color: var(--primary)">Yêu thích</span> ({{product_count}})
   </h2>
 </div>
 
-<div class="flash-grid">
+  {% if needs_login %}
+          <div class="login-prompt" style="text-align: center; padding: 100px;">
+        <div class="empty-cart-message">
+    <h3>Mục yêu thích của bạn đang trống</h3>
+    <p>Hãy khám phá thêm các sản phẩm và thêm vào mục yêu thích nhé!</p>
+    <a href="{% url 'core:home' %}" class="btn-back-home">Tiếp tục mua sắm</a>
+  </div>
+    </div>
+    {% endif %}
+    <div class="flash-grid">
   <!-- DJANGO: Loop Wishlist Items -->
   <!-- Sản phẩm -->
-  <article class="prod-card">
-    <button class="btn-remove-wish" title="Xóa khỏi yêu thích">
+  {% for item in wishlist %}
+  <article class="prod-card" id="wishlist-item-{{ item.product.id }}">
+    <button class="btn-remove-wish" 
+            title="Xóa khỏi yêu thích" 
+            onclick="toggleWishlist(event, '{{ item.product.id }}')">
       <i class="fa-solid fa-xmark"></i>
     </button>
-    <span class="badge-sale">-50%</span>
-    <a href="#">
+
+    {% if item.product.discount_price_vn %}
+      <span class="badge-sale">Giảm giá</span>
+    {% endif %}
+
+    <a href="{% url 'products:product-detail' item.product.slug %}">
       <div class="prod-img-wrap">
         <img
-          src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/t/a/tai-nghe-chup-tai-rapoo-vh520c_1.jpg"
-          alt="Product"
+          src="{% if item.product.images.first %}{{ item.product.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
+          alt="{{ item.product.name }}"
         />
       </div>
     </a>
-    <h3 class="prod-name">Tai nghe Gaming DareU EH722s</h3>
+
+    <h3 class="prod-name">{{ item.product.name }}</h3>
+
     <div class="prod-specs-box">
-      <span><i class="fa-solid fa-headphones"></i> 7.1 Sound</span>
-      <span><i class="fa-solid fa-microphone"></i> Mic chống ồn</span>
+        {% if item.product.is_lap %}
+            <span><i class="fa-solid fa-microchip"></i> {{ item.product.laptop_config.cpu }}</span>
+            <span><i class="fa-solid fa-vr-cardboard"></i> {{ item.product.laptop_config.vga }}</span>
+        {% else %}
+            <span><i class="fa-solid fa-copyright"></i> Brand: {{ item.product.brand }}</span>
+            <span><i class="fa-solid fa-shield"></i> BH: {{ item.product.warranty }}</span>
+        {% endif %}
     </div>
+
     <div class="prod-footer">
       <div class="price-box">
-        <span class="price-current">299.000đ</span>
-        <span class="price-old">599.000đ</span>
+        <span class="price-current">{{ item.product.price_vn }}</span>
+        {% if item.product.discount_price_vn %}
+            <span class="price-old">{{ item.product.discount_price_vn }}</span>
+        {% endif %}
       </div>
       <button class="btn-buy-now">Mua ngay</button>
     </div>
   </article>
+{% endfor %}
   <!-- DJANGO: End Loop -->
 </div>
-<script>
-  const btnRemoveWishlistAll = document.querySelectorAll(".btn-remove-wish");
 
-btnRemoveWishlistAll.forEach((btnRemoveWish) => {
-  btnRemoveWish.addEventListener("click", function (e) {
-    alert("Đã xóa khỏi danh sách yêu thích");
-    e.preventDefault();
-  });
-});
+{% endblock %}
+{% block extra_js %}
+<script>
+function toggleWishlist(event, productId) {
+    event.preventDefault();
+    
+    // Lấy CSRF Token từ cookie của Django
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
+
+    // Chú ý: Dùng đúng 'orders:toggle_wishlist' vì bạn để ở app orders
+    fetch("{% url 'orders:toggle_wishlist' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'id': productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'removed') {
+            // Hiển thị thông báo toast
+            Swal.fire({
+                toast: true, position: 'top-end', icon: 'success',
+                title: data.message, showConfirmButton: false,
+                timer: 2000
+            });
+
+            // Xóa cái card sản phẩm ngay lập tức để user thấy đã xóa thành công
+            const item = document.getElementById(`wishlist-item-${productId}`);
+            if (item) {
+                item.style.transition = "all 0.3s ease";
+                item.style.opacity = "0";
+                item.style.transform = "scale(0.8)";
+                setTimeout(() => item.remove(), 300);
+            }
+        }
+    })
+    .catch(error => console.error('Lỗi: ', error));
+}
 </script>
 {% endblock %}

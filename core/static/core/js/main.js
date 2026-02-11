@@ -285,12 +285,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
-const btnAddWishListAll = document.querySelectorAll(".btn-add-wishlist");
-
-btnAddWishListAll.forEach((btnAddWish) => {
-  btnAddWish.addEventListener("click", function (e) {
-    alert("Đã thêm vào danh sách yêu thích");
-    e.preventDefault();
-  });
-});

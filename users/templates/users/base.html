@@ -1,0 +1,67 @@
+{% load static %}
+<!doctype html>
+<html lang="vi">  
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}LapStore{% endblock %}</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'core/favicon/favicon-32x32.png' %}">
+    <link rel="stylesheet" href="{% static 'users/css/style.css' %}">
+  </head>
+  <body>
+
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="{% url 'core:home' %}" class="logo">
+          <i class="fa-brands fa-shopify" style="color: #ff1a1a;"></i> LapStore
+        </a>
+        <p class="subtitle">
+          Hệ thống bán lẻ công nghệ hàng đầu
+        </p>
+      </div>
+
+      {% block content %}
+      <!-- Nội dung của login.html hoặc register.html sẽ được chèn vào đây -->
+      {% endblock %}
+
+      <div class="divider"><span>Hoặc tiếp tục với</span></div>
+      <div class="social-login">
+        <button class="btn-social">
+          <img src="https://i.pinimg.com/564x/fb/52/e3/fb52e39c5910bdbcc3b98d58d6ca6944.jpg" width="18" alt="Google" /> Google
+        </button>
+        <button class="btn-social">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="18" alt="Facebook" /> Facebook
+        </button>
+      </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% if messages %}
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          {% for message in messages %}
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: '{{ message.tags }}', // success, error, warning, info
+              title: '{{ message|escapejs }}',
+              showConfirmButton: false,
+              timer: 4000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            });
+          {% endfor %}
+        });
+      </script>
+    {% endif %}
+
+    <script src="{% static 'users/js/main.js' %}"></script>
+  </body>
+</html>

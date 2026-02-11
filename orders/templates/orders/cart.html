@@ -334,64 +334,62 @@
 </div>
 
 <div class="container">
-  {% if cart and cart.items.all %}
+  {% csrf_token %}
+  {% if cart_items %}
   <div class="cart-layout">
     <div class="cart-container">
       <div class="cart-header">
         <input type="checkbox" class="custom-checkbox" checked />
-        <span>Tất cả ({{ cart.items.count }} sản phẩm)</span>
+        <span>Tất cả ({{ product_count }} sản phẩm)</span>
         <a
-          href="{% url 'orders:clear_cart' %}"
+          href="#"
           style="margin-left: auto; cursor: pointer; color: #9ca3af"
           ><i class="fa-regular fa-trash-can"></i
         ></a>
       </div>
 
-      {% for item in cart.items.all %}
-      <div class="cart-item">
+      {% for item in cart_items %}
+      <div class="cart-item" id="cart-item-{{ item.product.id }}">
         <input type="checkbox" class="custom-checkbox" checked />
         <div class="item-img">
           <img
-            src="{% if item.product.image %}{{ item.product.image.url }}{% else %}https://placehold.co/100x100?text=No+Image{% endif %}"
+            src="{% if item.product.images.first %}{{ item.product.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
             alt="{{ item.product.name }}"
           />
         </div>
         <div class="item-info">
           <div>
             <a
-              href="{{ item.product.get_absolute_url }}"
+              href="{% url 'products:product-detail' item.product.slug %}"
               style="text-decoration: none"
             >
               <div class="item-name">{{ item.product.name }}</div>
             </a>
             <!-- Placeholder for variant info -->
-            <!-- <div class="item-variant">Màu: Xám • 256GB</div> -->
+           <div class="item-variant">Bảo hành: {{ item.product.warranty }}</div>
+
           </div>
           <div class="item-actions">
             <div class="item-price">
-              <span class="p-current"
-                >{{ item.product.price|floatformat:0|intcomma }}đ</span
-              >
-              {% if item.product.old_price %}
-              <span class="p-old"
-                >{{ item.product.old_price|floatformat:0|intcomma }}đ</span
-              >
+              <span class="p-current">{{ item.product.final_price|floatformat:0|intcomma }}đ</span>
+              {% if item.product.discount_price %}
+              <span class="p-old">{{ item.product.price|floatformat:0|intcomma }}đ</span>
               {% endif %}
             </div>
             <div class="qty-control">
               <a
-                href="{% url 'orders:remove_from_cart' item.product.id %}"
+                href="#"
                 class="qty-btn"
                 >-</a
               >
               <input
                 type="text"
                 class="qty-input"
-                value="{{ item.quantity }}"
+                value="{{ item.quantity }}" 
                 readonly
               />
               <a
-                href="{% url 'orders:add_to_cart' item.product.id %}"
+                href="#"
                 class="qty-btn"
                 >+</a
               >
@@ -399,8 +397,10 @@
           </div>
         </div>
         <a
-          href="{% url 'orders:remove_cart_item' item.product.id %}"
+          href="javascript:void(0);"
           class="btn-delete"
+          onclick="toggleCart(event, '{{ item.product.id }}')"
+          title="Xóa sản phẩm này"
           ><i class="fa-solid fa-xmark"></i
         ></a>
       </div>
@@ -416,8 +416,8 @@
         <button class="btn-apply">Áp dụng</button>
       </div>
       <div class="summary-row">
-        <span>Tạm tính ({{ cart.items.count }} sản phẩm)</span>
-        <span>{{ cart.get_total_price|floatformat:0|intcomma }}đ</span>
+        <span>Tạm tính ({{ product_count }} sản phẩm)</span>
+        <span id="subtotal-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
       </div>
       <div class="summary-row">
         <span>Giảm giá</span>
@@ -425,9 +425,7 @@
       </div>
       <div class="summary-row total">
         <span>Tổng cộng</span>
-        <span class="total-price-big"
-          >{{ cart.get_total_price|floatformat:0|intcomma }}đ</span
-        >
+        <span class="total-price-big" id="total-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
       </div>
       <p
         style="
@@ -448,12 +446,10 @@
   <div class="mobile-checkout-bar">
     <div class="mc-total">
       <span>Tổng cộng:</span>
-      <span class="mc-price"
-        >{{ cart.get_total_price|floatformat:0|intcomma }}đ</span
-      >
+      <span class="mc-price" id="mobile-total-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
     </div>
     <a href="{% url 'orders:checkout' %}" class="mc-btn"
-      >Mua Hàng ({{ cart.items.count }})</a
+      >Mua Hàng ({{ product_count }})</a
     >
   </div>
 
@@ -465,4 +461,69 @@
   </div>
   {% endif %}
 </div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function toggleCart(event, productId) {
+    event.preventDefault();
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+    fetch("{% url 'products:toggle_cart' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'id': productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'removed') {
+            // Hiển thị thông báo toast
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 2000
+            });
+
+            // Xóa item khỏi DOM với hiệu ứng mờ dần
+            const itemElement = document.getElementById(`cart-item-${productId}`);
+            if (itemElement) {
+                itemElement.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+                itemElement.style.opacity = "0";
+                itemElement.style.transform = "translateX(20px)";
+                setTimeout(() => {
+                    itemElement.remove();
+                    updateTotalPrice(data.new_total);
+                }, 300);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi khi xóa sản phẩm:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Có lỗi xảy ra, không thể xóa sản phẩm!',
+        });
+    });
+}
+
+function updateTotalPrice(newTotal) {
+    // Định dạng số thành chuỗi tiền tệ VND
+    const formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(newTotal).replace('₫', 'đ');
+
+    // Cập nhật các element hiển thị giá
+    const subtotalElement = document.getElementById('subtotal-price');
+    const totalElement = document.getElementById('total-price');
+    const mobileTotalElement = document.getElementById('mobile-total-price');
+
+    if (subtotalElement) subtotalElement.innerText = formattedPrice;
+    if (totalElement) totalElement.innerText = formattedPrice;
+    if (mobileTotalElement) mobileTotalElement.innerText = formattedPrice;
+}
+</script>
 {% endblock %}

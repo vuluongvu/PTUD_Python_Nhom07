@@ -146,7 +146,9 @@
     {% endif %}
 
     <a href="{% url 'orders:cart' %}" class="action-btn">
-        <i class="fa-solid fa-bag-shopping"></i>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" width="1.2em" height="1.2em" class="fa-regular">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+</svg>
         <span class="badge-dot"></span>
     </a>
 </div>
@@ -157,7 +159,9 @@
       </div>
     </header>
     {% endblock %}
-
+{% if messages %}
+  <!-- Các thông báo sẽ được xử lý bằng SweetAlert2 ở cuối file -->
+{% endif %}
     <!-- MOBILE MENU SIDEBAR (Dùng chung) -->
     {% block mobile_menu %}
     <aside class="mobile-menu">
@@ -309,17 +313,30 @@
     </button>
 
     <!-- Scripts -->
-     {% if messages %}
-        <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            {% for message in messages %}
-              alert('{{ message|escapejs }}'); // Hiển thị alert cho message
-            {% endfor %}
-          });
-        </>
-      {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% if messages %}
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          {% for message in messages %}
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: '{{ message.tags }}', // success, error, warning, info
+              title: '{{ message|escapejs }}',
+              showConfirmButton: false,
+              timer: 3500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            });
+          {% endfor %}
+        });
+      </script>
+    {% endif %}
 
     <script src="{% static 'core/js/main.js' %}"></script>
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}{% endblock %} 
   </body>
 </html>
