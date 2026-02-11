@@ -39,24 +39,47 @@
                 </script>
 
         <main class="content-card">
-            <h2 class="section-title">Đơn hàng của tôi</h2>
-            {% if orders %}
-                {% for order in orders %}
+            {% if order %} {# Chế độ xem chi tiết một đơn hàng #}
+                <h2 class="section-title">Chi tiết Đơn hàng #{{ order.id }}</h2>
+            {% else %} {# Chế độ xem danh sách #}
+                <h2 class="section-title">Đơn hàng của tôi</h2>
+            {% endif %}
+
+            {% if not order %} {# Chỉ hiển thị thanh lọc ở trang danh sách #}
+            <div class="order-filter-bar">
+                <a href="{% url 'users:order_list' %}" class="filter-tag {% if not current_status %}active{% endif %}">Tất cả</a>
+                {% for status_value, status_label in order_statuses %}
+                    <a href="?status={{ status_value }}" class="filter-tag {% if current_status == status_value %}active{% endif %}">
+                        {{ status_label }}
+                    </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+
+            {% if orders %} {# Chế độ xem danh sách #}
+                {% for order_item in orders %}
                 <div class="card" style="margin-top: 20px;">
                     <div class="order-header">
                         <div>
-                            <h2>Đơn hàng #{{ order.id }}</h2>
-                            <span style="color: #666; font-size: 14px;">Ngày đặt: {{ order.created_at|date:"d/m/Y" }}</span> <br>
-                            <span style="color: #666; font-size: 14px;">Trạng thái: {{ order.get_order_status_display }}
-                                {% if order.order_status == 'delivered' %}
+                            <h2><a href="{% url 'users:order_detail' order_item.id %}" class="order-id-link">Đơn hàng #{{ order_item.id }}</a></h2>
+                            <span style="color: #666; font-size: 14px;">Ngày đặt: {{ order_item.created_at|date:"d/m/Y" }}</span> <br>
+                            <span style="color: #666; font-size: 14px;">Trạng thái: {{ order_item.get_order_status_display }}
+                                {% if order_item.order_status == 'delivered' %}
                                     <i class="fas fa-check-circle" style="color: green;"></i>
                                 {% endif %}
                             </span>
                         </div>
                         <div class="order-meta">
-                            <span>Tổng tiền: <strong>{{ order.total_amount|intcomma }}đ</strong></span>
-                            {% if order.payment %}
-                            <span>Thanh toán: <strong>{{ order.payment.get_payment_method_display }}</strong></span>
+                            <span>Tổng tiền: <strong>{{ order_item.total_amount|intcomma }}đ</strong></span>
+                            {% if order_item.payment %}
+                            <span>Thanh toán: <strong>{{ order_item.payment.get_payment_method_display }}</strong></span>
+                            {% endif %}
+                            {% if order_item.order_status == 'pending' %}
+                                <form action="{% url 'users:cancel_order' order_item.id %}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-cancel-order">Hủy đơn hàng</button>
+                                </form>
                             {% endif %}
                         </div>
                     </div>
@@ -73,7 +96,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for item in order.items.all %}
+                                    {% for item in order_item.items.all %}
                                     <tr>
                                         <td>
                                             <div class="product-info">
@@ -96,41 +119,41 @@
                             <div class="info-box">
                                 <h3>Địa chỉ nhận hàng</h3>
                                 <p class="address-text">
-                                    <strong>{{ order.shipping_name }}</strong><br>
-                                    {{ order.shipping_phone }}<br>
-                                    {{ order.shipping_address }}
+                                    <strong>{{ order_item.shipping_name }}</strong><br>
+                                    {{ order_item.shipping_phone }}<br>
+                                    {{ order_item.shipping_address }}
                                 </p>
                             </div>
             
                             <div class="info-box" style="background: #fafafa; padding: 20px; border-radius: 8px;">
                                 <h3>Thanh toán</h3>
                                 {# Tính Tạm tính (subtotal) bằng cách lấy Tổng cộng cộng với giá trị giảm giá (nếu có) #}
-                                {% with discount_value=order.coupon.discount_value|default:0 %}
+                                {% with discount_value=order_item.coupon.discount_value|default:0 %}
                                 <div class="info-row">
                                     <span>Tạm tính:</span>
-                                    <span>{{ order.total_amount|add:discount_value|intcomma }}đ</span>
+                                    <span>{{ order_item.total_amount|add:discount_value|intcomma }}đ</span>
                                 </div>
                                 {% endwith %}
                                 <div class="info-row">
                                     <span>Phí vận chuyển:</span>
                                     <span>0đ</span> {# Hardcoded for now #}
                                 </div>
-                                {% if order.coupon %}
+                                {% if order_item.coupon %}
                                 <div class="info-row">
                                     <span>Giảm giá:</span>
-                                    <span style="color: #28a745;">-{{ order.coupon.discount_value|intcomma }}đ</span>
+                                    <span style="color: #28a745;">-{{ order_item.coupon.discount_value|intcomma }}đ</span>
                                 </div>
                                 {% endif %}
                                 <div class="info-row total">
                                     <span>Tổng cộng:</span>
-                                    <span>{{ order.total_amount|intcomma }}đ</span>
+                                    <span>{{ order_item.total_amount|intcomma }}đ</span>
                                 </div>
-                                {% if order.payment %}
+                                {% if order_item.payment %}
                                 <div style="margin-top: 10px; font-size: 13px; color: #666; text-align: right;">
-                                    {% if order.payment.payment_status == 'completed' %}
-                                        <i class="fas fa-check-circle" style="color: green;"></i> Đã thanh toán qua {{ order.payment.get_payment_method_display }}
+                                    {% if order_item.payment.payment_status == 'completed' %}
+                                        <i class="fas fa-check-circle" style="color: green;"></i> Đã thanh toán qua {{ order_item.payment.get_payment_method_display }}
                                     {% else %}
-                                        <i class="fas fa-clock" style="color: orange;"></i> {{ order.payment.get_payment_status_display }}
+                                        <i class="fas fa-clock" style="color: orange;"></i> {{ order_item.payment.get_payment_status_display }}
                                     {% endif %}
                                 </div>
                                 {% endif %}
@@ -139,6 +162,111 @@
                     </div>
                 </div>
                 {% endfor %}
+            {% elif order %} {# Chế độ xem chi tiết #}
+                {% with order_item=order %}
+                <div class="card" style="margin-top: 20px;">
+                    <div class="order-header">
+                        <div>
+                            <h2><a href="{% url 'users:order_detail' order_item.id %}" class="order-id-link">Đơn hàng #{{ order_item.id }}</a></h2>
+                            <span style="color: #666; font-size: 14px;">Ngày đặt: {{ order_item.created_at|date:"d/m/Y" }}</span> <br>
+                            <span style="color: #666; font-size: 14px;">Trạng thái: {{ order_item.get_order_status_display }}
+                                {% if order_item.order_status == 'delivered' %}
+                                    <i class="fas fa-check-circle" style="color: green;"></i>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="order-meta">
+                            <span>Tổng tiền: <strong>{{ order_item.total_amount|intcomma }}đ</strong></span>
+                            {% if order_item.payment %}
+                            <span>Thanh toán: <strong>{{ order_item.payment.get_payment_method_display }}</strong></span>
+                            {% endif %}
+                             {% if order_item.order_status == 'pending' %}
+                                <form action="{% url 'users:cancel_order' order_item.id %}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-cancel-order">Hủy đơn hàng</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+            
+                    <div class="order-body">
+                        <div class="order-items">
+                            <h3 style="margin-bottom: 20px; font-size: 18px;">Sản phẩm</h3>
+                            <table class="item-list">
+                                <thead>
+                                    <tr>
+                                        <th width="60%">Sản phẩm</th>
+                                        <th width="20%" style="text-align: center;">SL</th>
+                                        <th width="20%" style="text-align: right;">Giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order_item.items.all %}
+                                    <tr>
+                                        <td>
+                                            <div class="product-info">
+                                                <img src="{{ item.product.images.first.image_url|default:'https://via.placeholder.com/60' }}" alt="{{ item.product_name }}">
+                                                <div class="product-details">
+                                                    <h4>{{ item.product_name }}</h4>
+                                                    {# <p>Màu: Đen | RAM: 16GB</p> #}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center;">x{{ item.quantity }}</td>
+                                        <td style="text-align: right; color: var(--primary); font-weight: bold;">{{ item.subtotal|intcomma }}đ</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+            
+                        <div class="order-summary">
+                            <div class="info-box">
+                                <h3>Địa chỉ nhận hàng</h3>
+                                <p class="address-text">
+                                    <strong>{{ order_item.shipping_name }}</strong><br>
+                                    {{ order_item.shipping_phone }}<br>
+                                    {{ order_item.shipping_address }}
+                                </p>
+                            </div>
+            
+                            <div class="info-box" style="background: #fafafa; padding: 20px; border-radius: 8px;">
+                                <h3>Thanh toán</h3>
+                                {# Tính Tạm tính (subtotal) bằng cách lấy Tổng cộng cộng với giá trị giảm giá (nếu có) #}
+                                {% with discount_value=order_item.coupon.discount_value|default:0 %}
+                                <div class="info-row">
+                                    <span>Tạm tính:</span>
+                                    <span>{{ order_item.total_amount|add:discount_value|intcomma }}đ</span>
+                                </div>
+                                {% endwith %}
+                                <div class="info-row">
+                                    <span>Phí vận chuyển:</span>
+                                    <span>0đ</span> {# Hardcoded for now #}
+                                </div>
+                                {% if order_item.coupon %}
+                                <div class="info-row">
+                                    <span>Giảm giá:</span>
+                                    <span style="color: #28a745;">-{{ order_item.coupon.discount_value|intcomma }}đ</span>
+                                </div>
+                                {% endif %}
+                                <div class="info-row total">
+                                    <span>Tổng cộng:</span>
+                                    <span>{{ order_item.total_amount|intcomma }}đ</span>
+                                </div>
+                                {% if order_item.payment %}
+                                <div style="margin-top: 10px; font-size: 13px; color: #666; text-align: right;">
+                                    {% if order_item.payment.payment_status == 'completed' %}
+                                        <i class="fas fa-check-circle" style="color: green;"></i> Đã thanh toán qua {{ order_item.payment.get_payment_method_display }}
+                                    {% else %}
+                                        <i class="fas fa-clock" style="color: orange;"></i> {{ order_item.payment.get_payment_status_display }}
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
             {% else %}
                 <div class="card" style="margin-top: 20px; text-align: center; padding: 40px;">
                     <p>Bạn chưa có đơn hàng nào.</p>
@@ -149,4 +277,19 @@
         </div>
       </div>
     </div>
+{% endblock %}
+
+{% block extra_js %}
+    {% if messages %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    Swal.fire('Thành công!', '{{ message|escapejs }}', 'success');
+                {% endif %}
+            {% endfor %}
+        });
+    </script>
+    {% endif %}
 {% endblock %}

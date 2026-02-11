@@ -3,6 +3,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from core.views import toggle_wishlist
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
 from core.models import Product, WishList, Cart, Order, OrderItem
 from django.db.models import Q, Count
 from django.contrib import messages
@@ -87,8 +89,11 @@ def checkout(request):
         # Xóa giỏ hàng sau khi đã đặt hàng thành công
         user_cart.delete()
 
-        messages.success(request, f"Đặt hàng thành công! Mã đơn hàng của bạn là #{new_order.id}.")
+        messages.success(request, "Đặt hàng thành công! Cảm ơn bạn đã mua sắm tại LapStore.")
+
         return redirect('users:order_list')
+
+
 
 
     # Tính tổng tiền

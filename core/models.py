@@ -31,17 +31,25 @@ class Profile(TimeStampedModel):
 
 class Address(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
-    receiver_name = models.CharField(max_length=100)
-    receiver_phone = models.CharField(max_length=15)
-    province = models.CharField(max_length=100, blank=True) 
-    district = models.CharField(max_length=100, blank=True) 
-    ward = models.CharField(max_length=100, blank=True)
-    specific_address = models.CharField(max_length=255, blank=True) 
+    # receiver_name = models.CharField(max_length=100) # Sẽ dùng first_name của user
+    # receiver_phone = models.CharField(max_length=15) # Sẽ dùng phone_number của profile
+    
+    # Lưu tên text để hiển thị
+    province = models.CharField(max_length=100, blank=True, null=True) 
+    district = models.CharField(max_length=100, blank=True, null=True) 
+    ward = models.CharField(max_length=100, blank=True, null=True)
+    street_address = models.CharField(max_length=255, blank=True, null=True) 
+    
+    # Lưu mã code để xử lý logic
+    province_code = models.CharField(max_length=20, blank=True, null=True)
+    district_code = models.CharField(max_length=20, blank=True, null=True)
+    ward_code = models.CharField(max_length=20, blank=True, null=True)
+
     is_default = models.BooleanField(default=False)
 
     @property
     def full_address(self):
-        return f"{self.specific_address}, {self.ward}, {self.district}, {self.province}"
+        return f"{self.street_address}, {self.ward}, {self.district}, {self.province}"
 
     def save(self, *args, **kwargs):
         if self.is_default:
@@ -50,7 +58,7 @@ class Address(TimeStampedModel):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.receiver_name} - {self.full_address}"
+        return f"{self.user.first_name} - {self.full_address}"
 
 # --- Catalog ---
 class Category(models.Model):

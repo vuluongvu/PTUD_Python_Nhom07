@@ -2150,3 +2150,43 @@ footer {
     color: white;
     transform: scale(1.1);
 }
+
+.default-address-box {
+    background: var(--primary-light);
+    border: 1px solid #fee2e2;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.btn-use-default {
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--trans);
+}
+.btn-use-default:hover {
+    background: var(--primary-dark);
+}
+.btn-cancel-order {
+    background: transparent;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    margin-top: 8px;
+    transition: var(--trans);
+}
+.btn-cancel-order:hover {
+    background: #ef4444;
+    color: white;
+}

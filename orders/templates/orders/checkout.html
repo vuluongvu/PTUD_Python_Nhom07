@@ -29,6 +29,10 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
         <h3 class="block-title">
           <i class="fa-solid fa-location-dot"></i> Thông tin giao hàng
         </h3>
+        <div class="default-address-box">
+            <span>Sử dụng địa chỉ đã lưu trong hồ sơ?</span>
+            <button type="button" class="btn-use-default" id="useDefaultAddressBtn">Sử dụng địa chỉ mặc định</button>
+        </div>
         
           <div class="form-row">
             <div class="form-group">
@@ -228,12 +232,15 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
     const apiHost = "https://provinces.open-api.vn/api/";
 
     // Hàm để render options cho select
-    function renderOptions(selectElement, data, defaultText) {
+    function renderOptions(selectElement, data, defaultText, selectedCode) {
       selectElement.innerHTML = `<option value="">${defaultText}</option>`;
       data.forEach((item) => {
         const option = document.createElement("option");
         option.value = item.code;
         option.textContent = item.name;
+        if (item.code == selectedCode) {
+            option.selected = true;
+        }
         selectElement.appendChild(option);
       });
     }
@@ -288,6 +295,46 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
         checkoutForm.insertAdjacentHTML('beforeend', `<input type="hidden" name="district_text" value="${districtText}">`);
       if (wardText && wardText !== "Chọn Phường/Xã")
         checkoutForm.insertAdjacentHTML('beforeend', `<input type="hidden" name="ward_text" value="${wardText}">`);
+    });
+
+    // Xử lý nút "Sử dụng địa chỉ mặc định"
+    const useDefaultBtn = document.getElementById("useDefaultAddressBtn");
+    useDefaultBtn.addEventListener('click', function() {
+        fetch("{% url 'users:api_get_default_address' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const addr = data.address;
+                    document.querySelector('[name="fullname"]').value = addr.fullname || '';
+                    document.querySelector('[name="phone"]').value = addr.phone || '';
+                    document.querySelector('[name="address"]').value = addr.street_address || '';
+
+                    // Trigger API calls to populate dropdowns
+                    // 1. Set province
+                    const provinceOpt = Array.from(provinceSelect.options).find(opt => opt.value == addr.province_code);
+                    if (provinceOpt) {
+                        provinceSelect.value = addr.province_code;
+                        // 2. Fetch districts
+                        fetch(apiHost + `p/${addr.province_code}?depth=2`)
+                            .then(res => res.json())
+                            .then(p_data => {
+                                renderOptions(districtSelect, p_data.districts, "Chọn Quận/Huyện", addr.district_code);
+                                // 3. Fetch wards
+                                fetch(apiHost + `d/${addr.district_code}?depth=2`)
+                                    .then(res => res.json())
+                                    .then(d_data => {
+                                        renderOptions(wardSelect, d_data.wards, "Chọn Phường/Xã", addr.ward_code);
+                                    });
+                            });
+                    }
+                } else {
+                    alert(data.message || "Không thể tải địa chỉ mặc định.");
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching default address:", error);
+                alert("Có lỗi xảy ra, vui lòng thử lại.");
+            });
     });
 
   });

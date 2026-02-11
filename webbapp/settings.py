@@ -126,3 +126,12 @@ LOGIN_REDIRECT_URL = 'core:home'
 LOGIN_URL = 'users:login'
 LOGOUT_REDIRECT_URL = 'core:home'
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# --- Email Configuration ---
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your_email@gmail.com'  # Thay bằng email của bạn
+EMAIL_HOST_PASSWORD = 'your_app_password'      # Thay bằng mật khẩu ứng dụng
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

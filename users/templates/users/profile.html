@@ -14,8 +14,10 @@
         <div class="main-container">
         <aside class="sidebar-left">
             <div class="profile-snippet">
+                
                 <img src="{{ avatar }}" alt="Avatar">
-                <h3>{{ first_name|default:username }}</h3>
+                
+                <h3>{{ first_name }} {{last_name}}</h3>
                
             </div>
             <div class="nav-menu">
@@ -54,19 +56,29 @@
                     </div>
                      <div class="input-group">
                         <label>Số điện thoại</label>
-                        <input type="tel" value="{{phone_number|default:''}}">
+                        <input type="tel" name="phone_number" value="{{phone_number|default:''}}">
                     </div> 
                     <div class="input-group">
                         <label>Địa chỉ Email</label>
                         <input type="email" value="{{ email }}" disabled style="background: #f8f9fa; cursor: not-allowed;">
                     </div>
-                    <div class="input-group full-row">
-                        <label>Địa chỉ nhận hàng mặc định</label>
-                        <input type="text" placeholder="Số nhà, tên đường, Phường/Xã..." value="{{ address.0.street_address|default:'' }}">
+                    <div class="form-row full-row">
+                        <div class="input-group">
+                            <label>Tỉnh / Thành phố</label>
+                            <select class="form-control" name="province" id="province"></select>
+                        </div>
+                        <div class="input-group">
+                            <label>Quận / Huyện</label>
+                            <select class="form-control" name="district" id="district"></select>
+                        </div>
+                        <div class="input-group">
+                            <label>Phường / Xã</label>
+                            <select class="form-control" name="ward" id="ward"></select>
+                        </div>
                     </div>
                     <div class="input-group full-row">
-                        <label>Ghi chú cho shipper</label>
-                        <input type="text" placeholder="Ví dụ: Gọi trước khi giao, giao giờ hành chính...">
+                        <label>Địa chỉ cụ thể (Số nhà, tên đường)</label>
+                        <input type="text" name="street_address" placeholder="Nhập số nhà, tên đường..." value="{{ default_address.street_address|default:'' }}">
                     </div>
                 </div>
 
@@ -77,4 +89,71 @@
       </div>
     </div>
   
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const provinceSelect = document.getElementById("province");
+    const districtSelect = document.getElementById("district");
+    const wardSelect = document.getElementById("ward");
+    const apiHost = "https://provinces.open-api.vn/api/";
+
+    // Hàm để render options cho select
+    function renderOptions(selectElement, data, defaultText, selectedCode) {
+      selectElement.innerHTML = `<option value="">${defaultText}</option>`;
+      data.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.code;
+        option.textContent = item.name;
+        if (item.code == selectedCode) {
+            option.selected = true;
+        }
+        selectElement.appendChild(option);
+      });
+    }
+
+    // Lấy danh sách tỉnh/thành phố
+    fetch(apiHost + "?depth=1")
+      .then((response) => response.json())
+      .then((data) => {
+        renderOptions(provinceSelect, data, "Chọn Tỉnh/Thành", "{{ default_address.province_code|default:'' }}");
+        if (provinceSelect.value) {
+            provinceSelect.dispatchEvent(new Event('change'));
+        }
+      });
+
+    // Xử lý khi chọn tỉnh/thành phố
+    provinceSelect.addEventListener("change", function () {
+      const provinceCode = this.value;
+      districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+      wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+
+      if (provinceCode) {
+        fetch(apiHost + `p/${provinceCode}?depth=2`)
+          .then((response) => response.json())
+          .then((data) => {
+            renderOptions(districtSelect, data.districts, "Chọn Quận/Huyện", "{{ default_address.district_code|default:'' }}");
+            if (districtSelect.value) {
+                districtSelect.dispatchEvent(new Event('change'));
+            }
+          });
+      }
+    });
+
+    // Xử lý khi chọn quận/huyện
+    districtSelect.addEventListener("change", function () {
+      const districtCode = this.value;
+      wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+
+      if (districtCode) {
+        fetch(apiHost + `d/${districtCode}?depth=2`)
+          .then((response) => response.json())
+          .then((data) => {
+            renderOptions(wardSelect, data.wards, "Chọn Phường/Xã", "{{ default_address.ward_code|default:'' }}");
+          });
+      }
+    });
+  });
+</script>
 {% endblock %}
