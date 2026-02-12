@@ -31,28 +31,30 @@
 
 /* --- Card Style --- */
 .card {
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 30px;
+    background: var(--bg-white);
+    border-radius: var(--radius-card);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    padding: 24px;
     margin-bottom: 24px;
-    border: 1px solid #eaeaea;
+    border: 1px solid #f0f0f0;
+    transition: var(--trans);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
 }
 
 /* --- Header Đơn hàng --- */
 .order-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     border-bottom: 1px solid #eee;
     padding-bottom: 20px;
     margin-bottom: 30px;
-}
-
-.order-header h2 {
-    margin: 0;
-    font-size: 24px;
-    color: var(--primary);
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .order-meta {
@@ -62,7 +64,7 @@
 .order-meta span {
     display: block;
     font-size: 14px;
-    color: var(--text-light);
+    color: var(--text-sub);
 }
 
 .order-meta strong {
@@ -134,7 +136,7 @@
 
 .step-text {
     font-size: 14px;
-    color: var(--text-light);
+    color: var(--text-sub);
     font-weight: 600;
 }
 
@@ -170,7 +172,7 @@
 
 .item-list th {
     text-align: left;
-    color: var(--text-light);
+    color: var(--text-sub);
     font-weight: 600;
     padding-bottom: 12px;
     border-bottom: 2px solid #f0f0f0;
@@ -204,7 +206,7 @@
 .product-details p {
     margin: 0;
     font-size: 13px;
-    color: var(--text-light);
+    color: var(--text-sub);
 }
 
 /* --- Box Thông tin & Tổng tiền --- */
@@ -239,7 +241,7 @@
 .address-text {
     font-size: 14px;
     line-height: 1.5;
-    color: var(--text-light);
+    color: var(--text-sub);
 }
 
 /* Button */
@@ -257,6 +259,41 @@
 
 .btn-back:hover {
     background: #e0e0e0;
+}
+
+/* --- Thanh lọc đơn hàng --- */
+.order-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.filter-tag {
+    padding: 6px 16px;
+    border-radius: var(--radius-btn);
+    background: #f3f4f6;
+    color: var(--text-sub);
+    font-size: 13px;
+    font-weight: 600;
+    transition: var(--trans);
+}
+
+.filter-tag.active,
+.filter-tag:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.order-id-link {
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.order-id-link:hover {
+    text-decoration: underline;
 }
 
 /* Responsive */

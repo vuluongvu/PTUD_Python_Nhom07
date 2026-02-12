@@ -20,225 +20,323 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
   </p>
 </div>
 
-<div class="checkout-layout">
-  <!-- Cột trái: Thông tin giao hàng -->
-  <div class="checkout-col-left">
-    <div class="content-block">
-      <h3 class="block-title">
-        <i class="fa-solid fa-location-dot"></i> Thông tin giao hàng
-      </h3>
-      <!-- DJANGO: Form Checkout -->
-      <form id="checkoutForm" class="checkout-form">
-        <!-- DJANGO: {% csrf_token %} -->
-        <div class="form-row">
+<form id="checkoutForm" class="checkout-form" method="POST">
+  {% csrf_token %}
+  <div class="checkout-layout">
+    <!-- Cột trái: Thông tin giao hàng -->
+    <div class="checkout-col-left">
+      <div class="content-block">
+        <h3 class="block-title">
+          <i class="fa-solid fa-location-dot"></i> Thông tin giao hàng
+        </h3>
+        <div class="default-address-box">
+            <span>Sử dụng địa chỉ đã lưu trong hồ sơ?</span>
+            <button type="button" class="btn-use-default" id="useDefaultAddressBtn">Sử dụng địa chỉ mặc định</button>
+        </div>
+        
+          <div class="form-row">
+            <div class="form-group">
+              <label>Họ và tên <span style="color: red">*</span></label>
+              <input
+                type="text"
+                class="form-control"
+                name="fullname"
+                placeholder="Nhập họ tên của bạn"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Số điện thoại <span style="color: red">*</span></label>
+              <input
+                type="tel"
+                class="form-control"
+                name="phone"
+                placeholder="Nhập số điện thoại"
+                required
+              />
+            </div>
+          </div>
+
           <div class="form-group">
-            <label>Họ và tên <span style="color: red">*</span></label>
+            <label>Email (Để nhận hóa đơn)</label>
+            <input
+              type="email"
+              class="form-control"
+              name="email"
+              placeholder="Nhập email của bạn"
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tỉnh / Thành phố <span style="color: red">*</span></label>
+              <select class="form-control" name="province" id="province" required>
+                <option value="">Chọn Tỉnh/Thành</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Quận / Huyện <span style="color: red">*</span></label>
+              <select class="form-control" name="district" id="district" required>
+                <option value="">Chọn Quận/Huyện</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Phường / Xã <span style="color: red">*</span></label>
+              <select class="form-control" name="ward" id="ward" required>
+                <option value="">Chọn Phường/Xã</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Địa chỉ cụ thể <span style="color: red">*</span></label>
             <input
               type="text"
               class="form-control"
-              name="fullname"
-              placeholder="Nhập họ tên của bạn"
+              name="address"
+              placeholder="Số nhà, tên đường..."
               required
             />
           </div>
+
           <div class="form-group">
-            <label>Số điện thoại <span style="color: red">*</span></label>
-            <input
-              type="tel"
+            <label>Ghi chú đơn hàng</label>
+            <textarea
               class="form-control"
-              name="phone"
-              placeholder="Nhập số điện thoại"
-              required
-            />
+              name="note"
+              rows="3"
+              placeholder="Ví dụ: Giao hàng giờ hành chính..."
+            ></textarea>
           </div>
-        </div>
+      </div>
 
-        <div class="form-group">
-          <label>Email (Để nhận hóa đơn)</label>
-          <input
-            type="email"
-            class="form-control"
-            name="email"
-            placeholder="Nhập email của bạn"
-          />
-        </div>
+      <div class="content-block" style="margin-top: 20px">
+        <h3 class="block-title">
+          <i class="fa-regular fa-credit-card"></i> Phương thức thanh toán
+        </h3>
+        <div class="payment-methods">
+          <label class="payment-option active">
+            <input type="radio" name="payment" value="cod" checked />
+            <div class="payment-info">
+              <span class="payment-name">Thanh toán khi nhận hàng (COD)</span>
+              <span class="payment-desc"
+                >Bạn chỉ phải thanh toán khi đã nhận được hàng.</span
+              >
+            </div>
+            <i
+              class="fa-solid fa-money-bill-wave"
+              style="font-size: 24px; color: var(--primary)"
+            ></i>
+          </label>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Tỉnh / Thành phố <span style="color: red">*</span></label>
-            <select class="form-control" name="province">
-              <option value="">Chọn Tỉnh/Thành</option>
-              <option value="hanoi">Hà Nội</option>
-              <option value="hcm">TP. Hồ Chí Minh</option>
-              <option value="danang">Đà Nẵng</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Quận / Huyện <span style="color: red">*</span></label>
-            <select class="form-control" name="district">
-              <option value="">Chọn Quận/Huyện</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Phường / Xã <span style="color: red">*</span></label>
-            <select class="form-control" name="ward">
-              <option value="">Chọn Phường/Xã</option>
-            </select>
-          </div>
-        </div>
+          <label class="payment-option">
+            <input type="radio" name="payment" value="banking" />
+            <div class="payment-info">
+              <span class="payment-name">Chuyển khoản ngân hàng</span>
+              <span class="payment-desc"
+                >Giảm ngay 1% tối đa 100k khi chuyển khoản trước.</span
+              >
+            </div>
+            <i
+              class="fa-solid fa-building-columns"
+              style="font-size: 24px; color: #1877f2"
+            ></i>
+          </label>
 
-        <div class="form-group">
-          <label>Địa chỉ cụ thể <span style="color: red">*</span></label>
-          <input
-            type="text"
-            class="form-control"
-            name="address"
-            placeholder="Số nhà, tên đường..."
-            required
-          />
+          <label class="payment-option">
+            <input type="radio" name="payment" value="card" />
+            <div class="payment-info">
+              <span class="payment-name">Thẻ ATM / Visa / MasterCard</span>
+              <span class="payment-desc"
+                >Thanh toán an toàn qua cổng VNPAY/Momo.</span
+              >
+            </div>
+            <i
+              class="fa-regular fa-credit-card"
+              style="font-size: 24px; color: #fcd34d"
+            ></i>
+          </label>
         </div>
-
-        <div class="form-group">
-          <label>Ghi chú đơn hàng</label>
-          <textarea
-            class="form-control"
-            name="note"
-            rows="3"
-            placeholder="Ví dụ: Giao hàng giờ hành chính..."
-          ></textarea>
-        </div>
-      </form>
+      </div>
     </div>
 
-    <div class="content-block" style="margin-top: 20px">
-      <h3 class="block-title">
-        <i class="fa-regular fa-credit-card"></i> Phương thức thanh toán
-      </h3>
-      <div class="payment-methods">
-        <label class="payment-option active">
-          <input type="radio" name="payment" value="cod" checked />
-          <div class="payment-info">
-            <span class="payment-name">Thanh toán khi nhận hàng (COD)</span>
-            <span class="payment-desc"
-              >Bạn chỉ phải thanh toán khi đã nhận được hàng.</span
-            >
-          </div>
-          <i
-            class="fa-solid fa-money-bill-wave"
-            style="font-size: 24px; color: var(--primary)"
-          ></i>
-        </label>
+    <!-- Cột phải: Tóm tắt đơn hàng -->
+    <div class="checkout-col-right">
+      <div class="order-summary" style="position: sticky; top: 100px"> <h3 class="block-title"> Đơn hàng ({{ product_count }} sản phẩm) </h3>
+        <div class="checkout-items">
+          {% for item in cart_items %}
+            <div class="c-item">
+              <div class="c-img">
+                <img
+                  src="{% if item.product.images.first %}{{ item.product.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
+                  alt="{{ item.product.name }}"
+                />
+                <span class="c-qty">{{ item.quantity }}</span>
+              </div>
+              <div class="c-info">
+                <div class="c-name">{{ item.product.name }}</div>
+                <div class="c-price">{{ item.product.final_price|floatformat:0|intcomma }}đ</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
 
-        <label class="payment-option">
-          <input type="radio" name="payment" value="banking" />
-          <div class="payment-info">
-            <span class="payment-name">Chuyển khoản ngân hàng</span>
-            <span class="payment-desc"
-              >Giảm ngay 1% tối đa 100k khi chuyển khoản trước.</span
-            >
-          </div>
-          <i
-            class="fa-solid fa-building-columns"
-            style="font-size: 24px; color: #1877f2"
-          ></i>
-        </label>
+        <div class="coupon-box">
+          <input type="text" class="coupon-input" placeholder="Mã giảm giá" />
+          <button class="btn-apply">Áp dụng</button>
+        </div>
 
-        <label class="payment-option">
-          <input type="radio" name="payment" value="card" />
-          <div class="payment-info">
-            <span class="payment-name">Thẻ ATM / Visa / MasterCard</span>
-            <span class="payment-desc"
-              >Thanh toán an toàn qua cổng VNPAY/Momo.</span
-            >
-          </div>
-          <i
-            class="fa-regular fa-credit-card"
-            style="font-size: 24px; color: #fcd34d"
-          ></i>
-        </label>
+        <div class="summary-row">
+          <span>Tạm tính</span>
+          <span>{{ total_amount|floatformat:0|intcomma }}đ</span>
+        </div>
+        <div class="summary-row">
+          <span>Phí vận chuyển</span>
+          <span>Miễn phí</span>
+        </div>
+        <div class="summary-row">
+          <span>Giảm giá</span>
+          <span style="color: #22c55e">-0đ</span>
+        </div>
+
+        <div class="summary-row total">
+          <span>Tổng cộng</span>
+          <span class="total-price-big">{{ total_amount|floatformat:0|intcomma }}đ</span>
+        </div>
+
+        <button type="submit" class="btn-checkout">
+          ĐẶT HÀNG
+        </button>
+        <p
+          style="
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+            color: #6b7280;
+          "
+        >
+          Bằng việc đặt hàng, bạn đồng ý với
+          <a href="#" style="color: var(--primary)">Điều khoản sử dụng</a> của
+          chúng tôi.
+        </p>
       </div>
     </div>
   </div>
+</form>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const provinceSelect = document.getElementById("province");
+    const districtSelect = document.getElementById("district");
+    const wardSelect = document.getElementById("ward");
+    const apiHost = "https://provinces.open-api.vn/api/";
 
-  <!-- Cột phải: Tóm tắt đơn hàng -->
-  <div class="checkout-col-right">
-    <div class="order-summary" style="position: sticky; top: 100px">
-      <h3
-        style="
-          font-size: 18px;
-          font-weight: 700;
-          margin-bottom: 20px;
-          border-bottom: 1px solid #eee;
-          padding-bottom: 15px;
-        "
-      >
-        Đơn hàng ({{ product_count }} sản phẩm)
-      </h3>
+    // Hàm để render options cho select
+    function renderOptions(selectElement, data, defaultText, selectedCode) {
+      selectElement.innerHTML = `<option value="">${defaultText}</option>`;
+      data.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.code;
+        option.textContent = item.name;
+        if (item.code == selectedCode) {
+            option.selected = true;
+        }
+        selectElement.appendChild(option);
+      });
+    }
 
-      <!-- DJANGO: Loop Cart Items (Read only) -->
-      <div class="checkout-items">
-        {% for item in cart_items %}
-          <div class="c-item">
-            <div class="c-img">
-              <img
-                src="{% if item.product.images.first %}{{ item.product.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
-                alt="{{ item.product.name }}"
-              />
-              <span class="c-qty">{{ item.quantity }}</span>
-            </div>
-            <div class="c-info">
-              <div class="c-name">{{ item.product.name }}</div>
-              <div class="c-price">{{ item.product.final_price|floatformat:0|intcomma }}đ</div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
+    // Lấy danh sách tỉnh/thành phố
+    fetch(apiHost + "?depth=1")
+      .then((response) => response.json())
+      .then((data) => {
+        renderOptions(provinceSelect, data, "Chọn Tỉnh/Thành");
+      });
 
-      <div class="coupon-box" style="margin-top: 20px">
-        <input type="text" class="coupon-input" placeholder="Mã giảm giá" />
-        <button class="btn-apply">Áp dụng</button>
-      </div>
+    // Xử lý khi chọn tỉnh/thành phố
+    provinceSelect.addEventListener("change", function () {
+      const provinceCode = this.value;
+      districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+      wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
 
-      <div class="summary-row" style="margin-top: 15px">
-        <span>Tạm tính</span>
-        <span>{{ total_amount|floatformat:0|intcomma }}đ</span>
-      </div>
-      <div class="summary-row">
-        <span>Phí vận chuyển</span>
-        <span>Miễn phí</span>
-      </div>
-      <div class="summary-row">
-        <span>Giảm giá</span>
-        <span style="color: #22c55e">-0đ</span>
-      </div>
+      if (provinceCode) {
+        fetch(apiHost + `p/${provinceCode}?depth=2`)
+          .then((response) => response.json())
+          .then((data) => {
+            renderOptions(districtSelect, data.districts, "Chọn Quận/Huyện");
+          });
+      }
+    });
 
-      <div class="summary-row total">
-        <span>Tổng cộng</span>
-        <span class="total-price-big">{{ total_amount|floatformat:0|intcomma }}đ</span>
-      </div>
+    // Xử lý khi chọn quận/huyện
+    districtSelect.addEventListener("change", function () {
+      const districtCode = this.value;
+      wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
 
-      <button
-        class="btn-checkout"
-        onclick="
-          alert('Đặt hàng thành công! Mã đơn hàng của bạn là #DH123456');
-          window.location.href = '{% url 'core:home' %}';
-        "
-      >
-        ĐẶT HÀNG
-      </button>
-      <p
-        style="
-          font-size: 12px;
-          text-align: center;
-          margin-top: 10px;
-          color: #6b7280;
-        "
-      >
-        Bằng việc đặt hàng, bạn đồng ý với
-        <a href="#" style="color: var(--primary)">Điều khoản sử dụng</a> của
-        chúng tôi.
-      </p>
-    </div>
-  </div>
-</div>
-{% endblock %} 
+      if (districtCode) {
+        fetch(apiHost + `d/${districtCode}?depth=2`)
+          .then((response) => response.json())
+          .then((data) => {
+            renderOptions(wardSelect, data.wards, "Chọn Phường/Xã");
+          });
+      }
+    });
+
+    // Ghi lại tên text của địa chỉ vào hidden input trước khi submit
+    const checkoutForm = document.getElementById("checkoutForm");
+    checkoutForm.addEventListener("submit", function () {
+      const provinceText = provinceSelect.options[provinceSelect.selectedIndex].text;
+      const districtText = districtSelect.options[districtSelect.selectedIndex].text;
+      const wardText = wardSelect.options[wardSelect.selectedIndex].text;
+
+      // Tạo các input ẩn để gửi tên text lên server
+      if (provinceText && provinceText !== "Chọn Tỉnh/Thành")
+        checkoutForm.insertAdjacentHTML('beforeend', `<input type="hidden" name="province_text" value="${provinceText}">`);
+      if (districtText && districtText !== "Chọn Quận/Huyện")
+        checkoutForm.insertAdjacentHTML('beforeend', `<input type="hidden" name="district_text" value="${districtText}">`);
+      if (wardText && wardText !== "Chọn Phường/Xã")
+        checkoutForm.insertAdjacentHTML('beforeend', `<input type="hidden" name="ward_text" value="${wardText}">`);
+    });
+
+    // Xử lý nút "Sử dụng địa chỉ mặc định"
+    const useDefaultBtn = document.getElementById("useDefaultAddressBtn");
+    useDefaultBtn.addEventListener('click', function() {
+        fetch("{% url 'users:api_get_default_address' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const addr = data.address;
+                    document.querySelector('[name="fullname"]').value = addr.fullname || '';
+                    document.querySelector('[name="phone"]').value = addr.phone || '';
+                    document.querySelector('[name="address"]').value = addr.street_address || '';
+
+                    // Trigger API calls to populate dropdowns
+                    // 1. Set province
+                    const provinceOpt = Array.from(provinceSelect.options).find(opt => opt.value == addr.province_code);
+                    if (provinceOpt) {
+                        provinceSelect.value = addr.province_code;
+                        // 2. Fetch districts
+                        fetch(apiHost + `p/${addr.province_code}?depth=2`)
+                            .then(res => res.json())
+                            .then(p_data => {
+                                renderOptions(districtSelect, p_data.districts, "Chọn Quận/Huyện", addr.district_code);
+                                // 3. Fetch wards
+                                fetch(apiHost + `d/${addr.district_code}?depth=2`)
+                                    .then(res => res.json())
+                                    .then(d_data => {
+                                        renderOptions(wardSelect, d_data.wards, "Chọn Phường/Xã", addr.ward_code);
+                                    });
+                            });
+                    }
+                } else {
+                    alert(data.message || "Không thể tải địa chỉ mặc định.");
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching default address:", error);
+                alert("Có lỗi xảy ra, vui lòng thử lại.");
+            });
+    });
+
+  });
+</script>
+{% endblock %}
