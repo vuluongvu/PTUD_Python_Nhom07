@@ -213,6 +213,6 @@ def cancel_order_view(request, order_id):
         else:
             messages.error(request, "Bạn không thể hủy đơn hàng này vì nó đã được xử lý.")
             
-        return redirect('users:order_detail', order_id=order.id)
+        return redirect('users:order_list')
     
     return redirect('users:order_list')

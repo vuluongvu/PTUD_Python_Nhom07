@@ -8,7 +8,8 @@
 {% endblock %}
 {% block content %}
 <div class="breadcrumb">
-  <a href="{% url 'core:home' %}">Trang chủ</a>
+  <a href="{% url 'core:home' %}">Trang chủ /</a>
+  <a href="{% url 'users:order_list' %}">Đơn hàng của tôi</a>
 </div>
     <div class="profile-page">
       <div class="container">
@@ -287,6 +288,8 @@
             {% for message in messages %}
                 {% if message.tags == 'success' %}
                     Swal.fire('Thành công!', '{{ message|escapejs }}', 'success');
+                {% elif message.tags == 'error' %}
+                    Swal.fire('Lỗi!', '{{ message|escapejs }}', 'error');
                 {% endif %}
             {% endfor %}
         });
