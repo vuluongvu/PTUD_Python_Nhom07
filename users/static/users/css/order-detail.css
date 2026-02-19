@@ -261,14 +261,67 @@
     background: #e0e0e0;
 }
 
-/* --- Thanh lọc đơn hàng --- */
+/* --- Thanh lọc và tìm kiếm đơn hàng --- */
+.order-filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
 .order-filter-bar {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-top: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-search-form {
+    display: flex;
+    position: relative;
+    min-width: 300px;
+}
+
+.order-search-form input[type="text"] {
+    width: 100%;
+    padding: 10px 45px 10px 20px;
+    border: 2px solid transparent;
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+    outline: none;
+    transition: var(--trans);
+    background: #f3f4f6;
+}
+
+.order-search-form input[type="text"]:focus {
+    border-color: var(--primary);
+    background: var(--bg-white);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.order-search-form button {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--trans);
+}
+
+.order-search-form button:hover {
+    background: var(--primary-dark);
 }
 
 .filter-tag {
@@ -307,6 +360,16 @@
         align-items: flex-start;
         gap: 10px;
     }
+
+    .order-filter-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .order-search-form {
+        min-width: 100%;
+    }
+
 
     .order-meta {
         text-align: left;

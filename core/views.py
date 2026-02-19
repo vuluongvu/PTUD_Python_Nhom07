@@ -59,4 +59,7 @@ def toggle_wishlist(request):
             status = 'added'
             message = 'Đã thêm vào danh sách yêu thích!'
             
-        return JsonResponse({'status': status, 'message': message})
+        # Lấy số lượng mới nhất
+        wishlist_count = WishList.objects.filter(user=request.user).count()
+            
+        return JsonResponse({'status': status, 'message': message, 'wishlist_count': wishlist_count})

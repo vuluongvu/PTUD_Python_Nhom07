@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from django.http import JsonResponse
 try:
     from core.models import Address, Order, Profile
@@ -136,8 +137,9 @@ def order_list_view(request):
     """
     Hiển thị danh sách các đơn hàng của người dùng.
     """
-    # Lấy trạng thái lọc từ query params của URL
+    # Lấy các tham số lọc từ query params của URL
     current_status = request.GET.get('status')
+    query = request.GET.get('q', '').strip() # Lấy và xóa khoảng trắng thừa
 
     orders_query = Order.objects.filter(user=request.user)
 
@@ -145,12 +147,21 @@ def order_list_view(request):
     if current_status and current_status in Order.Status.values:
         orders_query = orders_query.filter(order_status=current_status)
 
+    # Lọc theo query tìm kiếm nếu có
+    if query:
+        search_filter = Q(items__product_name__icontains=query)
+        # Nếu query là số, tìm cả trong mã đơn hàng
+        if query.isdigit():
+            search_filter |= Q(id=int(query))
+        
+        # distinct() là cần thiết để tránh trả về cùng một đơn hàng nhiều lần nếu nó khớp với nhiều sản phẩm
+        orders_query = orders_query.filter(search_filter).distinct()
+
     orders = orders_query.order_by('-created_at')
     
     profile = None
     if Profile is not None:
         profile, created = Profile.objects.get_or_create(user=request.user)
-
     context = {
         'username': request.user.username,
         'first_name': request.user.first_name,
@@ -158,6 +169,7 @@ def order_list_view(request):
         'orders': orders,
         'order_statuses': Order.Status.choices, # Gửi các trạng thái để hiển thị nút lọc
         'current_status': current_status,       # Gửi trạng thái đang lọc để active nút
+        'search_query': query,                  # Gửi query tìm kiếm lại template
     }
     return render(request, 'users/order-detail.html', context)
 

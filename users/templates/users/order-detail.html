@@ -47,13 +47,23 @@
             {% endif %}
 
             {% if not order %} {# Chỉ hiển thị thanh lọc ở trang danh sách #}
-            <div class="order-filter-bar">
-                <a href="{% url 'users:order_list' %}" class="filter-tag {% if not current_status %}active{% endif %}">Tất cả</a>
-                {% for status_value, status_label in order_statuses %}
-                    <a href="?status={{ status_value }}" class="filter-tag {% if current_status == status_value %}active{% endif %}">
-                        {{ status_label }}
-                    </a>
-                {% endfor %}
+            <div class="order-filter-container">
+                <div class="order-filter-bar">
+                    <a href="{% url 'users:order_list' %}{% if search_query %}?q={{ search_query }}{% endif %}" class="filter-tag {% if not current_status %}active{% endif %}">Tất cả</a>
+                    {% for status_value, status_label in order_statuses %}
+                        <a href="?status={{ status_value }}{% if search_query %}&q={{ search_query }}{% endif %}" class="filter-tag {% if current_status == status_value %}active{% endif %}">
+                            {{ status_label }}
+                        </a>
+                    {% endfor %}
+                </div>
+                <form class="order-search-form" method="GET" action="{% url 'users:order_list' %}">
+                    {# Giữ lại bộ lọc status khi tìm kiếm #}
+                    {% if current_status %}
+                        <input type="hidden" name="status" value="{{ current_status }}">
+                    {% endif %}
+                    <input type="text" name="q" placeholder="Tìm theo mã đơn hoặc tên sản phẩm..." value="{{ search_query|default:'' }}">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
             </div>
             {% endif %}
 
@@ -270,8 +280,13 @@
                 {% endwith %}
             {% else %}
                 <div class="card" style="margin-top: 20px; text-align: center; padding: 40px;">
-                    <p>Bạn chưa có đơn hàng nào.</p>
-                    <a href="{% url 'core:home' %}" class="btn-cta" style="margin-top: 20px;">Bắt đầu mua sắm</a>
+                    {% if search_query %}
+                        <p>Không tìm thấy đơn hàng nào phù hợp với từ khóa "{{ search_query }}".</p>
+                        <a href="{% url 'users:order_list' %}" class="btn-cta" style="margin-top: 20px;">Xem tất cả đơn hàng</a>
+                    {% else %}
+                        <p>Bạn chưa có đơn hàng nào.</p>
+                        <a href="{% url 'core:home' %}" class="btn-cta" style="margin-top: 20px;">Bắt đầu mua sắm</a>
+                    {% endif %}
                 </div>
             {% endif %}
           </main>

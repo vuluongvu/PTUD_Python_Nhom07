@@ -39,14 +39,29 @@ class ProductAdmin(admin.ModelAdmin):
         ('Trạng thái', {'fields': ('status', 'view_count')}),
     )
     
-# Đăng ký các model còn lại để có thể quản lý trong trang admin
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    """
+    Tùy chỉnh hiển thị cho model Coupon, cung cấp giao diện chọn ngày giờ.
+    """
+    list_display = ('code', 'discount_value', 'min_order_value', 'expired_date', 'quantity', 'status')
+    list_filter = ('status', 'expired_date')
+    search_fields = ('code',)
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'parent')
+    prepopulated_fields = {'slug': ('name',)}
+
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
+
+# Đăng ký các model còn lại không cần tùy chỉnh phức tạp
 admin.site.register(Profile)
 admin.site.register(Address)
-admin.site.register(Category)
-admin.site.register(Brand)
 admin.site.register(Warranty)
 admin.site.register(Inventory)
 admin.site.register(Cart)
-admin.site.register(Coupon)
 admin.site.register(Payment)
 admin.site.register(Review)

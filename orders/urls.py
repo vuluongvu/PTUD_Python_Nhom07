@@ -9,4 +9,6 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('wishlist/', views.wishlist_list, name='wishlist'), # Trang hiển thị danh sách
     path('toggle-wishlist/', core_views.toggle_wishlist, name='toggle_wishlist'),
+    path('apply-coupon/', views.apply_coupon, name='apply_coupon'),
+    path('remove-coupon/', views.remove_coupon, name='remove_coupon'),
 ]
