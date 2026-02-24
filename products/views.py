@@ -1,13 +1,11 @@
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg, Count
-import json
 from django.http import JsonResponse
 from django.db import transaction
 from core.models import Brand, Cart, CartItem, Category, Product, Review, WishList, Coupon
-from django.conf import settings
 from django.utils import timezone
-import google.generativeai as genai
+
 
 # Create your views here.
 def view_all_products(request):
@@ -380,81 +378,4 @@ def update_cart_quantity(request):
             return JsonResponse({'status': 'error', 'message': 'Sản phẩm hoặc giỏ hàng không tồn tại.'}, status=404)
 
     return JsonResponse({'status': 'error', 'message': 'Chỉ chấp nhận POST.'}, status=400)
-_client = None
 
-def get_genai_client():
-    global _client
-    if _client is None:
-        _client = genai.Client(api_key=settings.GOOGLE_API_KEY)
-    return _client
-
-
-def chatbot_api(request):
-    """
-    API endpoint cho chatbot, sử dụng thư viện google-genai mới.
-    """
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Chỉ chấp nhận phương thức POST.'}, status=405)
-
-    # 1. Kiểm tra API Key
-    if not settings.GOOGLE_API_KEY:
-        return JsonResponse({
-            'reply': "Xin lỗi, dịch vụ AI chưa được cấu hình. Vui lòng liên hệ quản trị viên."
-        })
-
-    # 2. Parse JSON body
-    try:
-        data = json.loads(request.body)
-    except json.JSONDecodeError:
-        return JsonResponse({'reply': "Lỗi: Dữ liệu gửi lên không hợp lệ."}, status=400)
-
-    user_message = data.get('message', '').strip()
-    if not user_message:
-        return JsonResponse({'reply': "Vui lòng nhập câu hỏi của bạn."})
-
-    # 3. Gọi Gemini API
-    try:
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-
-        model = genai.GenerativeModel(
-            'gemini-2.5-flash',
-            system_instruction=(
-                "Bạn là một trợ lý ảo thân thiện và chuyên nghiệp của LapStore, "
-                "một cửa hàng chuyên bán laptop và linh kiện máy tính. "
-                "Hãy trả lời các câu hỏi của khách hàng một cách ngắn gọn, rõ ràng, "
-                "tập trung vào các sản phẩm và dịch vụ của cửa hàng. "
-                "Từ chối lịch sự nếu câu hỏi không liên quan đến mua sắm tại LapStore."
-            )
-        )
-
-        generation_config = {
-            "max_output_tokens": 512,
-            "temperature": 0.7,
-        }
-
-        response = model.generate_content(
-            user_message,
-            generation_config=generation_config
-        )
-
-        # Kiểm tra response hợp lệ trước khi lấy .text
-        if response and response.text:
-            bot_reply = response.text
-        else:
-            bot_reply = "Xin lỗi, mình không có câu trả lời phù hợp lúc này."
-
-    except Exception as e:
-        error_str = str(e)
-        print(f"[Gemini API Error] {type(e).__name__}: {e}")
-
-        #  Xử lý từng loại lỗi cụ thể
-        if '429' in error_str or 'RESOURCE_EXHAUSTED' in error_str:
-            bot_reply = "Chatbot đang bận quá, vui lòng thử lại sau ít phút nhé! 🙏"
-        elif '404' in error_str or 'NOT_FOUND' in error_str:
-            bot_reply = "Xin lỗi, dịch vụ AI tạm thời không khả dụng. Vui lòng thử lại sau."
-        elif '401' in error_str or 'UNAUTHENTICATED' in error_str:
-            bot_reply = "Lỗi xác thực API. Vui lòng liên hệ quản trị viên."
-        else:
-            bot_reply = "Xin lỗi, hệ thống AI đang gặp sự cố. Vui lòng thử lại sau."
-
-    return JsonResponse({'reply': bot_reply})

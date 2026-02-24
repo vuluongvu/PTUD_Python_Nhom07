@@ -134,6 +134,36 @@
         background: var(--primary); color: white; border: none;
         width: 40px; height: 40px; border-radius: 50%; margin-left: 8px; font-size: 16px;
       }
+
+      /* Product card inside chat */
+      .chat-product-card {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background-color: #f0f2f5;
+          border-radius: 10px;
+          padding: 10px;
+          margin: 8px 0;
+          text-decoration: none;
+          color: inherit;
+          border: 1px solid #e5e7eb;
+          transition: background-color 0.2s;
+      }
+      .chat-product-card:hover { background-color: #e5e7eb; }
+      .chat-product-card img {
+          width: 50px; height: 50px; object-fit: cover;
+          border-radius: 8px; flex-shrink: 0;
+      }
+      .chat-product-info { flex-grow: 1; overflow: hidden; }
+      .chat-product-name {
+          font-size: 13px; font-weight: 600; white-space: nowrap;
+          overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;
+      }
+      .chat-product-price {
+          font-size: 12px;
+          color: var(--primary);
+          font-weight: 700;
+      }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -568,7 +598,7 @@
                   addBotResponse("...", true);
 
                   // Call the chatbot API
-                  fetch("{% url 'products:chatbot_api' %}", {
+                  fetch("{% url 'core:chatbot_api' %}", {
                       method: 'POST',
                       headers: {
                           'Content-Type': 'application/json',
@@ -581,8 +611,35 @@
                       // Update the typing indicator with the actual response
                       const typingIndicator = chatBody.querySelector('.typing');
                       if (typingIndicator) {
-                          typingIndicator.textContent = data.reply;
-                          typingIndicator.classList.remove('typing');
+                          if (data.reply && data.reply.trim() !== "") {
+                              typingIndicator.textContent = data.reply;
+                              typingIndicator.classList.remove('typing');
+                          } else {
+                              // If Gemini gives no reply but we have products, remove the typing bubble
+                              typingIndicator.remove();
+                          }
+                      }
+
+                      // --- Render product suggestions ---
+                      if (data.products && data.products.length > 0) {
+                          data.products.forEach(product => {
+                              const productCard = document.createElement('a');
+                              productCard.href = product.url; // URL from backend
+                              productCard.className = 'chat-product-card';
+                              productCard.target = '_blank'; // Open in new tab
+
+                              const placeholderImg = "{% static 'core/img/placeholder.png' %}";
+                              
+                              productCard.innerHTML = `
+                                  <img src="${product.image_url || placeholderImg}" alt="${product.name}">
+                                  <div class="chat-product-info">
+                                      <div class="chat-product-name">${product.name}</div>
+                                      <div class="chat-product-price">${product.price}</div>
+                                  </div>
+                              `;
+                              chatBody.appendChild(productCard);
+                          });
+                          chatBody.scrollTop = chatBody.scrollHeight;
                       }
                   })
                   .catch(error => {

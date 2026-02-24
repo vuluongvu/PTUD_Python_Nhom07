@@ -359,6 +359,7 @@ LapStore{% endblock %}
       
 {% endblock %}
 {% block extra_js %}
+{{ block.super }}
 <script>
 function updateBadgeCount(badgeType, newCount) {
     // Chọn tất cả các badge thuộc một loại (ví dụ: 'cart' hoặc 'wishlist')
