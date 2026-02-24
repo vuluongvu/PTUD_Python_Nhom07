@@ -10,4 +10,5 @@ urlpatterns = [
     path('toggle-cart/', views.toggle_cart, name='toggle_cart'),
     path('remove-from-cart/', views.remove_from_cart, name='remove_from_cart'),
     path('update-cart-quantity/', views.update_cart_quantity, name='update_cart_quantity'),
+    path('api/chatbot/', views.chatbot_api, name='chatbot_api'),
 ]

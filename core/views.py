@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 
-
 def home(request):
 
     all_new_products = Product.objects.filter(status=True).order_by('-created_at').prefetch_related('images')

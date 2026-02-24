@@ -1,17 +1,21 @@
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg, Count
+import json
 from django.http import JsonResponse
 from django.db import transaction
-from core.models import Brand, Cart, CartItem, Category, Product, Review, WishList
-
+from core.models import Brand, Cart, CartItem, Category, Product, Review, WishList, Coupon
+from django.conf import settings
+from django.utils import timezone
+from google.genai import types
+from google import genai
 
 # Create your views here.
 def view_all_products(request):
    
     products_list = Product.objects.filter(status=True)
     
-    # --- Logic Lọc Sản Phẩm ---
+    # --- Lọc Sản Phẩm ---
     selected_brands = request.GET.getlist('brand')
     selected_categories = request.GET.getlist('category')
     price_range = request.GET.get('price')
@@ -25,20 +29,20 @@ def view_all_products(request):
     if price_range:
         try:
             min_price, max_price = price_range.split('-')
-            if max_price == 'inf': # Trường hợp "Trên X triệu"
+            if max_price == 'inf': 
                 products_list = products_list.filter(price__gte=int(min_price) * 1000000)
             else:
                 products_list = products_list.filter(price__range=(int(min_price) * 1000000, int(max_price) * 1000000))
         except ValueError:
-            pass # Bỏ qua nếu tham số giá không hợp lệ
+            pass 
 
-    # Lấy tham số sort từ URL
+    # Lấy tham số sort từ URl
     sort_by = request.GET.get('sort', 'default')
     if sort_by == 'price_asc':
         products_list = products_list.order_by('price')
     elif sort_by == 'price_desc':
         products_list = products_list.order_by('-price')
-    else: # Mặc định
+    else: 
         products_list = products_list.order_by('-created_at')
     
     paginator = Paginator(products_list, 12)
@@ -340,11 +344,14 @@ def update_cart_quantity(request):
                         status = 'limit_reached'
                         message = 'Số lượng tối thiểu là 1.'
 
+                # Tính tổng tiền cho riêng item này
+                item_subtotal = cart_item.product.final_price * cart_item.quantity
+
                 # --- Re-calculate totals and check coupon ---
                 remaining_items = user_cart.items.select_related('product').all()
                 cart_count = remaining_items.count()
                 sub_total = sum(item.product.final_price * item.quantity for item in remaining_items)
-
+                
                 coupon_id = request.session.get('coupon_id')
                 discount_amount = 0
                 coupon_removed_flag = False
@@ -365,7 +372,8 @@ def update_cart_quantity(request):
                 return JsonResponse({
                     'status': status, 'message': message, 'cart_count': cart_count,
                     'sub_total': sub_total, 'discount_amount': discount_amount, 'final_total': final_total,
-                    'item_quantity': cart_item.quantity if status in ['updated', 'limit_reached'] else 0,
+                    'item_quantity': cart_item.quantity,
+                    'item_subtotal': item_subtotal,
                     'coupon_removed': coupon_removed_flag,
                 })
 
@@ -373,3 +381,76 @@ def update_cart_quantity(request):
             return JsonResponse({'status': 'error', 'message': 'Sản phẩm hoặc giỏ hàng không tồn tại.'}, status=404)
 
     return JsonResponse({'status': 'error', 'message': 'Chỉ chấp nhận POST.'}, status=400)
+_client = None
+
+def get_genai_client():
+    global _client
+    if _client is None:
+        _client = genai.Client(api_key=settings.GOOGLE_API_KEY)
+    return _client
+
+
+def chatbot_api(request):
+    """
+    API endpoint cho chatbot, sử dụng thư viện google-genai mới.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Chỉ chấp nhận phương thức POST.'}, status=405)
+
+    # 1. Kiểm tra API Key
+    if not settings.GOOGLE_API_KEY:
+        return JsonResponse({
+            'reply': "Xin lỗi, dịch vụ AI chưa được cấu hình. Vui lòng liên hệ quản trị viên."
+        })
+
+    # 2. Parse JSON body
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'reply': "Lỗi: Dữ liệu gửi lên không hợp lệ."}, status=400)
+
+    user_message = data.get('message', '').strip()
+    if not user_message:
+        return JsonResponse({'reply': "Vui lòng nhập câu hỏi của bạn."})
+
+    # 3. Gọi Gemini API
+    try:
+        client = get_genai_client()
+
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",  
+            contents=user_message,
+            config=types.GenerateContentConfig(
+                system_instruction=(
+                    "Bạn là một trợ lý ảo thân thiện và chuyên nghiệp của LapStore, "
+                    "một cửa hàng chuyên bán laptop và linh kiện máy tính. "
+                    "Hãy trả lời các câu hỏi của khách hàng một cách ngắn gọn, rõ ràng, "
+                    "tập trung vào các sản phẩm và dịch vụ của cửa hàng. "
+                    "Từ chối lịch sự nếu câu hỏi không liên quan đến mua sắm tại LapStore."
+                ),
+                max_output_tokens=512,
+                temperature=0.7,
+            )
+        )
+
+        # Kiểm tra response hợp lệ trước khi lấy .text
+        if response and response.text:
+            bot_reply = response.text
+        else:
+            bot_reply = "Xin lỗi, mình không có câu trả lời phù hợp lúc này."
+
+    except Exception as e:
+        error_str = str(e)
+        print(f"[Gemini API Error] {type(e).__name__}: {e}")
+
+        #  Xử lý từng loại lỗi cụ thể
+        if '429' in error_str or 'RESOURCE_EXHAUSTED' in error_str:
+            bot_reply = "Chatbot đang bận quá, vui lòng thử lại sau ít phút nhé! 🙏"
+        elif '404' in error_str or 'NOT_FOUND' in error_str:
+            bot_reply = "Xin lỗi, dịch vụ AI tạm thời không khả dụng. Vui lòng thử lại sau."
+        elif '401' in error_str or 'UNAUTHENTICATED' in error_str:
+            bot_reply = "Lỗi xác thực API. Vui lòng liên hệ quản trị viên."
+        else:
+            bot_reply = "Xin lỗi, hệ thống AI đang gặp sự cố. Vui lòng thử lại sau."
+
+    return JsonResponse({'reply': bot_reply})

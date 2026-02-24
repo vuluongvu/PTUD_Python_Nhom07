@@ -10,10 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+# Import the new google.genai package as recommended
+# Sử dụng gói google-genai mới theo khuyến cáo của Google
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Tải các biến từ file .env
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -135,3 +142,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'your_email@gmail.com'  # Thay bằng email của bạn
 EMAIL_HOST_PASSWORD = 'your_app_password'      # Thay bằng mật khẩu ứng dụng
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Tải API key từ biến môi trường. Việc cấu hình sẽ được thực hiện trong view.
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
