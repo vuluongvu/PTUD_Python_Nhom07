@@ -11,6 +11,9 @@ from django.urls import reverse
 from django.db.models import Q
 from django.conf import settings
 import google.generativeai as genai
+import re
+from functools import reduce
+import operator
 
 def home(request):
 
@@ -103,28 +106,44 @@ def chatbot_api(request):
         return JsonResponse({'reply': "Vui lòng nhập câu hỏi của bạn."})
 
     # --- New Product Search Logic ---
+    # --- Improved Product Search Logic ---
     products_found = []
-    # Keywords to trigger product search
-    search_keywords = ['laptop', 'máy tính', 'pc', 'linh kiện', 'cpu', 'vga', 'ram', 'giá', 'tìm', 'mua', 'sản phẩm']
-    
-    # Check if the message contains any search keywords
-    if any(keyword in user_message.lower() for keyword in search_keywords):
-        # Use the user's message as a search query
-        search_query = user_message
-        
-        # Search for products matching the query in name or description
-        products = Product.objects.filter(
-            Q(name__icontains=search_query) | Q(description__icontains=search_query),
-            status=True
-        ).prefetch_related('images')[:3] # Limit to 3 results for the chat
+    # Keywords to trigger product search. Also include common brands.
+    search_trigger_keywords = ['laptop', 'máy tính', 'pc', 'linh kiện', 'cpu', 'vga', 'ram', 'giá', 'tìm', 'mua', 'sản phẩm', 'dell', 'asus', 'hp', 'lenovo', 'acer', 'msi', 'macbook']
+    # Common words to ignore in the search query
+    stop_words = ['cho', 'tôi', 'mua', 'bạn', 'có', 'không', 'giá', 'bao', 'nhiêu', 'tìm', 'kiếm', 'một', 'cái', 'về', 'sản', 'phẩm', 'của', 'hàng']
 
-        for p in products:
-            products_found.append({
-                'name': p.name,
-                'url': reverse('products:product-detail', args=[p.slug]),
-                'price': p.price_vn,
-                'image_url': p.images.first().image_url if p.images.first() else None,
-            })
+    user_message_lower = user_message.lower()
+
+    if any(keyword in user_message_lower for keyword in search_trigger_keywords):
+        # 1. Clean the user message to get meaningful search terms
+        # Remove stop words and punctuation
+        query_words = [word for word in re.split(r'\s+', user_message_lower) if word not in stop_words]
+        cleaned_query = ' '.join(re.sub(r'[^\w\s]', '', word) for word in query_words)
+        search_terms = [term for term in cleaned_query.split() if term]
+
+        if search_terms:
+            # 2. Build a dynamic query to match ALL terms (more precise)
+            try:
+                strict_query = reduce(operator.and_, (Q(name__icontains=term) for term in search_terms))
+                products = Product.objects.filter(strict_query, status=True).distinct().prefetch_related('images')[:3]
+
+                # 3. If no results, try a more lenient search matching ANY term
+                if not products.exists():
+                    lenient_query = reduce(operator.or_, (Q(name__icontains=term) for term in search_terms))
+                    products = Product.objects.filter(lenient_query, status=True).distinct().prefetch_related('images')[:3]
+
+                for p in products:
+                    products_found.append({
+                        'name': p.name,
+                        'url': reverse('products:product-detail', args=[p.slug]),
+                        'price': p.price_vn,
+                        'image_url': p.images.first().image_url if p.images.first() else None,
+                    })
+            except Exception as e:
+                # Catch potential errors if search_terms is empty after cleaning
+                print(f"Error during product search: {e}")
+
     # 3. Gọi Gemini API
     try:
         genai.configure(api_key=settings.GOOGLE_API_KEY)
@@ -162,7 +181,7 @@ def chatbot_api(request):
 
         #  Xử lý từng loại lỗi cụ thể
         if '429' in error_str or 'RESOURCE_EXHAUSTED' in error_str:
-            bot_reply = "Chatbot đang bận quá, vui lòng thử lại sau ít phút nhé! 🙏"
+            bot_reply = "Chatbot đang quá tải, vui lòng thử lại sau ít phút nhé! 🙏"
         elif '404' in error_str or 'NOT_FOUND' in error_str:
             bot_reply = "Xin lỗi, dịch vụ AI tạm thời không khả dụng. Vui lòng thử lại sau."
         elif '401' in error_str or 'UNAUTHENTICATED' in error_str:
