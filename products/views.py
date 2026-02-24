@@ -7,8 +7,7 @@ from django.db import transaction
 from core.models import Brand, Cart, CartItem, Category, Product, Review, WishList, Coupon
 from django.conf import settings
 from django.utils import timezone
-from google.genai import types
-from google import genai
+import google.generativeai as genai
 
 # Create your views here.
 def view_all_products(request):
@@ -415,22 +414,27 @@ def chatbot_api(request):
 
     # 3. Gọi Gemini API
     try:
-        client = get_genai_client()
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
 
-        response = client.models.generate_content(
-            model="gemini-1.5-flash",  
-            contents=user_message,
-            config=types.GenerateContentConfig(
-                system_instruction=(
-                    "Bạn là một trợ lý ảo thân thiện và chuyên nghiệp của LapStore, "
-                    "một cửa hàng chuyên bán laptop và linh kiện máy tính. "
-                    "Hãy trả lời các câu hỏi của khách hàng một cách ngắn gọn, rõ ràng, "
-                    "tập trung vào các sản phẩm và dịch vụ của cửa hàng. "
-                    "Từ chối lịch sự nếu câu hỏi không liên quan đến mua sắm tại LapStore."
-                ),
-                max_output_tokens=512,
-                temperature=0.7,
+        model = genai.GenerativeModel(
+            'gemini-2.5-flash',
+            system_instruction=(
+                "Bạn là một trợ lý ảo thân thiện và chuyên nghiệp của LapStore, "
+                "một cửa hàng chuyên bán laptop và linh kiện máy tính. "
+                "Hãy trả lời các câu hỏi của khách hàng một cách ngắn gọn, rõ ràng, "
+                "tập trung vào các sản phẩm và dịch vụ của cửa hàng. "
+                "Từ chối lịch sự nếu câu hỏi không liên quan đến mua sắm tại LapStore."
             )
+        )
+
+        generation_config = {
+            "max_output_tokens": 512,
+            "temperature": 0.7,
+        }
+
+        response = model.generate_content(
+            user_message,
+            generation_config=generation_config
         )
 
         # Kiểm tra response hợp lệ trước khi lấy .text
