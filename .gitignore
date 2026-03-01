@@ -14,7 +14,6 @@ staticfiles/
 
 # Environment variables
 .env
-
 # Virtual Environment
 venv/
 env/

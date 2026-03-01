@@ -49,6 +49,123 @@
     <link rel="stylesheet" href="{% static 'core/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'core/css/responsive.css' %}" />
 
+    <style>
+      /* Chatbot Button Styling */
+      #chatbot-button {
+        position: fixed;
+        bottom: 95px; /* Đặt phía trên nút "Back to Top" */
+        right: 25px;
+        width: 55px;
+        height: 55px;
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 1000;
+        transition: transform 0.2s ease-in-out;
+      }
+      #chatbot-button:hover { transform: scale(1.1); }
+
+      /* Chatbot Window Styling */
+      #chatbot-window {
+        position: fixed;
+        bottom: 95px;
+        right: 25px;
+        width: 350px;
+        max-height: 500px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1001;
+        transform-origin: bottom right;
+        transform: scale(0);
+        opacity: 0;
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      }
+      #chatbot-window.active {
+        transform: scale(1);
+        opacity: 1;
+      }
+      .chat-header {
+        background: var(--primary);
+        color: white;
+        padding: 12px 15px;
+        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      #close-chat-btn {
+        background: none; border: none; color: white;
+        font-size: 24px; cursor: pointer; line-height: 1;
+      }
+      .chat-body {
+        flex: 1; padding: 15px; overflow-y: auto; background-color: #f9fafb;
+      }
+      .chat-message {
+        padding: 8px 12px; border-radius: 18px; margin-bottom: 10px;
+        max-width: 80%; line-height: 1.4; font-size: 14px;
+      }
+      .chat-message.bot {
+        background-color: #e5e7eb; color: var(--text-main);
+        border-bottom-left-radius: 4px; align-self: flex-start;
+      }
+      .chat-message.user {
+        background-color: var(--primary); color: white;
+        border-bottom-right-radius: 4px; align-self: flex-end; margin-left: auto;
+      }
+      .chat-footer {
+        display: flex; padding: 10px; border-top: 1px solid #e5e7eb; flex-shrink: 0;
+      }
+      #chat-input {
+        flex: 1; border: 1px solid #e5e7eb; border-radius: 20px;
+        padding: 8px 15px; font-size: 14px; outline: none;
+      }
+      #send-chat-btn {
+        background: var(--primary); color: white; border: none;
+        width: 40px; height: 40px; border-radius: 50%; margin-left: 8px; font-size: 16px;
+      }
+
+      /* Product card inside chat */
+      .chat-product-card {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background-color: #f0f2f5;
+          border-radius: 10px;
+          padding: 10px;
+          margin: 8px 0;
+          text-decoration: none;
+          color: inherit;
+          border: 1px solid #e5e7eb;
+          transition: background-color 0.2s;
+      }
+      .chat-product-card:hover { background-color: #e5e7eb; }
+      .chat-product-card img {
+          width: 50px; height: 50px; object-fit: cover;
+          border-radius: 8px; flex-shrink: 0;
+      }
+      .chat-product-info { flex-grow: 1; overflow: hidden; }
+      .chat-product-name {
+          font-size: 13px; font-weight: 600; white-space: nowrap;
+          overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;
+      }
+      .chat-product-price {
+          font-size: 12px;
+          color: var(--primary);
+          font-weight: 700;
+      }
+    </style>
+
     {% block extra_css %}{% endblock %}
   </head>
   <body>
@@ -129,30 +246,26 @@
 
           <!-- User Actions (Desktop) -->
           <div class="nav-actions">
-    <a href="{% url 'orders:wishlist' %}" class="action-btn">
-        <i class="fa-regular fa-heart"></i>
-    </a>
-    
-    {% if user.is_authenticated %}
-    <a href="{% url 'users:profile' %}" class="action-btn">
-        <img src="{% if user_avatar_url %}{{ user_avatar_url }}
-        {% else %}https://ui-avatars.com/api/?name={{ user.username }}
-         {% endif %}" alt="Avatar">
-    </a>
-    {% else %}
-    <a href="{% url 'users:login' %}" class="action-btn">
-        <i class="fa-regular fa-user"></i>
-    </a>
-    {% endif %}
-
-    <a href="{% url 'orders:cart' %}" class="action-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" width="1.2em" height="1.2em" class="fa-regular">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-</svg>
-        <span class="badge-dot"></span>
-    </a>
-</div>
-              <!-- DJANGO: Show if cart_items > 0 -->
+            <a href="{% url 'orders:wishlist' %}" class="action-btn">
+                <i class="fa-regular fa-heart"></i>
+                <span class="nav-badge" data-badge="wishlist" {% if wishlist_count == 0 %}style="display: none;"{% endif %}>{{ wishlist_count }}</span>
+            </a>
+            
+            {% if user.is_authenticated %}
+            <a href="{% url 'users:profile' %}" class="action-btn">
+                <img src="{% if user_avatar_url %}{{ user_avatar_url }}{% else %}https://ui-avatars.com/api/?name={{ user.username }}{% endif %}" alt="Avatar">
+            </a>
+            {% else %}
+            <a href="{% url 'users:login' %}" class="action-btn">
+                <i class="fa-regular fa-user"></i>
+            </a>
+            {% endif %}
+        
+            <a href="{% url 'orders:cart' %}" class="action-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" width="1.2em" height="1.2em" class="fa-regular">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              </svg>
+              <span class="nav-badge" data-badge="cart" {% if cart_count == 0 %}style="display: none;"{% endif %}>{{ cart_count }}</span>
             </a>
           </div>
         </nav>
@@ -203,32 +316,30 @@
 
     <!-- MOBILE BOTTOM NAV (Dùng chung) -->
     {% block mobile_bottom_nav %}
-    <div class="mobile-bottom-nav">
+    <nav class="mobile-bottom-nav">
       <a href="{% url 'core:home'%}" class="nav-item {% block nav_home_active %}{% endblock %}">
         <i class="fa-solid fa-house"></i><span>Trang chủ</span>
       </a>
       <button class="nav-item btn-mobile-menu">
         <i class="fa-solid fa-layer-group"></i><span>Danh mục</span>
       </button>
-
-      <a
-        href="{% url 'orders:cart' %}"
-        class="nav-item {% block nav_cart_active %}{% endblock %}"
-      >
+      <a href="{% url 'orders:cart' %}" class="nav-item {% block nav_cart_active %}{% endblock %}">
         <i class="fa-solid fa-cart-shopping"></i>
-        <span class="cart-count-mobile">3</span>
-        <!-- DJANGO: Cart count -->
+        <span class="nav-badge" data-badge="cart" style="top: -2px; right: 12px; {% if cart_count == 0 %}display: none;{% endif %}">{{ cart_count }}</span>
         <span>Giỏ hàng</span>
       </a>
-      
-    <a href="{% if user.is_authenticated %}{% url 'users:profile' %}{% else %}{% url 'users:login' %}{% endif %}"
-   class="nav-item {% block nav_user_active %}{% endblock %}">
+      <a href="{% url 'orders:wishlist' %}" class="nav-item {% if 'wishlist' in request.path %}active{% endif %}">
+        <i class="fa-solid fa-heart"></i>
+        <span class="nav-badge" data-badge="wishlist" style="top: -2px; right: 12px; {% if wishlist_count == 0 %}display: none;{% endif %}">{{ wishlist_count }}</span>
+        <span>Yêu thích</span>
+      </a>
+      <a href="{% if user.is_authenticated %}{% url 'users:profile' %}{% else %}{% url 'users:login' %}{% endif %}" class="nav-item {% block nav_user_active %}{% endblock %}">
     <i class="fa-regular fa-user"></i>
     <span>
       {% if user.is_authenticated %}Tài khoản{% else %}Đăng nhập{% endif %}
     </span>
     </a>
-    </div>
+    </nav>
     {% endblock %}
 
     <!-- MAIN CONTENT BLOCK -->
@@ -308,6 +419,26 @@
     </footer>
     {% endblock %}
 
+    <!-- Chatbot Button -->
+    <div id="chatbot-button" title="Trò chuyện với chúng tôi">
+        <i class="fa-solid fa-comment-dots"></i>
+    </div>
+
+    <!-- Chatbot Window -->
+    <div id="chatbot-window">
+      <div class="chat-header">
+          <span>Chat với LapStore</span>
+          <button id="close-chat-btn">&times;</button>
+      </div>
+      <div class="chat-body">
+          <div class="chat-message bot">Xin chào! Tôi có thể giúp gì cho bạn?</div>
+      </div>
+      <div class="chat-footer">
+          <input type="text" id="chat-input" placeholder="Nhập tin nhắn...">
+          <button id="send-chat-btn"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+
     <button id="backToTop" class="back-to-top" title="Lên đầu trang">
       <i class="fa-solid fa-arrow-up"></i>
     </button>
@@ -337,6 +468,208 @@
     {% endif %}
 
     <script src="{% static 'core/js/main.js' %}"></script>
-    {% block extra_js %}{% endblock %} 
+    {% block extra_js %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          // Function to get CSRF token from cookies for AJAX POST requests
+          function getCookie(name) {
+              let cookieValue = null;
+              if (document.cookie && document.cookie !== '') {
+                  const cookies = document.cookie.split(';');
+                  for (let i = 0; i < cookies.length; i++) {
+                      const cookie = cookies[i].trim();
+                      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                          break;
+                      }
+                  }
+              }
+              return cookieValue;
+          }
+          const csrfToken = getCookie('csrftoken');
+  
+          // Function to update all cart badges on the page
+          function updateCartBadges(count) {
+              const cartBadges = document.querySelectorAll('[data-badge="cart"]');
+              cartBadges.forEach(badge => {
+                  badge.textContent = count;
+                  if (count > 0) {
+                      badge.style.display = 'flex';
+                  } else {
+                      badge.style.display = 'none';
+                  }
+              });
+          }
+  
+          // Use event delegation to handle clicks on "Add to Cart" buttons
+          document.body.addEventListener('click', function(event) {
+              const addToCartButton = event.target.closest('.btn-add-to-cart');
+  
+              if (!addToCartButton) {
+                  return; // Exit if the click was not on an add-to-cart button
+              }
+  
+              event.preventDefault(); // Prevent default button action
+  
+              const productId = addToCartButton.dataset.productId;
+              if (!productId) {
+                  console.error('Product ID not found on the button.');
+                  return;
+              }
+  
+              const url = "{% url 'products:toggle_cart' %}";
+  
+              fetch(url, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                      'X-CSRFToken': csrfToken
+                  },
+                  body: `id=${productId}`
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.status === 'login_required') {
+                      Swal.fire({
+                          icon: 'warning',
+                          title: 'Yêu cầu đăng nhập',
+                          text: data.message,
+                          confirmButtonText: 'Đăng nhập ngay'
+                      }).then((result) => {
+                          if (result.isConfirmed) {
+                              window.location.href = `{% url 'users:login' %}?next=${window.location.pathname}`;
+                          }
+                      });
+                  } else {
+                      const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2500, timerProgressBar: true });
+                      Toast.fire({ icon: data.status === 'added' ? 'success' : 'info', title: data.message });
+  
+                      if (data.cart_count !== undefined) {
+                          updateCartBadges(data.cart_count);
+                      }
+
+                      if (data.status === 'added' || data.status === 'exists') {
+                          // Vô hiệu hóa và thay đổi trạng thái của nút vừa nhấn
+                          addToCartButton.disabled = true;
+                          addToCartButton.classList.remove('btn-add-to-cart');
+                          addToCartButton.innerHTML = `<i class="fa-solid fa-check"></i> Đã thêm`;
+                      }
+                  }
+              })
+              .catch(error => {
+                  console.error('Error adding to cart:', error);
+                  Swal.fire({ icon: 'error', title: 'Có lỗi xảy ra', text: 'Không thể thêm sản phẩm. Vui lòng thử lại.' });
+              });
+          });
+
+          // --- CHATBOT LOGIC ---
+          const chatbotButton = document.getElementById('chatbot-button');
+          const chatbotWindow = document.getElementById('chatbot-window');
+          const closeChatBtn = document.getElementById('close-chat-btn');
+          const sendChatBtn = document.getElementById('send-chat-btn');
+          const chatInput = document.getElementById('chat-input');
+          const chatBody = document.querySelector('.chat-body');
+
+          if (chatbotButton && chatbotWindow && closeChatBtn) {
+              chatbotButton.addEventListener('click', () => {
+                  chatbotWindow.classList.toggle('active');
+              });
+
+              closeChatBtn.addEventListener('click', () => {
+                  chatbotWindow.classList.remove('active');
+              });
+          }
+
+          // Basic chat functionality (send message)
+          if (sendChatBtn && chatInput && chatBody) {
+              function addUserMessage() {
+                  const messageText = chatInput.value.trim();
+                  if (messageText === '') return;
+
+                  // Add user's message to chat window
+                  const messageDiv = document.createElement('div');
+                  messageDiv.className = 'chat-message user';
+                  messageDiv.textContent = messageText;
+                  chatBody.appendChild(messageDiv);
+                  chatInput.value = '';
+                  chatBody.scrollTop = chatBody.scrollHeight; // Scroll to bottom
+
+                  // Show a typing indicator for the bot
+                  addBotResponse("...", true);
+
+                  // Call the chatbot API
+                  fetch("{% url 'core:chatbot_api' %}", {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'X-CSRFToken': csrfToken
+                      },
+                      body: JSON.stringify({ message: messageText })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      // Update the typing indicator with the actual response
+                      const typingIndicator = chatBody.querySelector('.typing');
+                      if (typingIndicator) {
+                          if (data.reply && data.reply.trim() !== "") {
+                              typingIndicator.textContent = data.reply;
+                              typingIndicator.classList.remove('typing');
+                          } else {
+                              // If Gemini gives no reply but we have products, remove the typing bubble
+                              typingIndicator.remove();
+                          }
+                      }
+
+                      // --- Render product suggestions ---
+                      if (data.products && data.products.length > 0) {
+                          data.products.forEach(product => {
+                              const productCard = document.createElement('a');
+                              productCard.href = product.url; // URL from backend
+                              productCard.className = 'chat-product-card';
+                              productCard.target = '_blank'; // Open in new tab
+
+                              const placeholderImg = "{% static 'core/img/placeholder.png' %}";
+                              
+                              productCard.innerHTML = `
+                                  <img src="${product.image_url || placeholderImg}" alt="${product.name}">
+                                  <div class="chat-product-info">
+                                      <div class="chat-product-name">${product.name}</div>
+                                      <div class="chat-product-price">${product.price}</div>
+                                  </div>
+                              `;
+                              chatBody.appendChild(productCard);
+                          });
+                          chatBody.scrollTop = chatBody.scrollHeight;
+                      }
+                  })
+                  .catch(error => {
+                      console.error("Chatbot API error:", error);
+                      const typingIndicator = chatBody.querySelector('.typing');
+                      if (typingIndicator) {
+                          typingIndicator.textContent = "Xin lỗi, tôi đang gặp sự cố. Vui lòng thử lại sau.";
+                          typingIndicator.classList.remove('typing');
+                      }
+                  });
+              }
+
+              sendChatBtn.addEventListener('click', addUserMessage);
+              chatInput.addEventListener('keypress', function(e) {
+                  if (e.key === 'Enter') { addUserMessage(); }
+              });
+
+              function addBotResponse(message, isTyping = false) {
+                  const botMessageDiv = document.createElement('div');
+                  botMessageDiv.className = 'chat-message bot';
+                  if (isTyping) {
+                      botMessageDiv.classList.add('typing');
+                  }
+                  botMessageDiv.textContent = message;
+                  chatBody.appendChild(botMessageDiv);
+                  chatBody.scrollTop = chatBody.scrollHeight; // Scroll to bottom
+              }
+          }
+      });
+      </script>
+    {% endblock %} 
   </body>
 </html>

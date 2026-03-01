@@ -224,6 +224,26 @@
     cursor: pointer;
     font-size: 13px;
   }
+  .applied-coupon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0fdf4; /* green-50 */
+    border: 1px solid #bbf7d0; /* green-200 */
+    color: #166534; /* green-800 */
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .applied-coupon span i {
+    margin-right: 8px;
+  }
+  .remove-coupon-btn {
+    color: #dc2626; /* red-600 */
+    font-weight: 600;
+    text-decoration: none;
+  }
   .empty-cart-message {
     padding: 40px;
     text-align: center;
@@ -349,7 +369,7 @@
       </div>
 
       {% for item in cart_items %}
-      <div class="cart-item" id="cart-item-{{ item.product.id }}">
+      <div class="cart-item" id="cart-item-{{ item.id }}">
         <input type="checkbox" class="custom-checkbox" checked />
         <div class="item-img">
           <img
@@ -377,29 +397,31 @@
               {% endif %}
             </div>
             <div class="qty-control">
-              <a
-                href="#"
+              <button
+                type="button"
                 class="qty-btn"
-                >-</a
-              >
+                onclick="updateQuantity(event, '{{ item.id }}', 'decrease')"
+                {% if item.quantity <= 1 %}disabled{% endif %}
+                >-</button>
               <input
                 type="text"
                 class="qty-input"
+                id="qty-input-{{ item.id }}"
                 value="{{ item.quantity }}" 
                 readonly
               />
-              <a
-                href="#"
+              <button
+                type="button"
                 class="qty-btn"
-                >+</a
-              >
+                onclick="updateQuantity(event, '{{ item.id }}', 'increase')"
+                >+</button>
             </div>
           </div>
         </div>
         <a
           href="javascript:void(0);"
           class="btn-delete"
-          onclick="toggleCart(event, '{{ item.product.id }}')"
+          onclick="removeFromCart(event, '{{ item.id }}')"
           title="Xóa sản phẩm này"
           ><i class="fa-solid fa-xmark"></i
         ></a>
@@ -411,21 +433,28 @@
       <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 20px">
         Thông tin đơn hàng
       </h3>
-      <div class="coupon-box">
-        <input type="text" class="coupon-input" placeholder="Mã giảm giá" />
-        <button class="btn-apply">Áp dụng</button>
+      {% if coupon %}
+      <div class="applied-coupon">
+        <span><i class="fa-solid fa-ticket"></i> {{ coupon.code }}</span>
+        <a href="{% url 'orders:remove_coupon' %}" class="remove-coupon-btn">Xóa</a>
       </div>
+      {% else %}
+      <div class="coupon-box">
+        <input type="text" id="coupon-input" class="coupon-input" placeholder="Mã giảm giá" />
+        <button class="btn-apply" onclick="applyCoupon()">Áp dụng</button>
+      </div>
+      {% endif %}
       <div class="summary-row">
         <span>Tạm tính ({{ product_count }} sản phẩm)</span>
         <span id="subtotal-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
       </div>
       <div class="summary-row">
         <span>Giảm giá</span>
-        <span style="color: #22c55e">-0đ</span>
+        <span id="discount-amount" style="color: #22c55e">-{{ discount_amount|floatformat:0|intcomma }}đ</span>
       </div>
       <div class="summary-row total">
         <span>Tổng cộng</span>
-        <span class="total-price-big" id="total-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
+        <span class="total-price-big" id="total-price">{{ final_total|floatformat:0|intcomma }}đ</span>
       </div>
       <p
         style="
@@ -446,7 +475,7 @@
   <div class="mobile-checkout-bar">
     <div class="mc-total">
       <span>Tổng cộng:</span>
-      <span class="mc-price" id="mobile-total-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
+      <span class="mc-price" id="mobile-total-price">{{ final_total|floatformat:0|intcomma }}đ</span>
     </div>
     <a href="{% url 'orders:checkout' %}" class="mc-btn"
       >Mua Hàng ({{ product_count }})</a
@@ -464,66 +493,195 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-function toggleCart(event, productId) {
+function removeFromCart(event, cartItemId) {
     event.preventDefault();
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
 
-    fetch("{% url 'products:toggle_cart' %}", { 
+    fetch("{% url 'products:remove_from_cart' %}", { 
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "X-CSRFToken": csrftoken,
         },
-        body: new URLSearchParams({ 'id': productId })
+        body: new URLSearchParams({ 'id': cartItemId })
     })
     .then(response => response.json())
     .then(data => {
         if (data.status === 'removed') {
-            // Hiển thị thông báo toast
             Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: data.message,
-                showConfirmButton: false,
-                timer: 2000
+                toast: true, position: 'top-end', icon: 'success',
+                title: data.message, showConfirmButton: false, timer: 2000
             });
 
-            // Xóa item khỏi DOM với hiệu ứng mờ dần
-            const itemElement = document.getElementById(`cart-item-${productId}`);
+            const itemElement = document.getElementById(`cart-item-${cartItemId}`);
             if (itemElement) {
                 itemElement.style.transition = "opacity 0.3s ease, transform 0.3s ease";
                 itemElement.style.opacity = "0";
                 itemElement.style.transform = "translateX(20px)";
                 setTimeout(() => {
                     itemElement.remove();
-                    updateTotalPrice(data.new_total);
+                    updateCartSummary(data.cart_count, data.sub_total, data.discount_amount, data.final_total);
+                    if (typeof updateBadgeCount === 'function') {
+                        updateBadgeCount('cart', data.cart_count);
+                    }
+                    if (data.coupon_removed) {
+                        Swal.fire({
+                            toast: true, position: 'top-end', icon: 'info',
+                            title: 'Mã giảm giá không còn hợp lệ và đã được xóa.', showConfirmButton: false, timer: 2500
+                        }).then(() => {
+                            window.location.reload(); // Reload to show coupon input
+                        });
+                    }
                 }, 300);
             }
+            
+            if (data.cart_count === 0) {
+                setTimeout(() => window.location.reload(), 500);
+            }
+        } else {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message });
         }
     })
     .catch(error => {
         console.error('Lỗi khi xóa sản phẩm:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Có lỗi xảy ra, không thể xóa sản phẩm!',
-        });
+        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Có lỗi xảy ra, không thể xóa sản phẩm!' });
     });
 }
 
-function updateTotalPrice(newTotal) {
-    // Định dạng số thành chuỗi tiền tệ VND
-    const formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(newTotal).replace('₫', 'đ');
+function updateCartSummary(count, subTotal, discountAmount, finalTotal) {
+    const formatCurrency = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value || 0).replace('₫', 'đ');
 
-    // Cập nhật các element hiển thị giá
-    const subtotalElement = document.getElementById('subtotal-price');
-    const totalElement = document.getElementById('total-price');
-    const mobileTotalElement = document.getElementById('mobile-total-price');
+    document.getElementById('subtotal-price').innerText = formatCurrency(subTotal);
+    document.getElementById('discount-amount').innerText = `-${formatCurrency(discountAmount)}`;
+    document.getElementById('total-price').innerText = formatCurrency(finalTotal);
+    document.getElementById('mobile-total-price').innerText = formatCurrency(finalTotal);
 
-    if (subtotalElement) subtotalElement.innerText = formattedPrice;
-    if (totalElement) totalElement.innerText = formattedPrice;
-    if (mobileTotalElement) mobileTotalElement.innerText = formattedPrice;
+    const headerCountEl = document.querySelector('.cart-header span');
+    if (headerCountEl) headerCountEl.innerText = `Tất cả (${count} sản phẩm)`;
+    const mobileBtnEl = document.querySelector('.mc-btn');
+    if (mobileBtnEl) mobileBtnEl.innerText = `Mua Hàng (${count})`;
+}
+
+function applyCoupon() {
+    const couponInput = document.getElementById('coupon-input');
+    const couponCode = couponInput.value.trim();
+    if (!couponCode) {
+        Swal.fire({ icon: 'warning', title: 'Vui lòng nhập mã giảm giá' });
+        return;
+    }
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch("{% url 'orders:apply_coupon' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'code': couponCode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire({
+                toast: true, position: 'top-end', icon: 'success',
+                title: data.message, showConfirmButton: false, timer: 2000
+            });
+
+            // --- Update UI dynamically ---
+            const formatCurrency = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value || 0).replace('₫', 'đ');
+            document.getElementById('discount-amount').innerText = `-${formatCurrency(data.discount_amount)}`;
+            document.getElementById('total-price').innerText = formatCurrency(data.new_total);
+            document.getElementById('mobile-total-price').innerText = formatCurrency(data.new_total);
+
+            const couponBox = document.querySelector('.coupon-box');
+            if (couponBox) {
+                const appliedCouponHTML = `
+                    <div class="applied-coupon">
+                        <span><i class="fa-solid fa-ticket"></i> ${data.coupon_code}</span>
+                        <a href="{% url 'orders:remove_coupon' %}" class="remove-coupon-btn">Xóa</a>
+                    </div>
+                `;
+                couponBox.outerHTML = appliedCouponHTML;
+            }
+        } else {
+            Swal.fire({ icon: 'error', title: 'Thất bại', text: data.message });
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi khi áp dụng mã:', error);
+        Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra, vui lòng thử lại.' });
+    });
+}
+
+function updateQuantity(event, cartItemId, action) {
+    event.preventDefault();
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+    const qtyControlElement = event.currentTarget.closest('.qty-control');
+    const buttons = qtyControlElement.querySelectorAll('.qty-btn');
+    buttons.forEach(btn => btn.disabled = true);
+
+    fetch("{% url 'products:update_cart_quantity' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'id': cartItemId, 'action': action })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const decreaseButton = qtyControlElement.querySelector('button[onclick*="decrease"]');
+        const increaseButton = qtyControlElement.querySelector('button[onclick*="increase"]');
+
+        if (data.status === 'updated') {
+            document.getElementById(`qty-input-${cartItemId}`).value = data.item_quantity;
+            updateCartSummary(data.cart_count, data.sub_total, data.discount_amount, data.final_total);
+            if (typeof updateBadgeCount === 'function') {
+                updateBadgeCount('cart', data.cart_count);
+            }
+            if (data.coupon_removed) {
+                Swal.fire({
+                    toast: true, position: 'top-end', icon: 'info',
+                    title: 'Mã giảm giá không còn hợp lệ và đã được xóa.', showConfirmButton: false, timer: 2500
+                }).then(() => window.location.reload());
+            }
+        } else if (data.status === 'removed') {
+            const itemElement = document.getElementById(`cart-item-${cartItemId}`);
+            if (itemElement) {
+                itemElement.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+                itemElement.style.opacity = "0";
+                itemElement.style.transform = "translateX(20px)";
+                setTimeout(() => {
+                    itemElement.remove();
+                    updateCartSummary(data.cart_count, data.sub_total, data.discount_amount, data.final_total);
+                    if (typeof updateBadgeCount === 'function') { updateBadgeCount('cart', data.cart_count); }
+                    if (data.cart_count === 0) { setTimeout(() => window.location.reload(), 500); }
+                }, 300);
+            }
+            // Không cần bật lại nút vì item đã bị xóa
+            return;
+        } else if (data.status === 'limit_reached') {
+            Swal.fire({
+                toast: true, position: 'top-end', icon: 'warning',
+                title: data.message, showConfirmButton: false, timer: 2000
+            });
+        } else {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: data.message });
+        }
+
+        // Bật lại các nút dựa trên số lượng cuối cùng
+        const finalQuantity = parseInt(document.getElementById(`qty-input-${cartItemId}`).value, 10);
+        if (increaseButton) increaseButton.disabled = false;
+        if (decreaseButton) decreaseButton.disabled = (finalQuantity <= 1);
+    })
+    .catch(error => {
+        console.error('Lỗi khi cập nhật số lượng:', error);
+        Swal.fire({ icon: 'error', title: 'Oops...', text: 'Có lỗi xảy ra khi cập nhật!' });
+        // Bật lại tất cả các nút nếu có lỗi mạng
+        buttons.forEach(btn => btn.disabled = false);
+    });
 }
 </script>
 {% endblock %}

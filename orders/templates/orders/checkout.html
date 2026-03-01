@@ -1,5 +1,171 @@
 {% extends 'core/base.html' %} {% load static %} {% load humanize %} {% block title %}Thanh toán -
-LapStore{% endblock %} {% block extra_css %}{% endblock %}
+LapStore{% endblock %} {% block extra_css %}
+<style>
+  /* --- Coupon Box --- */
+  .applied-coupon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0fdf4; /* green-50 */
+    border: 1px solid #bbf7d0; /* green-200 */
+    color: #166534; /* green-800 */
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .applied-coupon span i {
+    margin-right: 8px;
+  }
+  .remove-coupon-btn {
+    color: #dc2626; /* red-600 */
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .coupon-box {
+    display: flex;
+    gap: 8px;
+  }
+  .coupon-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: var(--trans);
+  }
+  .coupon-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(203, 28, 34, 0.1);
+  }
+  .btn-apply {
+    background: var(--text-main);
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: var(--trans);
+  }
+  .btn-apply:hover {
+      background: #374151;
+  }
+
+  /* --- Order Summary Column --- */
+  .checkout-col-right .order-summary {
+    background-color: #f9fafb; /* Nền xám nhạt */
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 24px;
+  }
+
+  .order-summary .block-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  /* --- Product List in Summary --- */
+  .checkout-items {
+    max-height: 280px;
+    overflow-y: auto;
+    margin-right: -10px;
+    padding-right: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 10px;
+  }
+
+  .c-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  .c-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .c-img {
+    position: relative;
+    flex-shrink: 0;
+  }
+  .c-img img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: white;
+  }
+  .c-qty {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: var(--primary);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: none; /* Ẩn huy hiệu số lượng */
+    place-items: center;
+    border: 2px solid white;
+  }
+
+  .c-info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .coupon-box, .applied-coupon {
+    margin-bottom: 20px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #4b5563;
+  }
+  .summary-row span:last-child {
+    font-weight: 600;
+    color: var(--text-main);
+  }
+  .summary-row.total .total-price-big {
+    color: var(--primary);
+    font-size: 22px;
+    font-weight: 800;
+  }
+  .btn-checkout {
+    width: 100%;
+    background: var(--gradient-red);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: var(--trans);
+    box-shadow: 0 4px 15px rgba(203, 28, 34, 0.25);
+  }
+  .btn-checkout:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(203, 28, 34, 0.35);
+  }
+</style>
+{% endblock %}
 {% block mobile_menu %}{% endblock %} 
 
 {% block content %}
@@ -162,7 +328,8 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
 
     <!-- Cột phải: Tóm tắt đơn hàng -->
     <div class="checkout-col-right">
-      <div class="order-summary" style="position: sticky; top: 100px"> <h3 class="block-title"> Đơn hàng ({{ product_count }} sản phẩm) </h3>
+      <div class="order-summary" style="position: sticky; top: 90px">
+        <h3 class="block-title"> Đơn hàng ({{ product_count }} sản phẩm) </h3>
         <div class="checkout-items">
           {% for item in cart_items %}
             <div class="c-item">
@@ -181,14 +348,21 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
           {% endfor %}
         </div>
 
-        <div class="coupon-box">
-          <input type="text" class="coupon-input" placeholder="Mã giảm giá" />
-          <button class="btn-apply">Áp dụng</button>
+        {% if coupon %}
+        <div class="applied-coupon">
+          <span><i class="fa-solid fa-ticket"></i> {{ coupon.code }}</span>
+          <a href="{% url 'orders:remove_coupon' %}" class="remove-coupon-btn">Xóa</a>
         </div>
+        {% else %}
+        <div class="coupon-box">
+          <input type="text" id="coupon-input" class="coupon-input" placeholder="Mã giảm giá" />
+          <button type="button" class="btn-apply" onclick="applyCoupon()">Áp dụng</button>
+        </div>
+        {% endif %}
 
         <div class="summary-row">
           <span>Tạm tính</span>
-          <span>{{ total_amount|floatformat:0|intcomma }}đ</span>
+          <span id="subtotal-price">{{ total_amount|floatformat:0|intcomma }}đ</span>
         </div>
         <div class="summary-row">
           <span>Phí vận chuyển</span>
@@ -196,12 +370,12 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
         </div>
         <div class="summary-row">
           <span>Giảm giá</span>
-          <span style="color: #22c55e">-0đ</span>
+          <span id="discount-amount" style="color: #22c55e">-{{ discount_amount|floatformat:0|intcomma }}đ</span>
         </div>
 
         <div class="summary-row total">
           <span>Tổng cộng</span>
-          <span class="total-price-big">{{ total_amount|floatformat:0|intcomma }}đ</span>
+          <span class="total-price-big" id="total-price">{{ final_total|floatformat:0|intcomma }}đ</span>
         </div>
 
         <button type="submit" class="btn-checkout">
@@ -219,11 +393,62 @@ LapStore{% endblock %} {% block extra_css %}{% endblock %}
           <a href="#" style="color: var(--primary)">Điều khoản sử dụng</a> của
           chúng tôi.
         </p>
-      </div>
     </div>
   </div>
 </form>
 {% endblock %} {% block extra_js %}
+<script>
+  function applyCoupon() {
+    const couponInput = document.getElementById('coupon-input');
+    const couponCode = couponInput.value.trim();
+    if (!couponCode) {
+        Swal.fire({ icon: 'warning', title: 'Vui lòng nhập mã giảm giá' });
+        return;
+    }
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch("{% url 'orders:apply_coupon' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        body: new URLSearchParams({ 'code': couponCode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire({
+                toast: true, position: 'top-end', icon: 'success',
+                title: data.message, showConfirmButton: false, timer: 2000
+            });
+
+            // --- Update UI dynamically ---
+            const formatCurrency = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value || 0).replace('₫', 'đ');
+            document.getElementById('discount-amount').innerText = `-${formatCurrency(data.discount_amount)}`;
+            document.getElementById('total-price').innerText = formatCurrency(data.new_total);
+
+            const couponBox = document.querySelector('.coupon-box');
+            if (couponBox) {
+                const appliedCouponHTML = `
+                    <div class="applied-coupon">
+                        <span><i class="fa-solid fa-ticket"></i> ${data.coupon_code}</span>
+                        <a href="{% url 'orders:remove_coupon' %}" class="remove-coupon-btn">Xóa</a>
+                    </div>
+                `;
+                couponBox.outerHTML = appliedCouponHTML;
+            }
+        } else {
+            Swal.fire({ icon: 'error', title: 'Thất bại', text: data.message });
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi khi áp dụng mã:', error);
+        Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra, vui lòng thử lại.' });
+    });
+  }
+</script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const provinceSelect = document.getElementById("province");

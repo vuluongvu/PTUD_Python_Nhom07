@@ -2,7 +2,9 @@ from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
 from django.db.models import Q, Avg, Count
 from django.http import JsonResponse
-from core.models import Brand, Cart, Category, Product, Review, WishList
+from django.db import transaction
+from core.models import Brand, Cart, CartItem, Category, Product, Review, WishList, Coupon
+from django.utils import timezone
 
 
 # Create your views here.
@@ -10,7 +12,7 @@ def view_all_products(request):
    
     products_list = Product.objects.filter(status=True)
     
-    # --- Logic Lọc Sản Phẩm ---
+    # --- Lọc Sản Phẩm ---
     selected_brands = request.GET.getlist('brand')
     selected_categories = request.GET.getlist('category')
     price_range = request.GET.get('price')
@@ -24,20 +26,20 @@ def view_all_products(request):
     if price_range:
         try:
             min_price, max_price = price_range.split('-')
-            if max_price == 'inf': # Trường hợp "Trên X triệu"
+            if max_price == 'inf': 
                 products_list = products_list.filter(price__gte=int(min_price) * 1000000)
             else:
                 products_list = products_list.filter(price__range=(int(min_price) * 1000000, int(max_price) * 1000000))
         except ValueError:
-            pass # Bỏ qua nếu tham số giá không hợp lệ
+            pass 
 
-    # Lấy tham số sort từ URL
+    # Lấy tham số sort từ URl
     sort_by = request.GET.get('sort', 'default')
     if sort_by == 'price_asc':
         products_list = products_list.order_by('price')
     elif sort_by == 'price_desc':
         products_list = products_list.order_by('-price')
-    else: # Mặc định
+    else: 
         products_list = products_list.order_by('-created_at')
     
     paginator = Paginator(products_list, 12)
@@ -210,30 +212,170 @@ def toggle_cart(request):
 
     if request.method == "POST":
         product_id = request.POST.get('id')
-        action = request.POST.get('action', 'toggle') # Mặc định là 'toggle'
         product = get_object_or_404(Product, id=product_id)
 
         # Lấy hoặc tạo giỏ hàng cho user
-        user_cart, created = Cart.objects.get_or_create(user=request.user)
+        user_cart, _ = Cart.objects.get_or_create(user=request.user)
 
         # Kiểm tra sản phẩm đã có trong CartItem chưa
-        cart_item, item_created = user_cart.items.get_or_create( # Dùng get_or_create để đảm bảo sản phẩm được thêm nếu chưa có
-            product=product
-        )
+        cart_item, item_created = user_cart.items.get_or_create(product=product)
 
-        if action == 'add_only':
-            # Nếu là hành động "Mua ngay", chỉ đảm bảo sản phẩm có trong giỏ và không làm gì khác
-            return JsonResponse({'status': 'added', 'message': 'Sản phẩm đã sẵn sàng trong giỏ.'})
+        if item_created:
+            status = 'added'
+            message = 'Đã thêm sản phẩm vào giỏ hàng!'
+        else:
+            # Nếu sản phẩm đã tồn tại, không làm gì cả, chỉ thông báo
+            status = 'exists'
+            message = 'Sản phẩm đã có trong giỏ hàng.'
 
-        # Logic cho nút "Thêm vào giỏ hàng" (toggle)
-        if not item_created: # Nếu sản phẩm đã có trong giỏ
-            # Nếu item đã tồn tại (không phải vừa được tạo), thì xóa nó đi
-            cart_item.delete()
-            # Tính lại tổng tiền sau khi xóa
-            new_total = sum(item.product.final_price * item.quantity for item in user_cart.items.all())
-            return JsonResponse({'status': 'removed', 'message': 'Đã xóa khỏi giỏ!', 'new_total': new_total})
-        elif item_created: # Nếu sản phẩm vừa được thêm
-            # Nếu item vừa được tạo, nghĩa là đã thêm thành công
-            return JsonResponse({'status': 'added', 'message': 'Đã thêm vào giỏ!', 'product_name': product.name})
+        # Lấy số lượng mới nhất
+        cart_count = user_cart.items.count()
+
+        return JsonResponse({
+            'status': status,
+            'message': message,
+            'cart_count': cart_count
+        })
 
     return JsonResponse({'status': 'error', 'message': 'Chỉ chấp nhận POST'}, status=400)
+
+def remove_from_cart(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'login_required', 'message': 'Bạn phải đăng nhập để thực hiện thao tác này.'}, status=401)
+
+    if request.method == "POST":
+        # Giả định rằng 'id' được gửi từ trang giỏ hàng là ID của CartItem, không phải Product ID.
+        # Đây là cách tiếp cận trực tiếp và an toàn hơn để xóa một mục cụ thể.
+        item_id = request.POST.get('id')
+        sub_total = 0
+        cart_count = 0
+        status = 'error'
+        message = 'Có lỗi xảy ra.'
+
+        if not item_id:
+            return JsonResponse({'status': 'error', 'message': 'Cần có ID của mục trong giỏ hàng.'}, status=400)
+
+        try:
+            user_cart = Cart.objects.get(user=request.user)
+            try:
+                cart_item = user_cart.items.get(id=item_id)
+                cart_item.delete()
+                status = 'removed'
+                message = 'Đã xóa sản phẩm khỏi giỏ hàng.'
+            except CartItem.DoesNotExist:
+                status = 'not_found'
+                message = 'Sản phẩm không có trong giỏ hàng.'
+
+            # --- Re-calculate totals and check coupon ---
+            remaining_items = user_cart.items.select_related('product').all()
+            cart_count = remaining_items.count()
+            sub_total = sum(item.product.final_price * item.quantity for item in remaining_items)
+
+            coupon_id = request.session.get('coupon_id')
+            discount_amount = 0
+            coupon_removed_flag = False
+            if coupon_id:
+                try:
+                    coupon = Coupon.objects.get(id=coupon_id)
+                    if coupon.status and coupon.expired_date >= timezone.now() and sub_total >= coupon.min_order_value:
+                        discount_amount = coupon.discount_value
+                    else: # Coupon is no longer valid
+                        del request.session['coupon_id']
+                        coupon_removed_flag = True
+                except Coupon.DoesNotExist:
+                    del request.session['coupon_id']
+                    coupon_removed_flag = True
+            
+            final_total = sub_total - discount_amount
+
+        except Cart.DoesNotExist:
+            message = 'Không tìm thấy giỏ hàng.'
+            # cart_count and sub_total are already 0, status is 'error'
+            final_total = 0
+            discount_amount = 0
+            coupon_removed_flag = False
+
+        return JsonResponse({
+            'status': status,
+            'message': message,
+            'cart_count': cart_count,
+            'sub_total': sub_total,
+            'discount_amount': discount_amount,
+            'final_total': final_total,
+            'coupon_removed': coupon_removed_flag,
+        })
+
+    return JsonResponse({'status': 'error', 'message': 'Yêu cầu không hợp lệ.'}, status=400)
+
+def update_cart_quantity(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'login_required', 'message': 'Bạn phải đăng nhập.'}, status=401)
+
+    if request.method == "POST":
+        item_id = request.POST.get('id')
+        action = request.POST.get('action') # 'increase' or 'decrease'
+
+        if not item_id or action not in ['increase', 'decrease']:
+            return JsonResponse({'status': 'error', 'message': 'Yêu cầu không hợp lệ.'}, status=400)
+
+        try:
+            with transaction.atomic():
+                user_cart = Cart.objects.select_for_update().get(user=request.user)
+                cart_item = user_cart.items.select_related('product').get(id=item_id)
+
+                if action == 'increase':
+                    # TODO: Có thể thêm kiểm tra tồn kho sản phẩm ở đây
+                    cart_item.quantity += 1
+                    cart_item.save()
+                    status = 'updated'
+                    message = 'Đã cập nhật số lượng.'
+                
+                elif action == 'decrease':
+                    if cart_item.quantity > 1:
+                        cart_item.quantity -= 1
+                        cart_item.save()
+                        status = 'updated'
+                        message = 'Đã cập nhật số lượng.'
+                    else:
+                        # Nếu số lượng là 1, không cho giảm thêm.
+                        status = 'limit_reached'
+                        message = 'Số lượng tối thiểu là 1.'
+
+                # Tính tổng tiền cho riêng item này
+                item_subtotal = cart_item.product.final_price * cart_item.quantity
+
+                # --- Re-calculate totals and check coupon ---
+                remaining_items = user_cart.items.select_related('product').all()
+                cart_count = remaining_items.count()
+                sub_total = sum(item.product.final_price * item.quantity for item in remaining_items)
+                
+                coupon_id = request.session.get('coupon_id')
+                discount_amount = 0
+                coupon_removed_flag = False
+                if coupon_id:
+                    try:
+                        coupon = Coupon.objects.get(id=coupon_id)
+                        if coupon.status and coupon.expired_date >= timezone.now() and sub_total >= coupon.min_order_value:
+                            discount_amount = coupon.discount_value
+                        else: # Coupon is no longer valid
+                            del request.session['coupon_id']
+                            coupon_removed_flag = True
+                    except Coupon.DoesNotExist:
+                        del request.session['coupon_id']
+                        coupon_removed_flag = True
+                
+                final_total = sub_total - discount_amount
+                
+                return JsonResponse({
+                    'status': status, 'message': message, 'cart_count': cart_count,
+                    'sub_total': sub_total, 'discount_amount': discount_amount, 'final_total': final_total,
+                    'item_quantity': cart_item.quantity,
+                    'item_subtotal': item_subtotal,
+                    'coupon_removed': coupon_removed_flag,
+                })
+
+        except (Cart.DoesNotExist, CartItem.DoesNotExist):
+            return JsonResponse({'status': 'error', 'message': 'Sản phẩm hoặc giỏ hàng không tồn tại.'}, status=404)
+
+    return JsonResponse({'status': 'error', 'message': 'Chỉ chấp nhận POST.'}, status=400)
+

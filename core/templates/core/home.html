@@ -359,6 +359,22 @@ LapStore{% endblock %}
       
 {% endblock %}
 {% block extra_js %}
+{{ block.super }}
+<script>
+function updateBadgeCount(badgeType, newCount) {
+    // Chọn tất cả các badge thuộc một loại (ví dụ: 'cart' hoặc 'wishlist')
+    const badges = document.querySelectorAll(`.nav-badge[data-badge="${badgeType}"]`);
+    
+    badges.forEach(badge => {
+        if (newCount > 0) {
+            badge.innerText = newCount;
+            badge.style.display = ''; // Quay lại thuộc tính display của stylesheet
+        } else {
+            badge.style.display = 'none';
+        }
+    });
+}
+</script>
 <script>
 function toggleWishlist(event, productId) {
     event.preventDefault();
@@ -396,7 +412,7 @@ function toggleWishlist(event, productId) {
             timer: 2000
         });
 
-        // Logic đổi màu tim hoặc xóa card cũ của Heo
+        // Logic đổi màu tim hoặc xóa card cũ 
         const heartIcon = document.getElementById(`heart-${productId}`);
         if (data.status === 'added') {
             if (heartIcon) {
@@ -410,6 +426,11 @@ function toggleWishlist(event, productId) {
             }
             const productCard = document.getElementById(`wishlist-item-${productId}`);
             if (productCard) productCard.remove();
+        }
+
+        // Cập nhật số lượng trên badge
+        if (data.wishlist_count !== undefined) {
+            updateBadgeCount('wishlist', data.wishlist_count);
         }
     });
 }
@@ -444,10 +465,10 @@ function toggleCart(event, productId) {
             return;
         }
         
-        // Nếu thêm sản phẩm thành công, chuyển hướng đến trang giỏ hàng
-        if (data.status === 'added') {
+        // Nếu thêm sản phẩm thành công (hoặc đã tồn tại), chuyển hướng đến trang giỏ hàng
+        if (data.status === 'added' || data.status === 'exists') {
             window.location.href = "{% url 'orders:cart' %}";
-        }
+        } 
     });
 }
 </script>

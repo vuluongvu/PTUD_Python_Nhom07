@@ -90,9 +90,11 @@
         MUA NGAY
         <span>(Giao hàng tận nơi hoặc nhận tại cửa hàng)</span>
       </button>
-      <button class="btn-main btn-cart {% if is_in_cart %}in-cart{% endif %}" onclick="toggleCart(event, '{{ p.id }}')">
+      <button class="btn-main btn-cart btn-add-to-cart {% if is_in_cart %}in-cart{% endif %}" 
+              data-product-id="{{ p.id }}"
+              {% if is_in_cart %}disabled{% endif %}>
         {% if is_in_cart %}
-          <span>Đã thêm vào giỏ hàng <i class="fa-solid fa-check-circle"></i></span>
+          <span><i class="fa-solid fa-check-circle"></i> Đã có trong giỏ</span>
         {% else %}
           <span>Thêm vào giỏ hàng</span>
         {% endif %}
@@ -250,7 +252,9 @@
 </div>
 
 <div class="mobile-bar">
-  <button class="m-btn m-add {% if is_in_cart %}in-cart{% endif %}" onclick="toggleCart(event, '{{ p.id }}')">
+  <button class="m-btn m-add btn-add-to-cart {% if is_in_cart %}in-cart{% endif %}" 
+          data-product-id="{{ p.id }}"
+          {% if is_in_cart %}disabled{% endif %}>
     {% if is_in_cart %}
       <i class="fa-solid fa-check"></i> Đã có trong giỏ
     {% else %}
@@ -395,82 +399,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
-function toggleCart(event, productId) {
-    event.preventDefault();
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
-    const cartButton = event.currentTarget; // Lấy chính nút đã được click
-
-    fetch("{% url 'products:toggle_cart' %}", { 
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": csrftoken,
-        },
-        body: new URLSearchParams({ 'id': productId })
-    })
-    .then(response => {
-        if (!response.ok) throw new Error("Lỗi Server (500)");
-        return response.json();
-    })
-    .then(data => {
-        if (data.status === 'login_required') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Yêu cầu đăng nhập',
-                text: data.message,
-                confirmButtonText: 'Đăng nhập ngay'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
-                }
-            });
-        } else {
-            // Cập nhật giao diện nút mà không cần reload
-            if (data.status === 'added') {
-                cartButton.classList.add('in-cart');
-                // Chỉ cập nhật nút trên desktop nếu nó được click
-                if (cartButton.classList.contains('btn-main')) {
-                    cartButton.innerHTML = `<span>Đã thêm vào giỏ hàng <i class="fa-solid fa-check-circle"></i></span>`;
-                }
-            } else if (data.status === 'removed') {
-                cartButton.classList.remove('in-cart');
-                if (cartButton.classList.contains('btn-main')) {
-                    cartButton.innerHTML = `<span>Thêm vào giỏ hàng</span>`;
-                }
-            }
-
-            // Cập nhật nút trên thanh mobile nếu có
-            updateMobileCartButton(data.status);
-
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: data.status === 'added' ? 'success' : 'info',
-                title: data.message,
-                showConfirmButton: false,
-                timer: 2500
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Lỗi:', error);
-        Swal.fire('Lỗi', 'Không thể thêm vào giỏ hàng lúc này.', 'error');
-    });
-}
-
-function updateMobileCartButton(status) {
-    const mobileButton = document.querySelector('.mobile-bar .m-btn.m-add');
-    if (!mobileButton) return;
-
-    if (status === 'added') {
-        mobileButton.classList.add('in-cart');
-        mobileButton.innerHTML = `<i class="fa-solid fa-check"></i> Đã có trong giỏ`;
-    } else if (status === 'removed') {
-        mobileButton.classList.remove('in-cart');
-        mobileButton.innerHTML = `<i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ`;
-    }
-}
 
 function buyNow(event, productId) {
     event.preventDefault();

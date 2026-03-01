@@ -292,6 +292,7 @@ class WishList(TimeStampedModel):
     class Meta:
         unique_together = ('user', 'product')
 
+
 # --- CẤU HÌNH LAPTOP ---
 class LaptopConfig(models.Model):
     product = models.OneToOneField(

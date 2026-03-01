@@ -1,74 +1,67 @@
 from django.contrib import admin
-
 from .models import (
-    Profile, Address, Category, Brand, Warranty, 
-    Product, ProductImage, Inventory, 
-    LaptopConfig, AccessoryConfig, 
-    Cart, Order, OrderItem, Coupon, Payment, Review
+    Category, Brand, Product, Profile, Address, Warranty, 
+    Inventory, Cart, Coupon, Payment, Review,
+    ProductImage, Specification, LaptopConfig, AccessoryConfig
 )
 
-# ---  User Profile ---
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'full_name', 'role', 'status')
-    list_filter = ('role', 'status')
-    search_fields = ('user__username', 'full_name')
-
-# ---  Product ---
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
-    extra = 1
+    extra = 1 # Hiển thị 1 dòng trống để thêm ảnh
 
+class SpecificationInline(admin.TabularInline):
+    model = Specification
+    extra = 3 # Hiển thị 3 dòng trống để thêm thông số
 
 class LaptopConfigInline(admin.StackedInline):
     model = LaptopConfig
     can_delete = False
-    verbose_name_plural = 'Cấu hình Laptop (Chỉ nhập nếu là Laptop)'
-
+    verbose_name_plural = 'Cấu hình Laptop'
 
 class AccessoryConfigInline(admin.StackedInline):
     model = AccessoryConfig
     can_delete = False
-    verbose_name_plural = 'Thông số Linh kiện (Chỉ nhập nếu là Chuột/Phím/Loa...)'
+    verbose_name_plural = 'Cấu hình Linh kiện'
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price', 'created_by', 'status', 'created_at')
-    list_filter = ('status', 'category', 'brand')
+    list_display = ('name', 'brand', 'category', 'price', 'status')
+    list_filter = ('status', 'brand', 'category', 'is_lap')
     search_fields = ('name', 'description')
-    
-    # slug auto
     prepopulated_fields = {'slug': ('name',)}
+    inlines = [ProductImageInline, SpecificationInline, LaptopConfigInline, AccessoryConfigInline]
+
+    # Tùy chỉnh form để dễ nhập liệu hơn
+    fieldsets = (
+        (None, {'fields': ('name', 'slug', 'description', 'brand', 'category')}),
+        ('Phân loại sản phẩm', {'fields': ('is_lap', 'is_vga', 'is_cpu', 'is_keyboard', 'is_ram', 'is_headphone', 'is_mouse', 'is_screen')}),
+        ('Giá & Bảo hành', {'fields': ('price', 'discount_price', 'warranty')}),
+        ('Trạng thái', {'fields': ('status', 'view_count')}),
+    )
     
-    inlines = [ProductImageInline, LaptopConfigInline, AccessoryConfigInline]
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    """
+    Tùy chỉnh hiển thị cho model Coupon, cung cấp giao diện chọn ngày giờ.
+    """
+    list_display = ('code', 'discount_value', 'min_order_value', 'expired_date', 'quantity', 'status')
+    list_filter = ('status', 'expired_date')
+    search_fields = ('code',)
 
-    readonly_fields = ('created_by',)
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'parent')
+    prepopulated_fields = {'slug': ('name',)}
 
-    def save_model(self, request, obj, form, change):
-        if not obj.pk:
-            obj.created_by = request.user
-        super().save_model(request, obj, form, change)
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
 
-# --- Order ---
-class OrderItemInline(admin.TabularInline):
-    model = OrderItem
-    # readonly
-    readonly_fields = ('product', 'quantity', 'unit_price', 'subtotal')
-    extra = 0
-    can_delete = False
-
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'total_amount', 'order_status', 'created_at')
-    list_filter = ('order_status', 'created_at')
-    inlines = [OrderItemInline]
-
+# Đăng ký các model còn lại không cần tùy chỉnh phức tạp
+admin.site.register(Profile)
 admin.site.register(Address)
-admin.site.register(Category)
-admin.site.register(Brand)
 admin.site.register(Warranty)
 admin.site.register(Inventory)
 admin.site.register(Cart)
-admin.site.register(Coupon)
 admin.site.register(Payment)
 admin.site.register(Review)
