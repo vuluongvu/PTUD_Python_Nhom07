@@ -2162,9 +2162,11 @@ footer {
     font-weight: 600;
     transition: var(--trans);
 }
+
 .btn-use-default:hover {
     background: var(--primary-dark);
 }
+
 .btn-cancel-order {
     background: transparent;
     border: 1px solid #ef4444;
@@ -2176,7 +2178,108 @@ footer {
     margin-top: 8px;
     transition: var(--trans);
 }
+
 .btn-cancel-order:hover {
     background: #ef4444;
     color: white;
 }
+
+/*so sanh btn*/
+.btn-compare-product {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--trans);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    box-shadow: 0 4px 6px rgba(203, 28, 34, 0.2);
+}
+
+.btn-compare-product:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+/* =========================================
+           17. COMPARE MODAL
+           ========================================= */
+.compare-modal {
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none; /* Ẩn mặc định */
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.compare-modal.active {
+    display: flex;
+}
+
+.compare-modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 24px 32px;
+    border: 1px solid #e5e7eb;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 16px;
+    position: relative;
+    animation: fadeIn 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.compare-modal-close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.compare-modal-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 24px;
+}
+
+.compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 20px;
+}
+
+.compare-product-img { width: 150px; height: 150px; object-fit: contain; margin: 0 auto 10px; }
+.compare-product-name { font-weight: 700; font-size: 15px; height: 40px; overflow: hidden; margin-bottom: 8px; }
+.compare-product-price { font-weight: 800; color: var(--primary); font-size: 16px; }
+
+.compare-specs-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.compare-specs-table tr:nth-child(odd) { background-color: #f9fafb; }
+.compare-specs-table td { padding: 12px 8px; border-bottom: 1px solid #f3f4f6; text-align: center; width: 33.33%; }
+.compare-specs-table td.spec-label { font-weight: 700; color: var(--text-sub); text-align: left; }
+.compare-specs-table tr:last-child td { border-bottom: none; }

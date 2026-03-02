@@ -251,6 +251,68 @@
   </div>
 </div>
 
+<!--Related products-->
+ <div class="section-head">
+          <h2 style="font-size: 24px; font-weight: 800">
+          Sản phẩm <span style="color: var(--primary)">liên quan</span>
+          </h2>
+          <a
+            href="{% url 'products:view-all-products' %}"
+            style="
+              font-weight: 700;
+              color: var(--primary);
+              font-size: 14px;
+              border-bottom: 2px solid var(--primary);
+            ">Xem tất cả > </a>
+        </div>
+  <div class="related-product flash-grid">
+   {% for p in related_products %}
+         <a href="{% url 'products:product-detail' p.slug %}">
+            <article class="prod-card pod-card-view-all">
+              <div class="prod-img-wrap">
+                <img src="{% if p.images.first %}
+                {{ p.images.first.image_url }}
+                {% else %}
+                 {% static 'core/img/placeholder.png' %}
+                  {% endif %}" alt="LG" />
+              </div>
+              <h3 class="prod-name">{{p.name}}</h3>
+              <div class="prod-specs-box">
+               {% if p.is_lap %}
+                <span><i class="fa-solid fa-microchip"></i>{{p.laptop_config.cpu}}</span>
+                <span><i class="fa-solid fa-vr-cardboard"></i>{{p.laptop_config.vga}}</span>
+                {% else %}
+                   <span
+                  ><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
+                  </span
+                >
+                <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
+                {% endif %}
+              </div>
+              <div class="prod-footer">
+                <div class="price-box">
+                  <span class="price-current">{{p.price_vn}}</span
+                  ><span class="price-old">{{p.discount_price_vn}}</span>
+                </div>
+                 <button class="btn-compare-product" 
+                    onclick="openCompareModal(event, this)"
+                    data-name="{{ p.name }}"
+                    data-price="{{ p.price_vn }}"
+                    data-img="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
+                    data-cpu="{% if p.is_lap %}{{ p.laptop_config.cpu }}{% endif %}"
+                    data-ram="{% if p.is_lap %}{{ p.laptop_config.ram_desc }}{% endif %}"
+                    data-vga="{% if p.is_lap %}{{ p.laptop_config.vga }}{% endif %}"
+                    data-screen="{% if p.is_lap %}{{ p.laptop_config.screen_desc }}{% endif %}"
+                  >
+                    <i class="fa-solid fa-code-compare"></i>So sánh
+                  </button>
+              </div>
+            </article>
+          </a>
+           {% endfor %}
+    </div>
+
+
 <div class="mobile-bar">
   <button class="m-btn m-add btn-add-to-cart {% if is_in_cart %}in-cart{% endif %}" 
           data-product-id="{{ p.id }}"
@@ -266,8 +328,77 @@
   </button>
 </div>
 
+<!-- MODAL SO SÁNH SẢN PHẨM -->
+<div id="compare-modal" class="compare-modal">
+  <div class="compare-modal-content">
+      <button class="compare-modal-close">&times;</button>
+      <h2 class="compare-modal-title">So Sánh Sản Phẩm</h2>
+      <div class="compare-grid">
+          <!-- Cột sản phẩm 1 (sản phẩm hiện tại) -->
+          <div class="compare-product" id="compare-product-1">
+              <!-- Dữ liệu được chèn bằng JavaScript -->
+          </div>
+          <!-- Cột sản phẩm 2 (sản phẩm được click) -->
+          <div class="compare-product" id="compare-product-2">
+              <!-- Dữ liệu được chèn bằng JavaScript -->
+          </div>
+      </div>
+      <table class="compare-specs-table">
+        <!-- Bảng thông số được chèn bằng JavaScript -->
+      </table>
+  </div>
+</div>
+
 <script>
+const product1 = {
+    name: "{{ p.name|escapejs }}",
+    price: "{{ p.price_vn }}",
+    img: "{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}",
+    cpu: "{% if p.is_lap %}{{ p.laptop_config.cpu|escapejs }}{% endif %}",
+    ram: "{% if p.is_lap %}{{ p.laptop_config.ram_desc|escapejs }}{% endif %}",
+    vga: "{% if p.is_lap %}{{ p.laptop_config.vga|escapejs }}{% endif %}",
+    screen: "{% if p.is_lap %}{{ p.laptop_config.screen_desc|escapejs }}{% endif %}"
+};
+
+function openCompareModal(event, buttonElement) {
+    event.preventDefault();
+    event.stopPropagation(); // Ngăn không cho click vào thẻ <a> cha
+
+    const product2 = {
+        name: buttonElement.dataset.name,
+        price: buttonElement.dataset.price,
+        img: buttonElement.dataset.img,
+        cpu: buttonElement.dataset.cpu,
+        ram: buttonElement.dataset.ram,
+        vga: buttonElement.dataset.vga,
+        screen: buttonElement.dataset.screen
+    };
+
+    const modal = document.getElementById('compare-modal');
+    document.getElementById('compare-product-1').innerHTML = `<img src="${product1.img}" alt="${product1.name}" class="compare-product-img"><h3 class="compare-product-name">${product1.name}</h3><p class="compare-product-price">${product1.price}</p>`;
+    document.getElementById('compare-product-2').innerHTML = `<img src="${product2.img}" alt="${product2.name}" class="compare-product-img"><h3 class="compare-product-name">${product2.name}</h3><p class="compare-product-price">${product2.price}</p>`;
+    
+    const specsTable = document.querySelector('.compare-specs-table');
+    specsTable.innerHTML = `
+        <tbody>
+            <tr><td class="spec-label">CPU</td><td>${product1.cpu || 'N/A'}</td><td>${product2.cpu || 'N/A'}</td></tr>
+            <tr><td class="spec-label">RAM</td><td>${product1.ram || 'N/A'}</td><td>${product2.ram || 'N/A'}</td></tr>
+            <tr><td class="spec-label">Card đồ họa</td><td>${product1.vga || 'N/A'}</td><td>${product2.vga || 'N/A'}</td></tr>
+            <tr><td class="spec-label">Màn hình</td><td>${product1.screen || 'N/A'}</td><td>${product2.screen || 'N/A'}</td></tr>
+        </tbody>
+    `;
+
+    modal.classList.add('active');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('compare-modal');
+    const closeBtn = document.querySelector('.compare-modal-close');
+    if (modal && closeBtn) {
+        closeBtn.onclick = function() { modal.classList.remove('active'); }
+        modal.onclick = function(event) { if (event.target == modal) { modal.classList.remove('active'); } }
+    }
+
     const starInputContainer = document.querySelector('.star-input');
     const stars = starInputContainer.querySelectorAll('i');
     const reviewTextarea = document.querySelector('.review-textarea');
@@ -292,20 +423,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Logic xử lý sao
     stars.forEach(star => {
-        // Khi di chuột vào một sao
         star.addEventListener('mouseover', function() {
             const hoverRating = this.getAttribute('data-value');
             updateStars(hoverRating);
         });
-
-        // Khi click để chốt rating
+        
         star.addEventListener('click', function() {
             currentRating = this.getAttribute('data-value');
-            updateStars(currentRating); // Cập nhật lại để giữ màu sau khi click
+            updateStars(currentRating); 
         });
     });
 
-    // Khi di chuột ra khỏi toàn bộ khu vực sao, trả về trạng thái đã click
     starInputContainer.addEventListener('mouseout', function() {
         updateStars(currentRating);
     });
@@ -472,5 +600,6 @@ function changeImage(element, imageUrl) {
   .btn-cart.in-cart .fa-check-circle {
     color: #22c540; /* Màu xanh lá cây */
   }
+
 </style>
 {% endblock %}

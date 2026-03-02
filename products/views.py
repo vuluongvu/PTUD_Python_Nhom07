@@ -173,17 +173,24 @@ def product_detail(request, slug):
     # Khai báo giá trị mặc định để tránh  UnboundLocalError
     related_products = Product.objects.none() 
     
+
     sort_by = request.GET.get('sort', 'id')
     related_query = Product.objects.filter(category=product.category).exclude(slug=slug)
+    related_query = Product.objects.filter(
+        category=product.category, status=True
+    ).exclude(slug=slug).select_related('laptop_config').prefetch_related('images')
 
     if sort_by == 'price_asc':
         related_products = related_query.order_by('price')
+        related_products = related_query.order_by('price')[:5]
     elif sort_by == 'price_desc':
         related_products = related_query.order_by('-price')
+        related_products = related_query.order_by('-price')[:5]
     else:
-        related_products = related_query.order_by('?')[:4]
+        related_products = related_query.order_by('?')[:5]
 
     context = {
+        
         'p': product,
         'related_products': related_products,
         'is_in_cart': is_in_cart,
