@@ -346,7 +346,7 @@ LapStore{% endblock %}
             Build PC Workstation cấu hình khủng. Trả góp 0%, hỗ trợ kỹ thuật tận
             nơi.
           </p>
-          <a href="#" class="btn-cta">Tư vấn ngay</a>
+          <a href="#" id="consult-now-btn" class="btn-cta">Tư vấn ngay</a>
         </div>
         <img
           src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=2642"
@@ -472,4 +472,17 @@ function toggleCart(event, productId) {
     });
 }
 </script>
-{% endblock %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const consultBtn = document.getElementById('consult-now-btn');
+    const chatbotWindow = document.getElementById('chatbot-window');
+
+    if (consultBtn && chatbotWindow) {
+        consultBtn.addEventListener('click', function(event) {
+            event.preventDefault(); 
+            chatbotWindow.classList.add('active'); 
+        });
+    }
+});
+</script>
+{% endblock %}  
