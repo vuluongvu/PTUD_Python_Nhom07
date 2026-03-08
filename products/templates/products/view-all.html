@@ -95,15 +95,13 @@
           {% for range in price_ranges %}
           <li>
             <label class="filter-label">
-              <input type="radio" name="price" value="{{ range.value }}" class="filter-radio" {% if
-                selected_price==range.value %}checked{% endif %}>
+              <input type="radio" name="price" value="{{ range.value }}" class="filter-radio" {% if selected_price == range.value %}checked{% endif %}>
               <span class="checkmark"></span>
               {{ range.label }}
             </label>
           </li>
           {% endfor %}
-          <li><label class="filter-label"><input type="radio" name="price" value="" class="filter-radio" {% if not
-                selected_price %}checked{% endif %}><span class="checkmark"></span>Tất cả</label></li>
+          <li><label class="filter-label"><input type="radio" name="price" value="" class="filter-radio" {% if not selected_price %}checked{% endif %}><span class="checkmark"></span>Tất cả</label></li>
         </ul>
       </div>
 
@@ -114,8 +112,7 @@
           {% for brand in all_brands %}
           <li>
             <label class="filter-label">
-              <input type="checkbox" name="brand" value="{{ brand.id }}" class="filter-checkbox" {% if
-                brand.id|stringformat:"s" in selected_brands %}checked{% endif %}>
+              <input type="checkbox" name="brand" value="{{ brand.id }}" class="filter-checkbox" {% if brand.id|stringformat:"s" in selected_brands %}checked{% endif %}>
               <span class="checkmark"></span>
               {{ brand.name }}
             </label>
@@ -131,8 +128,7 @@
           {% for category in all_categories %}
           <li>
             <label class="filter-label">
-              <input type="checkbox" name="category" value="{{ category.id }}" class="filter-checkbox" {% if
-                category.id|stringformat:"s" in selected_categories %}checked{% endif %}>
+              <input type="checkbox" name="category" value="{{ category.id }}" class="filter-checkbox" {% if category.id|stringformat:"s" in selected_categories %}checked{% endif %}>
               <span class="checkmark"></span>
               {{ category.name }}
             </label>
