@@ -76,13 +76,6 @@ def toggle_wishlist(request):
 
 
 # xử lý api gemini
-_client = None
-
-def get_genai_client():
-    global _client
-    if _client is None:
-        _client = genai.Client(api_key=settings.GOOGLE_API_KEY)
-    return _client
 
 
 def chatbot_api(request):
@@ -197,4 +190,4 @@ def chatbot_api(request):
         'reply': bot_reply,
         'products': products_found # Add the list of products
     }
-    return render(request, 'core/admin-dashboard.html', context)
+    return JsonResponse(response_data)
