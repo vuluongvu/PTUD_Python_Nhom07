@@ -73,10 +73,7 @@ def toggle_wishlist(request):
             
         return JsonResponse({'status': status, 'message': message, 'wishlist_count': wishlist_count})
     
-
-
 # xử lý api gemini
-
 
 def chatbot_api(request):
     """
@@ -190,4 +187,4 @@ def chatbot_api(request):
         'reply': bot_reply,
         'products': products_found # Add the list of products
     }
-    return JsonResponse(response_data)
+    return JsonResponse(response_data)

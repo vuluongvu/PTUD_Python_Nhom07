@@ -1,10 +1,18 @@
+import json
+import logging
+
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from core.views import toggle_wishlist
-from core.models import Product, WishList, Cart, Order, OrderItem, Coupon
+from core.models import Product, WishList, Cart, Order, OrderItem, Coupon, Payment
 from django.contrib import messages
 from django.utils import timezone
+
+from orders.services.momo_service import create_momo_payment, verify_momo_signature
+
+logger = logging.getLogger(__name__)
 
 app_name = 'orders'
 
@@ -132,9 +140,54 @@ def checkout(request):
         if 'coupon_id' in request.session:
             del request.session['coupon_id']
 
-        messages.success(request, "Đặt hàng thành công! Cảm ơn bạn đã mua sắm tại LapStore.")
+        # ===== XỬ LÝ THANH TOÁN MOMO =====
+        if payment_method == 'momo':
+            # Tạo Payment record với trạng thái chờ thanh toán
+            payment = Payment.objects.create(
+                order=new_order,
+                payment_method=Payment.Method.MOMO,
+                payment_status=Payment.Status.PENDING,
+            )
 
-        return redirect('users:order_list')
+            # Gọi MoMo API để tạo yêu cầu thanh toán
+            order_info = f"LapStore - Thanh toán đơn hàng #{new_order.id}"
+            momo_response = create_momo_payment(
+                order_id=new_order.id,
+                amount=final_total,
+                order_info=order_info,
+            )
+
+            # Kiểm tra kết quả từ MoMo
+            if momo_response.get('resultCode') == 0 and momo_response.get('payUrl'):
+                # Lưu momo_order_id vào transaction_id để tra cứu sau
+                payment.transaction_id = momo_response.get('momo_order_id', '')
+                payment.save()
+
+                # Redirect user tới trang thanh toán MoMo
+                return redirect(momo_response['payUrl'])
+            else:
+                # MoMo trả lỗi → đánh dấu payment thất bại
+                payment.payment_status = Payment.Status.FAILED
+                payment.save()
+                error_msg = momo_response.get('message', 'Không thể tạo thanh toán MoMo')
+                logger.error(f"MoMo payment creation failed for order #{new_order.id}: {error_msg}")
+                messages.error(request, f"Lỗi thanh toán MoMo: {error_msg}. Đơn hàng đã được tạo, bạn có thể thử lại.")
+                return redirect('users:order_list')
+
+        # ===== XỬ LÝ COD / BANKING (giữ nguyên logic cũ) =====
+        else:
+            # Tạo Payment record cho COD/Banking
+            pm_method = Payment.Method.COD  # Mặc định
+            if payment_method == 'banking':
+                pm_method = Payment.Method.BANKING
+            
+            Payment.objects.create(
+                order=new_order,
+                payment_method=pm_method,
+                payment_status=Payment.Status.PENDING,
+            )
+            messages.success(request, "Đặt hàng thành công! Cảm ơn bạn đã mua sắm tại LapStore.")
+            return redirect('users:order_list')
 
     # --- Context cho GET request ---
     context = {
@@ -224,3 +277,147 @@ def wishlist_list(request):
         'wishlist': user_wishlist, 
         'product_count': product_count,
         })
+
+
+# ==================== MOMO PAYMENT VIEWS ====================
+
+def momo_return(request):
+    """
+    Xử lý khi MoMo redirect user về sau khi thanh toán.
+    
+    MoMo gửi kết quả thanh toán qua query parameters (GET request).
+    View này xác minh chữ ký và hiển thị kết quả cho user.
+    
+    Luồng:
+    1. User hoàn tất (hoặc hủy) thanh toán trên trang MoMo
+    2. MoMo redirect user về URL này kèm theo các query params
+    3. Ta xác minh chữ ký (signature) để đảm bảo dữ liệu hợp lệ
+    4. Cập nhật trạng thái Payment và hiển thị kết quả
+    """
+    # Lấy dữ liệu từ query parameters
+    data = request.GET.dict()
+    
+    result_code = data.get('resultCode', '')
+    momo_order_id = data.get('orderId', '')
+    amount = data.get('amount', 0)
+    message = data.get('message', '')
+    trans_id = data.get('transId', '')
+    
+    # Trích xuất order_id từ momo_order_id (format: LAPSTORE_{order_id}_{uuid})
+    order_id = None
+    try:
+        parts = momo_order_id.split('_')
+        if len(parts) >= 2:
+            order_id = int(parts[1])
+    except (ValueError, IndexError):
+        pass
+    
+    # Xác minh chữ ký từ MoMo
+    is_valid_signature = verify_momo_signature(data)
+    
+    # Kiểm tra kết quả: resultCode == 0 là thành công
+    success = (str(result_code) == '0') and is_valid_signature
+    
+    # Cập nhật trạng thái Payment trong database
+    if order_id:
+        try:
+            payment = Payment.objects.get(order_id=order_id)
+            if success:
+                payment.payment_status = Payment.Status.COMPLETED
+                payment.transaction_id = trans_id or momo_order_id
+                payment.save()
+                
+                # Cập nhật trạng thái đơn hàng
+                order = payment.order
+                order.order_status = Order.Status.PROCESSING
+                order.save()
+            else:
+                payment.payment_status = Payment.Status.FAILED
+                payment.save()
+        except Payment.DoesNotExist:
+            logger.warning(f"Payment not found for order_id={order_id}")
+    
+    # Render trang kết quả
+    context = {
+        'success': success,
+        'order_id': order_id,
+        'momo_order_id': momo_order_id,
+        'amount': int(amount) if amount else 0,
+        'message': message,
+    }
+    return render(request, 'orders/momo_result.html', context)
+
+
+@csrf_exempt  # MoMo gửi POST request từ server, không có CSRF token
+def momo_ipn(request):
+    """
+    Xử lý IPN (Instant Payment Notification) từ MoMo.
+    
+    Đây là callback server-to-server: MoMo gửi POST request tới URL này
+    để thông báo kết quả thanh toán, KHÔNG phụ thuộc vào redirect của user.
+    
+    Tại sao cần IPN?
+    - User có thể đóng trình duyệt trước khi redirect về
+    - Đảm bảo cập nhật trạng thái thanh toán một cách đáng tin cậy
+    
+    Lưu ý: Trên localhost, MoMo KHÔNG GỬI ĐƯỢC IPN vì URL không public.
+    Để test IPN, cần dùng ngrok hoặc deploy lên server.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'message': 'Method not allowed'}, status=405)
+    
+    try:
+        # Parse JSON body từ MoMo
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'Invalid JSON'}, status=400)
+    
+    logger.info(f"MoMo IPN received: {data}")
+    
+    # Xác minh chữ ký
+    if not verify_momo_signature(data):
+        logger.warning("MoMo IPN: Invalid signature")
+        return JsonResponse({'message': 'Invalid signature'}, status=400)
+    
+    result_code = data.get('resultCode', '')
+    momo_order_id = data.get('orderId', '')
+    trans_id = data.get('transId', '')
+    
+    # Trích xuất order_id
+    order_id = None
+    try:
+        parts = momo_order_id.split('_')
+        if len(parts) >= 2:
+            order_id = int(parts[1])
+    except (ValueError, IndexError):
+        pass
+    
+    if not order_id:
+        return JsonResponse({'message': 'Invalid orderId'}, status=400)
+    
+    # Cập nhật trạng thái Payment
+    try:
+        payment = Payment.objects.get(order_id=order_id)
+        
+        if str(result_code) == '0':  # Thanh toán thành công
+            payment.payment_status = Payment.Status.COMPLETED
+            payment.transaction_id = trans_id or momo_order_id
+            payment.save()
+            
+            # Cập nhật trạng thái đơn hàng sang "Đang xử lý"
+            order = payment.order
+            order.order_status = Order.Status.PROCESSING
+            order.save()
+            
+            logger.info(f"MoMo IPN: Payment completed for order #{order_id}")
+        else:  # Thanh toán thất bại
+            payment.payment_status = Payment.Status.FAILED
+            payment.save()
+            logger.info(f"MoMo IPN: Payment failed for order #{order_id}, resultCode={result_code}")
+    
+    except Payment.DoesNotExist:
+        logger.warning(f"MoMo IPN: Payment not found for order_id={order_id}")
+        return JsonResponse({'message': 'Payment not found'}, status=404)
+    
+    # Trả về 204 No Content để MoMo biết đã nhận được IPN
+    return JsonResponse({'message': 'OK'}, status=200)

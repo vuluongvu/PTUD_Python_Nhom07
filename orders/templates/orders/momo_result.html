@@ -1,0 +1,169 @@
+{% extends 'core/base.html' %}
+{% load static humanize %}
+{% block title %}Kết quả thanh toán MoMo - LapStore{% endblock %}
+
+{% block extra_css %}
+<style>
+  .momo-result-container {
+    max-width: 560px;
+    margin: 60px auto;
+    padding: 40px;
+    text-align: center;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .momo-result-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+
+  .momo-result-icon.success {
+    color: #22c55e;
+  }
+
+  .momo-result-icon.failed {
+    color: #ef4444;
+  }
+
+  .momo-result-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text-main);
+  }
+
+  .momo-result-message {
+    font-size: 15px;
+    color: #6b7280;
+    margin-bottom: 30px;
+  }
+
+  .momo-result-details {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+
+  .momo-result-details .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .momo-result-details .detail-row:last-child {
+    border-bottom: none;
+  }
+
+  .momo-result-details .detail-label {
+    color: #6b7280;
+  }
+
+  .momo-result-details .detail-value {
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .momo-result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .momo-result-actions a {
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-momo-home {
+    background: var(--gradient-red);
+    color: white;
+    box-shadow: 0 4px 15px rgba(203, 28, 34, 0.25);
+  }
+
+  .btn-momo-home:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(203, 28, 34, 0.35);
+  }
+
+  .btn-momo-orders {
+    background: #f3f4f6;
+    color: var(--text-main);
+  }
+
+  .btn-momo-orders:hover {
+    background: #e5e7eb;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="momo-result-container">
+  {% if success %}
+  {# ===== THANH TOÁN THÀNH CÔNG ===== #}
+  <div class="momo-result-icon success">
+    <i class="fas fa-check-circle"></i>
+  </div>
+  <h1 class="momo-result-title">Thanh toán thành công!</h1>
+  <p class="momo-result-message">
+    Cảm ơn bạn đã mua sắm tại LapStore. Đơn hàng của bạn đang được xử lý.
+  </p>
+  {% else %}
+  {# ===== THANH TOÁN THẤT BẠI ===== #}
+  <div class="momo-result-icon failed">
+    <i class="fas fa-times-circle"></i>
+  </div>
+  <h1 class="momo-result-title">Thanh toán thất bại</h1>
+  <p class="momo-result-message">
+    {{ message|default:"Giao dịch không thành công. Vui lòng thử lại hoặc chọn phương thức thanh toán khác." }}
+  </p>
+  {% endif %}
+
+  {# ===== CHI TIẾT GIAO DỊCH ===== #}
+  <div class="momo-result-details">
+    {% if order_id %}
+    <div class="detail-row">
+      <span class="detail-label">Mã đơn hàng</span>
+      <span class="detail-value">#{{ order_id }}</span>
+    </div>
+    {% endif %}
+    {% if momo_order_id %}
+    <div class="detail-row">
+      <span class="detail-label">Mã giao dịch MoMo</span>
+      <span class="detail-value">{{ momo_order_id }}</span>
+    </div>
+    {% endif %}
+    {% if amount %}
+    <div class="detail-row">
+      <span class="detail-label">Số tiền</span>
+      <span class="detail-value" style="color: var(--primary);">{{ amount|intcomma }}đ</span>
+    </div>
+    {% endif %}
+    <div class="detail-row">
+      <span class="detail-label">Phương thức</span>
+      <span class="detail-value">Ví MoMo</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Trạng thái</span>
+      <span class="detail-value" style="color: {% if success %}#22c55e{% else %}#ef4444{% endif %};">
+        {% if success %}Đã thanh toán{% else %}Thất bại{% endif %}
+      </span>
+    </div>
+  </div>
+
+  {# ===== NÚT HÀNH ĐỘNG ===== #}
+  <div class="momo-result-actions">
+    <a href="{% url 'core:home' %}" class="btn-momo-home">Về trang chủ</a>
+    <a href="{% url 'users:order_list' %}" class="btn-momo-orders">Đơn hàng của tôi</a>
+  </div>
+</div>
+{% endblock %}

@@ -6,19 +6,25 @@ LapStore{% endblock %} {% block extra_css %}
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f0fdf4; /* green-50 */
-    border: 1px solid #bbf7d0; /* green-200 */
-    color: #166534; /* green-800 */
+    background-color: #f0fdf4;
+    /* green-50 */
+    border: 1px solid #bbf7d0;
+    /* green-200 */
+    color: #166534;
+    /* green-800 */
     padding: 10px 15px;
     border-radius: 8px;
     margin-bottom: 20px;
     font-size: 14px;
   }
+
   .applied-coupon span i {
     margin-right: 8px;
   }
+
   .remove-coupon-btn {
-    color: #dc2626; /* red-600 */
+    color: #dc2626;
+    /* red-600 */
     font-weight: 600;
     text-decoration: none;
   }
@@ -27,6 +33,7 @@ LapStore{% endblock %} {% block extra_css %}
     display: flex;
     gap: 8px;
   }
+
   .coupon-input {
     flex: 1;
     padding: 12px;
@@ -36,10 +43,12 @@ LapStore{% endblock %} {% block extra_css %}
     font-size: 14px;
     transition: var(--trans);
   }
+
   .coupon-input:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(203, 28, 34, 0.1);
   }
+
   .btn-apply {
     background: var(--text-main);
     color: white;
@@ -51,13 +60,15 @@ LapStore{% endblock %} {% block extra_css %}
     font-size: 14px;
     transition: var(--trans);
   }
+
   .btn-apply:hover {
-      background: #374151;
+    background: #374151;
   }
 
   /* --- Order Summary Column --- */
   .checkout-col-right .order-summary {
-    background-color: #f9fafb; /* Nền xám nhạt */
+    background-color: #f9fafb;
+    /* Nền xám nhạt */
     border-radius: 16px;
     border: 1px solid #e5e7eb;
     padding: 24px;
@@ -86,6 +97,7 @@ LapStore{% endblock %} {% block extra_css %}
     gap: 15px;
     margin-bottom: 15px;
   }
+
   .c-item:last-child {
     margin-bottom: 0;
   }
@@ -94,6 +106,7 @@ LapStore{% endblock %} {% block extra_css %}
     position: relative;
     flex-shrink: 0;
   }
+
   .c-img img {
     width: 56px;
     height: 56px;
@@ -102,6 +115,7 @@ LapStore{% endblock %} {% block extra_css %}
     border-radius: 8px;
     background-color: white;
   }
+
   .c-qty {
     position: absolute;
     top: -10px;
@@ -113,7 +127,8 @@ LapStore{% endblock %} {% block extra_css %}
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    display: none; /* Ẩn huy hiệu số lượng */
+    display: none;
+    /* Ẩn huy hiệu số lượng */
     place-items: center;
     border: 2px solid white;
   }
@@ -126,7 +141,8 @@ LapStore{% endblock %} {% block extra_css %}
     gap: 15px;
   }
 
-  .coupon-box, .applied-coupon {
+  .coupon-box,
+  .applied-coupon {
     margin-bottom: 20px;
   }
 
@@ -137,15 +153,18 @@ LapStore{% endblock %} {% block extra_css %}
     font-size: 14px;
     color: #4b5563;
   }
+
   .summary-row span:last-child {
     font-weight: 600;
     color: var(--text-main);
   }
+
   .summary-row.total .total-price-big {
     color: var(--primary);
     font-size: 22px;
     font-weight: 800;
   }
+
   .btn-checkout {
     width: 100%;
     background: var(--gradient-red);
@@ -160,28 +179,23 @@ LapStore{% endblock %} {% block extra_css %}
     transition: var(--trans);
     box-shadow: 0 4px 15px rgba(203, 28, 34, 0.25);
   }
+
   .btn-checkout:hover {
     transform: translateY(-3px);
     box-shadow: 0 7px 20px rgba(203, 28, 34, 0.35);
   }
 </style>
 {% endblock %}
-{% block mobile_menu %}{% endblock %} 
+{% block mobile_menu %}{% endblock %}
 
 {% block content %}
 
 <div style="margin-top: -10px; margin-bottom: 20px">
   <p style="font-size: 13px; color: var(--text-sub)">
     <a href="{% url 'core:home' %}">Trang chủ</a>
-    <i
-      class="fa-solid fa-chevron-right"
-      style="font-size: 10px; margin: 0 5px"
-    ></i>
+    <i class="fa-solid fa-chevron-right" style="font-size: 10px; margin: 0 5px"></i>
     <a href="{% url 'orders:cart' %}">Giỏ hàng</a>
-    <i
-      class="fa-solid fa-chevron-right"
-      style="font-size: 10px; margin: 0 5px"
-    ></i>
+    <i class="fa-solid fa-chevron-right" style="font-size: 10px; margin: 0 5px"></i>
     Thanh toán
   </p>
 </div>
@@ -196,84 +210,57 @@ LapStore{% endblock %} {% block extra_css %}
           <i class="fa-solid fa-location-dot"></i> Thông tin giao hàng
         </h3>
         <div class="default-address-box">
-            <span>Sử dụng địa chỉ đã lưu trong hồ sơ?</span>
-            <button type="button" class="btn-use-default" id="useDefaultAddressBtn">Sử dụng địa chỉ mặc định</button>
+          <span>Sử dụng địa chỉ đã lưu trong hồ sơ?</span>
+          <button type="button" class="btn-use-default" id="useDefaultAddressBtn">Sử dụng địa chỉ mặc định</button>
         </div>
-        
-          <div class="form-row">
-            <div class="form-group">
-              <label>Họ và tên <span style="color: red">*</span></label>
-              <input
-                type="text"
-                class="form-control"
-                name="fullname"
-                placeholder="Nhập họ tên của bạn"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label>Số điện thoại <span style="color: red">*</span></label>
-              <input
-                type="tel"
-                class="form-control"
-                name="phone"
-                placeholder="Nhập số điện thoại"
-                required
-              />
-            </div>
-          </div>
 
+        <div class="form-row">
           <div class="form-group">
-            <label>Email (Để nhận hóa đơn)</label>
-            <input
-              type="email"
-              class="form-control"
-              name="email"
-              placeholder="Nhập email của bạn"
-            />
+            <label>Họ và tên <span style="color: red">*</span></label>
+            <input type="text" class="form-control" name="fullname" placeholder="Nhập họ tên của bạn" required />
           </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Tỉnh / Thành phố <span style="color: red">*</span></label>
-              <select class="form-control" name="province" id="province" required>
-                <option value="">Chọn Tỉnh/Thành</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Quận / Huyện <span style="color: red">*</span></label>
-              <select class="form-control" name="district" id="district" required>
-                <option value="">Chọn Quận/Huyện</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Phường / Xã <span style="color: red">*</span></label>
-              <select class="form-control" name="ward" id="ward" required>
-                <option value="">Chọn Phường/Xã</option>
-              </select>
-            </div>
-          </div>
-
           <div class="form-group">
-            <label>Địa chỉ cụ thể <span style="color: red">*</span></label>
-            <input
-              type="text"
-              class="form-control"
-              name="address"
-              placeholder="Số nhà, tên đường..."
-              required
-            />
+            <label>Số điện thoại <span style="color: red">*</span></label>
+            <input type="tel" class="form-control" name="phone" placeholder="Nhập số điện thoại" required />
           </div>
+        </div>
 
+        <div class="form-group">
+          <label>Email (Để nhận hóa đơn)</label>
+          <input type="email" class="form-control" name="email" placeholder="Nhập email của bạn" />
+        </div>
+
+        <div class="form-row">
           <div class="form-group">
-            <label>Ghi chú đơn hàng</label>
-            <textarea
-              class="form-control"
-              name="note"
-              rows="3"
-              placeholder="Ví dụ: Giao hàng giờ hành chính..."
-            ></textarea>
+            <label>Tỉnh / Thành phố <span style="color: red">*</span></label>
+            <select class="form-control" name="province" id="province" required>
+              <option value="">Chọn Tỉnh/Thành</option>
+            </select>
           </div>
+          <div class="form-group">
+            <label>Quận / Huyện <span style="color: red">*</span></label>
+            <select class="form-control" name="district" id="district" required>
+              <option value="">Chọn Quận/Huyện</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Phường / Xã <span style="color: red">*</span></label>
+            <select class="form-control" name="ward" id="ward" required>
+              <option value="">Chọn Phường/Xã</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Địa chỉ cụ thể <span style="color: red">*</span></label>
+          <input type="text" class="form-control" name="address" placeholder="Số nhà, tên đường..." required />
+        </div>
+
+        <div class="form-group">
+          <label>Ghi chú đơn hàng</label>
+          <textarea class="form-control" name="note" rows="3"
+            placeholder="Ví dụ: Giao hàng giờ hành chính..."></textarea>
+        </div>
       </div>
 
       <div class="content-block" style="margin-top: 20px">
@@ -285,42 +272,20 @@ LapStore{% endblock %} {% block extra_css %}
             <input type="radio" name="payment" value="cod" checked />
             <div class="payment-info">
               <span class="payment-name">Thanh toán khi nhận hàng (COD)</span>
-              <span class="payment-desc"
-                >Bạn chỉ phải thanh toán khi đã nhận được hàng.</span
-              >
+              <span class="payment-desc">Bạn chỉ phải thanh toán khi đã nhận được hàng.</span>
             </div>
-            <i
-              class="fa-solid fa-money-bill-wave"
-              style="font-size: 24px; color: var(--primary)"
-            ></i>
           </label>
 
           <label class="payment-option">
-            <input type="radio" name="payment" value="banking" />
+            <input type="radio" name="payment" value="momo" />
             <div class="payment-info">
-              <span class="payment-name">Chuyển khoản ngân hàng</span>
-              <span class="payment-desc"
-                >Giảm ngay 1% tối đa 100k khi chuyển khoản trước.</span
-              >
+              <span class="payment-name">Ví MoMo </span>
+              <span class="payment-desc">Thanh toán nhanh chóng và an toàn qua ví MoMo.
+                <img src="https://developers.momo.vn/v3/img/logo.svg" alt="MoMo" style="width: 32px; height: 32px;"
+                  onerror="this.outerHTML='<i class=&quot;fas fa-wallet&quot; style=&quot;font-size: 24px; color: #a50064&quot;></i>'">
+              </span>
             </div>
-            <i
-              class="fa-solid fa-building-columns"
-              style="font-size: 24px; color: #1877f2"
-            ></i>
-          </label>
 
-          <label class="payment-option">
-            <input type="radio" name="payment" value="card" />
-            <div class="payment-info">
-              <span class="payment-name">Thẻ ATM / Visa / MasterCard</span>
-              <span class="payment-desc"
-                >Thanh toán an toàn qua cổng VNPAY/Momo.</span
-              >
-            </div>
-            <i
-              class="fa-regular fa-credit-card"
-              style="font-size: 24px; color: #fcd34d"
-            ></i>
           </label>
         </div>
       </div>
@@ -332,19 +297,18 @@ LapStore{% endblock %} {% block extra_css %}
         <h3 class="block-title"> Đơn hàng ({{ product_count }} sản phẩm) </h3>
         <div class="checkout-items">
           {% for item in cart_items %}
-            <div class="c-item">
-              <div class="c-img">
-                <img
-                  src="{% if item.product.images.first %}{{ item.product.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
-                  alt="{{ item.product.name }}"
-                />
-                <span class="c-qty">{{ item.quantity }}</span>
-              </div>
-              <div class="c-info">
-                <div class="c-name">{{ item.product.name }}</div>
-                <div class="c-price">{{ item.product.final_price|floatformat:0|intcomma }}đ</div>
-              </div>
+          <div class="c-item">
+            <div class="c-img">
+              <img
+                src="{% if item.product.images.first %}{{ item.product.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
+                alt="{{ item.product.name }}" />
+              <span class="c-qty">{{ item.quantity }}</span>
             </div>
+            <div class="c-info">
+              <div class="c-name">{{ item.product.name }}</div>
+              <div class="c-price">{{ item.product.final_price|floatformat:0|intcomma }}đ</div>
+            </div>
+          </div>
           {% endfor %}
         </div>
 
@@ -381,20 +345,18 @@ LapStore{% endblock %} {% block extra_css %}
         <button type="submit" class="btn-checkout">
           ĐẶT HÀNG
         </button>
-        <p
-          style="
+        <p style="
             font-size: 12px;
             text-align: center;
             margin-top: 10px;
             color: #6b7280;
-          "
-        >
+          ">
           Bằng việc đặt hàng, bạn đồng ý với
           <a href="#" style="color: var(--primary)">Điều khoản sử dụng</a> của
           chúng tôi.
         </p>
+      </div>
     </div>
-  </div>
 </form>
 {% endblock %} {% block extra_js %}
 <script>
@@ -402,51 +364,51 @@ LapStore{% endblock %} {% block extra_css %}
     const couponInput = document.getElementById('coupon-input');
     const couponCode = couponInput.value.trim();
     if (!couponCode) {
-        Swal.fire({ icon: 'warning', title: 'Vui lòng nhập mã giảm giá' });
-        return;
+      Swal.fire({ icon: 'warning', title: 'Vui lòng nhập mã giảm giá' });
+      return;
     }
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
     fetch("{% url 'orders:apply_coupon' %}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": csrftoken,
-        },
-        body: new URLSearchParams({ 'code': couponCode })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrftoken,
+      },
+      body: new URLSearchParams({ 'code': couponCode })
     })
-    .then(response => response.json())
-    .then(data => {
+      .then(response => response.json())
+      .then(data => {
         if (data.status === 'success') {
-            Swal.fire({
-                toast: true, position: 'top-end', icon: 'success',
-                title: data.message, showConfirmButton: false, timer: 2000
-            });
+          Swal.fire({
+            toast: true, position: 'top-end', icon: 'success',
+            title: data.message, showConfirmButton: false, timer: 2000
+          });
 
-            // --- Update UI dynamically ---
-            const formatCurrency = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value || 0).replace('₫', 'đ');
-            document.getElementById('discount-amount').innerText = `-${formatCurrency(data.discount_amount)}`;
-            document.getElementById('total-price').innerText = formatCurrency(data.new_total);
+          // --- Update UI dynamically ---
+          const formatCurrency = (value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value || 0).replace('₫', 'đ');
+          document.getElementById('discount-amount').innerText = `-${formatCurrency(data.discount_amount)}`;
+          document.getElementById('total-price').innerText = formatCurrency(data.new_total);
 
-            const couponBox = document.querySelector('.coupon-box');
-            if (couponBox) {
-                const appliedCouponHTML = `
+          const couponBox = document.querySelector('.coupon-box');
+          if (couponBox) {
+            const appliedCouponHTML = `
                     <div class="applied-coupon">
                         <span><i class="fa-solid fa-ticket"></i> ${data.coupon_code}</span>
                         <a href="{% url 'orders:remove_coupon' %}" class="remove-coupon-btn">Xóa</a>
                     </div>
                 `;
-                couponBox.outerHTML = appliedCouponHTML;
-            }
+            couponBox.outerHTML = appliedCouponHTML;
+          }
         } else {
-            Swal.fire({ icon: 'error', title: 'Thất bại', text: data.message });
+          Swal.fire({ icon: 'error', title: 'Thất bại', text: data.message });
         }
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error('Lỗi khi áp dụng mã:', error);
         Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Có lỗi xảy ra, vui lòng thử lại.' });
-    });
+      });
   }
 </script>
 <script>
@@ -464,7 +426,7 @@ LapStore{% endblock %} {% block extra_css %}
         option.value = item.code;
         option.textContent = item.name;
         if (item.code == selectedCode) {
-            option.selected = true;
+          option.selected = true;
         }
         selectElement.appendChild(option);
       });
@@ -524,42 +486,42 @@ LapStore{% endblock %} {% block extra_css %}
 
     // Xử lý nút "Sử dụng địa chỉ mặc định"
     const useDefaultBtn = document.getElementById("useDefaultAddressBtn");
-    useDefaultBtn.addEventListener('click', function() {
-        fetch("{% url 'users:api_get_default_address' %}")
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const addr = data.address;
-                    document.querySelector('[name="fullname"]').value = addr.fullname || '';
-                    document.querySelector('[name="phone"]').value = addr.phone || '';
-                    document.querySelector('[name="address"]').value = addr.street_address || '';
+    useDefaultBtn.addEventListener('click', function () {
+      fetch("{% url 'users:api_get_default_address' %}")
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            const addr = data.address;
+            document.querySelector('[name="fullname"]').value = addr.fullname || '';
+            document.querySelector('[name="phone"]').value = addr.phone || '';
+            document.querySelector('[name="address"]').value = addr.street_address || '';
 
-                    // Trigger API calls to populate dropdowns
-                    // 1. Set province
-                    const provinceOpt = Array.from(provinceSelect.options).find(opt => opt.value == addr.province_code);
-                    if (provinceOpt) {
-                        provinceSelect.value = addr.province_code;
-                        // 2. Fetch districts
-                        fetch(apiHost + `p/${addr.province_code}?depth=2`)
-                            .then(res => res.json())
-                            .then(p_data => {
-                                renderOptions(districtSelect, p_data.districts, "Chọn Quận/Huyện", addr.district_code);
-                                // 3. Fetch wards
-                                fetch(apiHost + `d/${addr.district_code}?depth=2`)
-                                    .then(res => res.json())
-                                    .then(d_data => {
-                                        renderOptions(wardSelect, d_data.wards, "Chọn Phường/Xã", addr.ward_code);
-                                    });
-                            });
-                    }
-                } else {
-                    alert(data.message || "Không thể tải địa chỉ mặc định.");
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching default address:", error);
-                alert("Có lỗi xảy ra, vui lòng thử lại.");
-            });
+            // Trigger API calls to populate dropdowns
+            // 1. Set province
+            const provinceOpt = Array.from(provinceSelect.options).find(opt => opt.value == addr.province_code);
+            if (provinceOpt) {
+              provinceSelect.value = addr.province_code;
+              // 2. Fetch districts
+              fetch(apiHost + `p/${addr.province_code}?depth=2`)
+                .then(res => res.json())
+                .then(p_data => {
+                  renderOptions(districtSelect, p_data.districts, "Chọn Quận/Huyện", addr.district_code);
+                  // 3. Fetch wards
+                  fetch(apiHost + `d/${addr.district_code}?depth=2`)
+                    .then(res => res.json())
+                    .then(d_data => {
+                      renderOptions(wardSelect, d_data.wards, "Chọn Phường/Xã", addr.ward_code);
+                    });
+                });
+            }
+          } else {
+            alert(data.message || "Không thể tải địa chỉ mặc định.");
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching default address:", error);
+          alert("Có lỗi xảy ra, vui lòng thử lại.");
+        });
     });
 
   });
