@@ -87,9 +87,9 @@
                             <span>Thanh toán: <strong>{{ order_item.payment.get_payment_method_display }}</strong></span>
                             {% endif %}
                             {% if order_item.order_status == 'pending' %}
-                                <form action="{% url 'users:cancel_order' order_item.id %}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                <form action="{% url 'users:cancel_order' order_item.id %}" method="POST" class="cancel-order-form">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn-cancel-order">Hủy đơn hàng</button>
+                                    <button type="button" class="btn-cancel-order">Hủy đơn hàng</button>
                                 </form>
                             {% endif %}
                         </div>
@@ -192,9 +192,9 @@
                             <span>Thanh toán: <strong>{{ order_item.payment.get_payment_method_display }}</strong></span>
                             {% endif %}
                              {% if order_item.order_status == 'pending' %}
-                                <form action="{% url 'users:cancel_order' order_item.id %}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                <form action="{% url 'users:cancel_order' order_item.id %}" method="POST" class="cancel-order-form">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn-cancel-order">Hủy đơn hàng</button>
+                                    <button type="button" class="btn-cancel-order">Hủy đơn hàng</button>
                                 </form>
                             {% endif %}
                         </div>
@@ -296,18 +296,43 @@
 {% endblock %}
 
 {% block extra_js %}
-    {% if messages %}
+    <!-- Luôn load thư viện SweetAlert2 vì cả thông báo và nút Hủy đơn hàng đều dùng -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            {% for message in messages %}
-                {% if message.tags == 'success' %}
-                    Swal.fire('Thành công!', '{{ message|escapejs }}', 'success');
-                {% elif message.tags == 'error' %}
-                    Swal.fire('Lỗi!', '{{ message|escapejs }}', 'error');
-                {% endif %}
-            {% endfor %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        Swal.fire('Thành công!', '{{ message|escapejs }}', 'success');
+                    {% elif message.tags == 'error' %}
+                        Swal.fire('Lỗi!', '{{ message|escapejs }}', 'error');
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            // Xử lý nút hủy đơn hàng bằng SweetAlert2
+            const cancelButtons = document.querySelectorAll('.btn-cancel-order');
+            cancelButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('form.cancel-order-form');
+                    Swal.fire({
+                        title: 'Hủy đơn hàng?',
+                        text: "Bạn có chắc chắn muốn hủy đơn hàng này không? Hành động này không thể hoàn tác.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Có, hủy đơn!',
+                        cancelButtonText: 'Đóng'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
         });
     </script>
-    {% endif %}
 {% endblock %}

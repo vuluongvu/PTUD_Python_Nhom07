@@ -66,7 +66,7 @@ ROOT_URLCONF = 'webbapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -145,3 +145,11 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Tải API key từ biến môi trường. Việc cấu hình sẽ được thực hiện trong view.
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+
+# --- MoMo Payment Gateway Configuration ---
+MOMO_PARTNER_CODE = os.getenv('MOMO_PARTNER_CODE', '')
+MOMO_ACCESS_KEY = os.getenv('MOMO_ACCESS_KEY', '')
+MOMO_SECRET_KEY = os.getenv('MOMO_SECRET_KEY', '')
+MOMO_API_ENDPOINT = os.getenv('MOMO_API_ENDPOINT', 'https://test-payment.momo.vn/v2/gateway/api/create')
+MOMO_REDIRECT_URL = os.getenv('MOMO_REDIRECT_URL', 'http://localhost:8000/momo/return/')
+MOMO_IPN_URL = os.getenv('MOMO_IPN_URL', 'http://localhost:8000/momo/ipn/')

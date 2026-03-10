@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import json
-from .models import Product, WishList, ProductImage
+from .models import Product, WishList, ProductImage, Order, OrderItem, Inventory, Profile
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404 
 from django.contrib.auth.decorators import login_required
@@ -8,12 +8,15 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from django.db.models import Q
+from django.db.models import Q, Sum, Count
+from django.db.models.functions import TruncMonth
 from django.conf import settings
 import google.generativeai as genai
 import re
 from functools import reduce
 import operator
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 def home(request):
 
@@ -70,17 +73,7 @@ def toggle_wishlist(request):
             
         return JsonResponse({'status': status, 'message': message, 'wishlist_count': wishlist_count})
     
-
-
 # xử lý api gemini
-_client = None
-
-def get_genai_client():
-    global _client
-    if _client is None:
-        _client = genai.Client(api_key=settings.GOOGLE_API_KEY)
-    return _client
-
 
 def chatbot_api(request):
     """

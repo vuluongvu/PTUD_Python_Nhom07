@@ -1,0 +1,560 @@
+{% extends "admin/index.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* =========================================
+   DASHBOARD SECTION INSIDE DJANGO ADMIN
+   ========================================= */
+
+.dashboard-section {
+    margin-bottom: 30px;
+}
+
+.dashboard-section-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboard-section-title i {
+    color: #cb1c22;
+}
+
+/* --- KPI Cards --- */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.kpi-card {
+    position: relative;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 22px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+    border-color: rgba(203, 28, 34, 0.3);
+}
+
+.kpi-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+
+.kpi-card:nth-child(1)::after { background: linear-gradient(90deg, #417690, #79aec8); }
+.kpi-card:nth-child(2)::after { background: linear-gradient(90deg, #10b981, #34d399); }
+.kpi-card:nth-child(3)::after { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.kpi-card:nth-child(4)::after { background: linear-gradient(90deg, #6366f1, #818cf8); }
+
+.kpi-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    font-size: 20px;
+    margin-bottom: 14px;
+}
+
+.kpi-card:nth-child(1) .kpi-icon { background: #e4f2fd; color: #417690; }
+.kpi-card:nth-child(2) .kpi-icon { background: #ecfdf5; color: #10b981; }
+.kpi-card:nth-child(3) .kpi-icon { background: #fffbeb; color: #f59e0b; }
+.kpi-card:nth-child(4) .kpi-icon { background: #eef2ff; color: #6366f1; }
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.kpi-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- Charts --- */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.chart-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.chart-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.chart-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.chart-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chart-card-title i {
+    color: #417690;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 280px;
+}
+
+.chart-container.doughnut {
+    height: 260px;
+    max-width: 340px;
+    margin: 0 auto;
+}
+
+/* --- Recent Orders --- */
+.orders-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow-x: auto;
+}
+
+.orders-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.orders-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.orders-card-title i {
+    color: #10b981;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.orders-table thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #6b7280;
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.orders-table thead th:first-child { border-radius: 10px 0 0 0; }
+.orders-table thead th:last-child { border-radius: 0 10px 0 0; }
+
+.orders-table tbody td {
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #111827;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.orders-table tbody tr:hover td {
+    background: #e4f2fd;
+}
+
+.order-id { font-weight: 700; color: #111827; }
+.order-amount { font-weight: 700; color: #111827; }
+
+/* Status badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.status-pending { background: #fffbeb; color: #b45309; }
+.status-pending::before { background: #f59e0b; }
+
+.status-processing { background: #eff6ff; color: #1d4ed8; }
+.status-processing::before { background: #3b82f6; }
+
+.status-shipped { background: #f5f3ff; color: #7c3aed; }
+.status-shipped::before { background: #a855f7; }
+
+.status-delivered { background: #ecfdf5; color: #065f46; }
+.status-delivered::before { background: #10b981; }
+
+.status-cancelled { background: #fef2f2; color: #991b1b; }
+.status-cancelled::before { background: #f43f5e; }
+
+.btn-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    background: #f8f8f8;
+    color: #417690;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid rgba(65, 118, 144, 0.15);
+    transition: all 0.3s ease;
+}
+
+.btn-view-all:hover {
+    background: #417690;
+    color: #fff;
+}
+
+/* Divider */
+.admin-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+    margin: 28px 0 20px;
+}
+
+/* --- Animations --- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.kpi-card { animation: fadeInUp 0.4s ease-out backwards; }
+.kpi-card:nth-child(1) { animation-delay: 0.05s; }
+.kpi-card:nth-child(2) { animation-delay: 0.1s; }
+.kpi-card:nth-child(3) { animation-delay: 0.15s; }
+.kpi-card:nth-child(4) { animation-delay: 0.2s; }
+.chart-card { animation: fadeInUp 0.4s ease-out backwards; animation-delay: 0.25s; }
+.orders-card { animation: fadeInUp 0.4s ease-out backwards; animation-delay: 0.3s; }
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== DASHBOARD SECTION ===== -->
+<div class="dashboard-section">
+    <h2 class="dashboard-section-title">
+        <i class="fa-solid fa-chart-pie" style="color: #417690;"></i> Dashboard thống kê
+    </h2>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon"><i class="fa-solid fa-laptop"></i></div>
+            <div class="kpi-value" data-count="{{ dashboard.total_products }}">0</div>
+            <div class="kpi-label">Sản phẩm</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="kpi-value" data-count="{{ dashboard.total_orders }}">0</div>
+            <div class="kpi-label">Đơn hàng</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon"><i class="fa-solid fa-coins"></i></div>
+            <div class="kpi-value" data-count="{{ dashboard.total_revenue }}" data-suffix=" đ" data-format="currency">0</div>
+            <div class="kpi-label">Doanh thu</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="kpi-value" data-count="{{ dashboard.total_users }}">0</div>
+            <div class="kpi-label">Người dùng</div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+        <div class="chart-card full-width">
+            <div class="chart-card-header">
+                <div class="chart-card-title"><i class="fa-solid fa-ranking-star"></i> Top sản phẩm bán chạy</div>
+            </div>
+            <div class="chart-container"><canvas id="topProductsChart"></canvas></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title"><i class="fa-solid fa-chart-line"></i> Doanh thu theo tháng</div>
+            </div>
+            <div class="chart-container"><canvas id="revenueChart"></canvas></div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div class="chart-card-title"><i class="fa-solid fa-chart-pie"></i> Trạng thái đơn hàng</div>
+            </div>
+            <div class="chart-container doughnut"><canvas id="orderStatusChart"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="orders-card">
+        <div class="orders-card-header">
+            <div class="orders-card-title"><i class="fa-solid fa-clock-rotate-left"></i> Đơn hàng gần đây</div>
+            <a href="{% url 'admin:core_order_changelist' %}" class="btn-view-all">Xem tất cả <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in dashboard.recent_orders %}
+                <tr>
+                    <td><span class="order-id">#{{ order.id }}</span></td>
+                    <td>{{ order.shipping_name }}</td>
+                    <td><span class="order-amount">{{ order.total_amount|intcomma }} đ</span></td>
+                    <td><span class="status-badge status-{{ order.order_status }}">{{ order.get_order_status_display }}</span></td>
+                    <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align:center; color:#6b7280; padding:30px;">
+                        <i class="fa-solid fa-inbox" style="font-size:20px; display:block; margin-bottom:6px;"></i>
+                        Chưa có đơn hàng nào
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <hr class="admin-divider">
+</div>
+
+<!-- Original Django Admin content (App list) -->
+{{ block.super }}
+
+<!-- Chart.js Scripts -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Animated Counter ---
+    document.querySelectorAll('.kpi-value[data-count]').forEach(counter => {
+        const target = parseInt(counter.dataset.count) || 0;
+        const suffix = counter.dataset.suffix || '';
+        const duration = 1200;
+        const steps = 50;
+        const increment = target / steps;
+        let current = 0;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) { current = target; clearInterval(timer); }
+            counter.textContent = Math.floor(current).toLocaleString('vi-VN') + suffix;
+        }, duration / steps);
+    });
+
+    // --- Chart.js defaults ---
+    Chart.defaults.color = '#6b7280';
+    Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+    Chart.defaults.font.size = 12;
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+
+    // --- Data ---
+    const topLabels = {{ dashboard.top_products_labels|safe }};
+    const topData = {{ dashboard.top_products_data|safe }};
+    const revLabels = {{ dashboard.revenue_labels|safe }};
+    const revData = {{ dashboard.revenue_data|safe }};
+    const statusLabels = {{ dashboard.order_status_labels|safe }};
+    const statusData = {{ dashboard.order_status_data|safe }};
+
+    // Shared tooltip config
+    const tooltip = {
+        backgroundColor: '#111827',
+        titleColor: '#f1f5f9',
+        bodyColor: '#94a3b8',
+        borderColor: '#e5e7eb',
+        borderWidth: 1,
+        cornerRadius: 10,
+        padding: 12,
+    };
+
+    // --- Bar Chart ---
+    const topCtx = document.getElementById('topProductsChart');
+    if (topCtx) {
+        new Chart(topCtx, {
+            type: 'bar',
+            data: {
+                labels: topLabels,
+                datasets: [{
+                    label: 'Số lượng bán',
+                    data: topData,
+                    backgroundColor: [
+                        'rgba(65, 118, 144, 0.75)', 'rgba(239,68,68,0.75)', 'rgba(245,158,11,0.75)',
+                        'rgba(16,185,129,0.75)', 'rgba(59,130,246,0.75)', 'rgba(99,102,241,0.75)',
+                        'rgba(168,85,247,0.75)', 'rgba(236,72,153,0.75)', 'rgba(6,182,212,0.75)',
+                        'rgba(252,211,77,0.75)',
+                    ],
+                    borderColor: [
+                        '#417690','#ef4444','#f59e0b','#10b981','#3b82f6',
+                        '#6366f1','#a855f7','#ec4899','#06b6d4','#fcd34d',
+                    ],
+                    borderWidth: 1, borderRadius: 8, borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip },
+                scales: {
+                    x: { grid: { color: 'rgba(0,0,0,0.03)' }, ticks: { maxRotation: 45, minRotation: 20 } },
+                    y: { grid: { color: 'rgba(0,0,0,0.03)' }, beginAtZero: true, ticks: { precision: 0 } }
+                }
+            }
+        });
+    }
+
+    // --- Line Chart ---
+    const revCtx = document.getElementById('revenueChart');
+    if (revCtx) {
+        const g = revCtx.getContext('2d').createLinearGradient(0, 0, 0, 280);
+        g.addColorStop(0, 'rgba(65, 118, 144, 0.15)');
+        g.addColorStop(1, 'rgba(65, 118, 144, 0.01)');
+
+        new Chart(revCtx, {
+            type: 'line',
+            data: {
+                labels: revLabels,
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: revData,
+                    borderColor: '#417690',
+                    backgroundColor: g,
+                    borderWidth: 3, fill: true, tension: 0.4,
+                    pointBackgroundColor: '#417690',
+                    pointBorderColor: '#fff', pointBorderWidth: 2,
+                    pointRadius: 5, pointHoverRadius: 8,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }, tooltip: {
+                        ...tooltip,
+                        callbacks: {
+                            label: ctx => 'Doanh thu: ' + ctx.parsed.y.toLocaleString('vi-VN') + ' đ'
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(0,0,0,0.03)' } },
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.03)' }, beginAtZero: true,
+                        ticks: {
+                            callback: v => v >= 1e6 ? (v/1e6).toFixed(0)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'K' : v
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- Doughnut Chart ---
+    const sCtx = document.getElementById('orderStatusChart');
+    if (sCtx) {
+        new Chart(sCtx, {
+            type: 'doughnut',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    data: statusData,
+                    backgroundColor: [
+                        'rgba(65, 118, 144, 0.8)', 'rgba(16,185,129,0.8)', 'rgba(245,158,11,0.8)',
+                        'rgba(59,130,246,0.8)', 'rgba(168,85,247,0.8)',
+                    ],
+                    borderColor: '#fff', borderWidth: 3, hoverOffset: 8,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, cutout: '65%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 14, font: { size: 12 } } },
+                    tooltip
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

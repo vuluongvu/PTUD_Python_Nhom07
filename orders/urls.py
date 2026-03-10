@@ -11,4 +11,8 @@ urlpatterns = [
     path('toggle-wishlist/', core_views.toggle_wishlist, name='toggle_wishlist'),
     path('apply-coupon/', views.apply_coupon, name='apply_coupon'),
     path('remove-coupon/', views.remove_coupon, name='remove_coupon'),
+    
+    # --- MoMo Payment Routes ---
+    path('momo/return/', views.momo_return, name='momo_return'),   # MoMo redirect user về đây
+    path('momo/ipn/', views.momo_ipn, name='momo_ipn'),            # MoMo gửi IPN callback
 ]
