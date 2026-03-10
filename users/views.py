@@ -13,6 +13,10 @@ except Exception:
     Order = None
     Profile = None
 
+import os
+import requests
+from django.conf import settings
+
 # Create your views here.
 
 def login_view(request):
@@ -74,6 +78,41 @@ def register_view(request):
         
     return render(request, 'users/register.html')
 
+def upload_image_to_imgbb(image_file):
+    """
+    Helper function to upload image file to Imgbb API.
+    Returns the URL of the uploaded image if successful, otherwise None.
+    """
+    api_key = settings.IMGBB_API_KEY
+    if not api_key:
+        print("Trưởng phòng ơi, chưa có IMGBB_API_KEY trong settings đâu nhé!")
+        return None
+
+    url = "https://api.imgbb.com/1/upload"
+    payload = {
+        "key": api_key,
+    }
+    
+    # imgbb expects the image parameter to be a base64 encoded string OR a binary file
+    # we can just send the binary file
+    files = {
+        'image': image_file.read()
+    }
+
+    try:
+        response = requests.post(url, data=payload, files=files, timeout=10)
+        response.raise_for_status() # Raise exception for 4xx or 5xx status codes
+        
+        result = response.json()
+        if result.get('success'):
+            return result['data']['url']
+        else:
+            print(f"Imgbb API Error: {result}")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"Error uploading to Imgbb: {e}")
+        return None
+
 # profile view
 @login_required
 def profile_view(request):
@@ -96,6 +135,30 @@ def profile_view(request):
         request.user.first_name = request.POST.get('first_name', '')
         request.user.last_name = request.POST.get('last_name', '')
         request.user.save()
+
+        # Xử lý Upload Avatar
+        avatar_file = request.FILES.get('avatar')
+        if avatar_file:
+            # Validate dung lượng (5MB)
+            if avatar_file.size > 5 * 1024 * 1024:
+                messages.error(request, "Dung lượng ảnh vượt quá 5MB.")
+                return redirect('users:profile')
+            
+            # Validate định dạng
+            ext = os.path.splitext(avatar_file.name)[1].lower()
+            if ext not in ['.jpg', '.jpeg', '.png']:
+                messages.error(request, "Chỉ chấp nhận định dạng .jpg, .jpeg, .png.")
+                return redirect('users:profile')
+
+            # Upload lên Imgbb
+            img_url = upload_image_to_imgbb(avatar_file)
+            if img_url:
+                if profile:
+                    profile.avatar = img_url
+                    profile.save()
+            else:
+                messages.error(request, "Có lỗi xảy ra khi upload ảnh lên hệ thống.")
+                return redirect('users:profile')
 
         # Cập nhật thông tin Profile
         if profile:

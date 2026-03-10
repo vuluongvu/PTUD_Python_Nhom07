@@ -1,152 +1,153 @@
 {% extends 'core/base.html' %} {% load static %} {% block title %}Trang chủ -
-LapStore{% endblock %} 
+LapStore{% endblock %}
+{% block extra_css %}
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<!-- Custom CSS for shorts -->
+<link rel="stylesheet" href="{% static 'core/css/shorts.css' %}">
+{% endblock %}
+
 {% block content %}
 
-    <!--=================== Hero slide Main ====================-->
-      <section class="bento-grid">
-        <article
-         
-          class="bento-item card-hero js-slider"
-          style="grid-column: 1 / -1; grid-row: 1 / 2"
-        >
-          <!-- Slide 1 -->
-          <div class="slide">
-            <img
-              src="https://laptopaz.vn/media/banner/14_Jan704780ba6f6531e226f5cb71e31f8c75.png"
-              alt="Hero 1"
-            />
-          </div>
-          <!-- Slide 2 -->
-          <div class="slide active">
-            <img
-              src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/D_Section_1_Content_bbffcd7889.png"
-              alt="Hero 2"
-            />
-          </div>
+<!--=================== Hero slide Main ====================-->
+<section class="bento-grid">
+  <article class="bento-item card-hero js-slider" style="grid-column: 1 / -1; grid-row: 1 / 2">
+    <!-- Slide 1 -->
+    <div class="slide">
+      <img src="https://laptopaz.vn/media/banner/14_Jan704780ba6f6531e226f5cb71e31f8c75.png" alt="Hero 1" />
+    </div>
+    <!-- Slide 2 -->
+    <div class="slide active">
+      <img
+        src="https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/D_Section_1_Content_bbffcd7889.png"
+        alt="Hero 2" />
+    </div>
 
-          <button class="slider-btn prev">
-            <i class="fa-solid fa-chevron-left"></i>
-          </button>
-          <button class="slider-btn next">
-            <i class="fa-solid fa-chevron-right"></i>
-          </button>
-          <div class="slider-dots"></div>
+    <button class="slider-btn prev">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="slider-btn next">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    <div class="slider-dots"></div>
 
-          <!-- ============= DOUBLE Sub slides ==============-->
-        </article>
-          <!--Subslide-->
-          <div class="bento-item card-sub js-slider" style="grid-column: 1 / 2; grid-row: 2 / 3;">
-            <!-- Slide 1 -->
-            <div class="slide active">
-              <a href="#" style="display:block; width:100%; height:100%">
-                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/41/6f/416fb524e665191e6fc3346b5267ac42.png" alt="Laptop 1" />
-              </a>
-            </div>
-            <!-- Slide 2 -->
-            <div class="slide">
-              <a href="#" style="display:block; width:100%; height:100%">
-                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/15/ef/15ef176bdab2f1162d71b75406539138.png" alt="Laptop 2" />
-              </a>
-            </div>
-            
-            <button class="slider-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
-            <button class="slider-btn next"><i class="fa-solid fa-chevron-right"></i></button>
-          </div>
+    <!-- ============= DOUBLE Sub slides ==============-->
+  </article>
+  <!--Subslide-->
+  <div class="bento-item card-sub js-slider" style="grid-column: 1 / 2; grid-row: 2 / 3;">
+    <!-- Slide 1 -->
+    <div class="slide active">
+      <a href="#" style="display:block; width:100%; height:100%">
+        <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/41/6f/416fb524e665191e6fc3346b5267ac42.png"
+          alt="Laptop 1" />
+      </a>
+    </div>
+    <!-- Slide 2 -->
+    <div class="slide">
+      <a href="#" style="display:block; width:100%; height:100%">
+        <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/15/ef/15ef176bdab2f1162d71b75406539138.png"
+          alt="Laptop 2" />
+      </a>
+    </div>
 
-          <div class="bento-item card-sub js-slider" style="grid-column: 2 / -1; grid-row: 2 / 3;">
-             <!-- Slide 1 -->
-            <div class="slide active">
-              <a href="#" style="display:block; width:100%; height:100%">
-                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/15/ef/15ef176bdab2f1162d71b75406539138.png" alt="PC 1" />
-              </a>
-            </div>
-             <!-- Slide 2 -->
-            <div class="slide">
-              <a href="#" style="display:block; width:100%; height:100%">
-                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/41/6f/416fb524e665191e6fc3346b5267ac42.png" alt="PC 2" />
-              </a>
-            </div>
-             <!-- Slide 3 -->
-             <div class="slide">
-              <a href="#" style="display:block; width:100%; height:100%">
-                <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/3f/a9/3fa9310a8cfb76b1ee3872b02bee59f4.png" alt="PC 3" />
-              </a>
-            </div>
+    <button class="slider-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="slider-btn next"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
 
-            <button class="slider-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
-            <button class="slider-btn next"><i class="fa-solid fa-chevron-right"></i></button>
-          </div>
-      </section>
-      <!--end Subslide-->
+  <div class="bento-item card-sub js-slider" style="grid-column: 2 / -1; grid-row: 2 / 3;">
+    <!-- Slide 1 -->
+    <div class="slide active">
+      <a href="#" style="display:block; width:100%; height:100%">
+        <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/15/ef/15ef176bdab2f1162d71b75406539138.png" alt="PC 1" />
+      </a>
+    </div>
+    <!-- Slide 2 -->
+    <div class="slide">
+      <a href="#" style="display:block; width:100%; height:100%">
+        <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/41/6f/416fb524e665191e6fc3346b5267ac42.png" alt="PC 2" />
+      </a>
+    </div>
+    <!-- Slide 3 -->
+    <div class="slide">
+      <a href="#" style="display:block; width:100%; height:100%">
+        <img src="https://cdnv2.tgdd.vn/mwg-static/tgdd/Banner/3f/a9/3fa9310a8cfb76b1ee3872b02bee59f4.png" alt="PC 3" />
+      </a>
+    </div>
 
-      <!--=============== Phân loại theo Linh kiện máy tính, PC ===================-->
-      <div class="cat-section">
-        <div class="cat-title-small">Linh Kiện Máy Tính & PC</div>
-        <nav class="cat-scroll">
-          <ul class="cat-list">
-            <li class="cat-item active">
-              <i class="fa-solid fa-microchip"></i> CPU
-            </li>
-            <li class="cat-item"><i class="fa-solid fa-memory"></i> RAM</li>
-            <li class="cat-item"><i class="fa-solid fa-hard-drive"></i> SSD</li>
-            <li class="cat-item">
-              <i class="fa-solid fa-vr-cardboard"></i> VGA
-            </li>
-            <li class="cat-item">
-              <i class="fa-solid fa-server"></i> Mainboard
-            </li>
-            <li class="cat-item"><i class="fa-solid fa-box"></i> Case</li>
-            <li class="cat-item"><i class="fa-solid fa-plug"></i> PSU</li>
-            <li class="cat-item">
-              <i class="fa-solid fa-display"></i> Màn hình
-            </li>
-          </ul>
-        </nav>
+    <button class="slider-btn prev"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="slider-btn next"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+</section>
+<!--end Subslide-->
 
-        <!--=============== Phân loại theo Laptop, Thiết bị số ===================-->
-        <div class="cat-title-small">Laptop & Thiết Bị Số</div>
-        <nav class="cat-scroll">
-          <ul class="cat-list">
-            <li class="cat-item"><i class="fa-brands fa-apple"></i> MacBook</li>
-            <li class="cat-item">
-              <i class="fa-solid fa-gamepad"></i> Laptop Gaming
-            </li>
-            <li class="cat-item">
-              <i class="fa-solid fa-briefcase"></i> Laptop VP
-            </li>
-            <li class="cat-item">
-              <i class="fa-brands fa-windows"></i> Surface
-            </li>
-            <li class="cat-item">
-              <i class="fa-solid fa-headset"></i> Tai nghe
-            </li>
-            <li class="cat-item">
-              <i class="fa-solid fa-keyboard"></i> Bàn phím
-            </li>
-            <li class="cat-item">
-              <i class="fa-solid fa-computer-mouse"></i> Chuột
-            </li>
-          </ul>
-        </nav>
-      </div>
+<!--=============== Phân loại theo Linh kiện máy tính, PC ===================-->
+<div class="cat-section">
+  <div class="cat-title-small">Linh Kiện Máy Tính & PC</div>
+  <nav class="cat-scroll">
+    <ul class="cat-list">
+      <li class="cat-item active">
+        <i class="fa-solid fa-microchip"></i> CPU
+      </li>
+      <li class="cat-item"><i class="fa-solid fa-memory"></i> RAM</li>
+      <li class="cat-item"><i class="fa-solid fa-hard-drive"></i> SSD</li>
+      <li class="cat-item">
+        <i class="fa-solid fa-vr-cardboard"></i> VGA
+      </li>
+      <li class="cat-item">
+        <i class="fa-solid fa-server"></i> Mainboard
+      </li>
+      <li class="cat-item"><i class="fa-solid fa-box"></i> Case</li>
+      <li class="cat-item"><i class="fa-solid fa-plug"></i> PSU</li>
+      <li class="cat-item">
+        <i class="fa-solid fa-display"></i> Màn hình
+      </li>
+    </ul>
+  </nav>
 
-      <!--================= Dãy sản phẩm giờ vàng =================-->
-      <section class="flash-section">
-        <div class="flash-header">
-          <h2 class="flash-title"><i class="fa-solid fa-bolt"></i> GIỜ VÀNG</h2>
-          <div class="countdown">
-            <div class="time-box">23</div>
-            :
-            <div class="time-box">15</div>
-            :
-            <div class="time-box">48</div>
-          </div>
+  <!--=============== Phân loại theo Laptop, Thiết bị số ===================-->
+  <div class="cat-title-small">Laptop & Thiết Bị Số</div>
+  <nav class="cat-scroll">
+    <ul class="cat-list">
+      <li class="cat-item"><i class="fa-brands fa-apple"></i> MacBook</li>
+      <li class="cat-item">
+        <i class="fa-solid fa-gamepad"></i> Laptop Gaming
+      </li>
+      <li class="cat-item">
+        <i class="fa-solid fa-briefcase"></i> Laptop VP
+      </li>
+      <li class="cat-item">
+        <i class="fa-brands fa-windows"></i> Surface
+      </li>
+      <li class="cat-item">
+        <i class="fa-solid fa-headset"></i> Tai nghe
+      </li>
+      <li class="cat-item">
+        <i class="fa-solid fa-keyboard"></i> Bàn phím
+      </li>
+      <li class="cat-item">
+        <i class="fa-solid fa-computer-mouse"></i> Chuột
+      </li>
+    </ul>
+  </nav>
+</div>
 
-      <script>
-        document.addEventListener("DOMContentLoaded", function() {
+<!--================= Dãy sản phẩm giờ vàng =================-->
+<section class="flash-section">
+  <div class="flash-header">
+    <h2 class="flash-title"><i class="fa-solid fa-bolt"></i> GIỜ VÀNG</h2>
+    <div class="countdown">
+      <div class="time-box">23</div>
+      :
+      <div class="time-box">15</div>
+      :
+      <div class="time-box">48</div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
         const boxes = document.querySelectorAll('.time-box');
 
-        if (boxes.length < 3) return; 
+        if (boxes.length < 3) return;
         let h = parseInt(boxes[0].innerText) || 0;
         let m = parseInt(boxes[1].innerText) || 0;
         let s = parseInt(boxes[2].innerText) || 0;
@@ -154,335 +155,511 @@ LapStore{% endblock %}
         let totalSeconds = (h * 3600) + (m * 60) + s;
 
         const interval = setInterval(() => {
-            if (totalSeconds <= 0) {
-                clearInterval(interval);
-                return; 
-            }
+          if (totalSeconds <= 0) {
+            clearInterval(interval);
+            return;
+          }
 
-            totalSeconds--;
+          totalSeconds--;
 
-            const hoursLeft = Math.floor(totalSeconds / 3600);
-            const minutesLeft = Math.floor((totalSeconds % 3600) / 60);
-            const secondsLeft = totalSeconds % 60;
+          const hoursLeft = Math.floor(totalSeconds / 3600);
+          const minutesLeft = Math.floor((totalSeconds % 3600) / 60);
+          const secondsLeft = totalSeconds % 60;
 
-            boxes[0].innerText = hoursLeft < 10 ? '0' + hoursLeft : hoursLeft;
-            boxes[1].innerText = minutesLeft < 10 ? '0' + minutesLeft : minutesLeft;
-            boxes[2].innerText = secondsLeft < 10 ? '0' + secondsLeft : secondsLeft;
+          boxes[0].innerText = hoursLeft < 10 ? '0' + hoursLeft : hoursLeft;
+          boxes[1].innerText = minutesLeft < 10 ? '0' + minutesLeft : minutesLeft;
+          boxes[2].innerText = secondsLeft < 10 ? '0' + secondsLeft : secondsLeft;
 
         }, 1000);
-    });
-          </script>
-        </div>
-        <div class="flash-grid">
-          
-          <!--Sản phẩm đơn giờ vàng -->
-         {% for p in flash_sale_laptops %}
-          <a href="{% url 'products:product-detail' p.slug %}">
-            <article class="prod-card">
-            <button class="btn-add-wishlist" 
-        title="Thêm vào yêu thích" 
-        onclick="toggleWishlist(event, '{{ p.id }}')">
-          <i id="heart-{{ p.id }}" class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
-        </i>
-      </button>
-              <span class="badge-sale" style="background: red"
-                >Best Seller</span
-              >
-              <div class="prod-img-wrap">
-                <img
-                  src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
-                  alt=""
-                />
-              </div>
-              <h3 class="prod-name">{{p.name}}</h3>
-              <div class="prod-specs-box">
-                {% if p.is_lap %}
-                <span><i class="fa-solid fa-microchip"></i>{{p.laptop_config.cpu}}</span>
-                <span><i class="fa-solid fa-vr-cardboard"></i>{{p.laptop_config.vga}}</span>
-                {% else %}
-                   <span
-                  ><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
-                  </span
-                >
-                <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
-                {% endif %}
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">{{p.price_vn}}</span
-                  ><span class="price-old">{{p.discount_price_vn}}</span>
-                </div>
-                <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-           {% endfor %}
+      });
+    </script>
+  </div>
+  <div class="flash-grid">
 
+    <!--Sản phẩm đơn giờ vàng -->
+    {% for p in flash_sale_laptops %}
+    <a href="{% url 'products:product-detail' p.slug %}">
+      <article class="prod-card">
+        <button class="btn-add-wishlist" title="Thêm vào yêu thích" onclick="toggleWishlist(event, '{{ p.id }}')">
+          <i id="heart-{{ p.id }}"
+            class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
+          </i>
+        </button>
+        <span class="badge-sale" style="background: red">Best Seller</span>
+        <div class="prod-img-wrap">
+          <img
+            src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
+            alt="" />
         </div>
-      </section>
+        <h3 class="prod-name">{{p.name}}</h3>
+        <div class="prod-specs-box">
+          {% if p.is_lap %}
+          <span><i class="fa-solid fa-microchip"></i>{{p.laptop_config.cpu}}</span>
+          <span><i class="fa-solid fa-vr-cardboard"></i>{{p.laptop_config.vga}}</span>
+          {% else %}
+          <span><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
+          </span>
+          <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
+          {% endif %}
+        </div>
+        <div class="prod-footer">
+          <div class="price-box">
+            <span class="price-current">{{p.price_vn}}</span><span class="price-old">{{p.discount_price_vn}}</span>
+          </div>
+          <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
+        </div>
+      </article>
+    </a>
+    {% endfor %}
 
-      <!--=============== Dãy sản phẩm bán chạy ==================-->
-      <section>
-        <div class="section-head">
-          <h2 style="font-size: 24px; font-weight: 800">
-            Laptop <span style="color: var(--primary)">Bán Chạy</span>
-          </h2>
-          <a
-            href="{% url 'products:view-all-products' %}"
-            style="
+  </div>
+</section>
+
+<!--=============== Dãy sản phẩm bán chạy ==================-->
+<section>
+  <div class="section-head">
+    <h2 style="font-size: 24px; font-weight: 800">
+      Laptop <span style="color: var(--primary)">Bán Chạy</span>
+    </h2>
+    <a href="{% url 'products:view-all-products' %}" style="
               font-weight: 700;
               color: var(--primary);
               font-size: 14px;
               border-bottom: 2px solid var(--primary);
-            "
-            >Xem tất cả ></a
-          >
-        </div>
-        <div class="flash-grid">
-          
-          <!--SẢN PHẨM HOME-->
-           {% for p in bestselling_products %}
-         <a href="{% url 'products:product-detail' p.slug %}">
-            <article class="prod-card pod-card-view-all" >
-              <button class="btn-add-wishlist" 
-        title="Thêm vào yêu thích" 
-        onclick="toggleWishlist(event, '{{ p.id }}')">
-          <i id="heart-{{ p.id }}" class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
-        </i>
-      </button>
-              <span class="badge-sale">Bán chạy</span>
-              <div class="prod-img-wrap">
-                <img src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}" alt="LG" />
-              </div>
-              <h3 class="prod-name">{{p.name}}</h3>
-              <div class="prod-specs-box">
-                {% if p.is_lap %}
-                  <span
-                  ><i class="fa-solid fa-vr-cardboard"></i>VGA: {{p.laptop_config.vga}}
-                  </span
-                >
-                <span><i class="fa-solid fa-microchip"></i>CPU: {{p.laptop_config.cpu}}</span>
-                {% else %}
-                   <span
-                  ><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
-                  </span
-                >
-                <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
-                {% endif %}
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">{{p.price_vn}}</span
-                  ><span class="price-old">{{p.discount_price_vn}}</span>
-                </div>
-                <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-           {% endfor %}
-        </div>
-      </section>
-      <!-- ======================= end Dãy laptop bán chạy ===================-->
+            ">Xem tất cả ></a>
+  </div>
+  <div class="flash-grid">
 
-     <!--=============== Dãy linh kiện bán chạy ==================-->
-      <section style="margin-top: 40px;">
-        <div class="section-head">
-          <h2 style="font-size: 24px; font-weight: 800">
-            Linh kiện <span style="color: var(--primary)">Bán Chạy</span>
-          </h2>
-          <a
-            href="{% url 'products:view-all-products' %}"
-            style="
+    <!--SẢN PHẨM HOME-->
+    {% for p in bestselling_products %}
+    <a href="{% url 'products:product-detail' p.slug %}">
+      <article class="prod-card pod-card-view-all">
+        <button class="btn-add-wishlist" title="Thêm vào yêu thích" onclick="toggleWishlist(event, '{{ p.id }}')">
+          <i id="heart-{{ p.id }}"
+            class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
+          </i>
+        </button>
+        <span class="badge-sale">Bán chạy</span>
+        <div class="prod-img-wrap">
+          <img
+            src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
+            alt="LG" />
+        </div>
+        <h3 class="prod-name">{{p.name}}</h3>
+        <div class="prod-specs-box">
+          {% if p.is_lap %}
+          <span><i class="fa-solid fa-vr-cardboard"></i>VGA: {{p.laptop_config.vga}}
+          </span>
+          <span><i class="fa-solid fa-microchip"></i>CPU: {{p.laptop_config.cpu}}</span>
+          {% else %}
+          <span><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
+          </span>
+          <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
+          {% endif %}
+        </div>
+        <div class="prod-footer">
+          <div class="price-box">
+            <span class="price-current">{{p.price_vn}}</span><span class="price-old">{{p.discount_price_vn}}</span>
+          </div>
+          <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
+        </div>
+      </article>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+<!-- ======================= end Dãy laptop bán chạy ===================-->
+
+<!--=============== Dãy linh kiện bán chạy ==================-->
+<section style="margin-top: 40px;">
+  <div class="section-head">
+    <h2 style="font-size: 24px; font-weight: 800">
+      Linh kiện <span style="color: var(--primary)">Bán Chạy</span>
+    </h2>
+    <a href="{% url 'products:view-all-products' %}" style="
               font-weight: 700;
               color: var(--primary);
               font-size: 14px;
               border-bottom: 2px solid var(--primary);
-            "
-            >Xem tất cả ></a
-          >
+            ">Xem tất cả ></a>
+  </div>
+  <div class="flash-grid">
+
+    <!--Linh kiện bán chạy-->
+    {% for p in components %}
+    <a href="{% url 'products:product-detail' p.slug %}">
+      <article class="prod-card pod-card-view-all">
+        <button class="btn-add-wishlist" title="Thêm vào yêu thích" onclick="toggleWishlist(event, '{{ p.id }}')">
+          <i id="heart-{{ p.id }}"
+            class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
+          </i>
+        </button>
+        <span class="badge-sale">Ưu đãi</span>
+        <div class="prod-img-wrap">
+          <img
+            src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}"
+            alt="LG" />
         </div>
-        <div class="flash-grid">
-          
-          <!--Linh kiện bán chạy-->
-           {% for p in components %}
-             <a href="{% url 'products:product-detail' p.slug %}">
-            <article class="prod-card pod-card-view-all" >
-             <button class="btn-add-wishlist" 
-        title="Thêm vào yêu thích" onclick="toggleWishlist(event, '{{ p.id }}')">
-          <i id="heart-{{ p.id }}" class="fa-heart {% if p.id in wishlist_ids %}fa-solid text-danger{% else %}fa-regular{% endif %}">
-        </i>
-      </button>
-              <span class="badge-sale">Ưu đãi</span>
-              <div class="prod-img-wrap">
-                <img src="{% if p.images.first %}{{ p.images.first.image_url }}{% else %}{% static 'core/img/placeholder.png' %}{% endif %}" alt="LG" />
-              </div>
-              <h3 class="prod-name">{{p.name}}</h3>
-              <div class="prod-specs-box">
-                   <span
-                  ><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
-                  </span
-                >
-                <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
-              </div>
-              <div class="prod-footer">
-                <div class="price-box">
-                  <span class="price-current">{{p.price_vn}}</span
-                  ><span class="price-old">{{p.discount_price_vn}}</span>
-                </div>
-                <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
-              </div>
-            </article>
-          </a>
-           {% endfor %}
+        <h3 class="prod-name">{{p.name}}</h3>
+        <div class="prod-specs-box">
+          <span><i class="fa-solid fa-copyright"></i>Brand: {{p.brand}}
+          </span>
+          <span><i class="fa-solid fa-shield"></i>Bảo hành: {{p.warranty}}</span>
         </div>
-      </section>
+        <div class="prod-footer">
+          <div class="price-box">
+            <span class="price-current">{{p.price_vn}}</span><span class="price-old">{{p.discount_price_vn}}</span>
+          </div>
+          <button class="btn-buy-now" onclick="toggleCart(event, '{{ p.id }}')">Mua ngay</button>
+        </div>
+      </article>
+    </a>
+    {% endfor %}
+  </div>
+</section>
 
 
-      <!-- ===================== Banner Home =====================-->
-      <section class="promo-banner">
-        <div class="promo-content">
-          <h2>Đỉnh Cao Đồ Họa<br />Trong Tầm Tay</h2>
-          <p>
-            Build PC Workstation cấu hình khủng. Trả góp 0%, hỗ trợ kỹ thuật tận
-            nơi.
-          </p>
-          <a href="#" id="consult-now-btn" class="btn-cta">Tư vấn ngay</a>
+<!-- ===================== YouTube Shorts Review =====================-->
+<section class="shorts-section">
+  <div class="shorts-header">
+    <h2 class="shorts-title">
+      Góc <span style="color: var(--primary)">Review</span> dành cho bạn
+    </h2>
+  </div>
+
+  <!-- Swiper Container -->
+  <div class="swiper shorts-swiper">
+    <div class="swiper-wrapper">
+
+      <!-- Slide 1 -->
+      <div class="swiper-slide shorts-card">
+        <div class="shorts-video-wrapper">
+          <iframe src="https://www.youtube.com/embed/A68JnzzVJjk?rel=0&modestbranding=1" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <div class="shorts-play-overlay">
+            <i class="fa-solid fa-circle-play"></i>
+          </div>
         </div>
-        <img
-          src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=2642"
-          class="promo-img"
-          loading="lazy"
-          alt="PC Setup"
-        />
-      </section>
-      <script src="{% static 'core/js/main.js' %}"></script>
-      
+        <div class="shorts-prod-info">
+          <div class="shorts-prod-header">
+            <img src="https://laptopaz.vn/media/product/4296_" alt="Lenovo Legion 5" class="shorts-prod-thumb">
+            <h3 class="shorts-prod-name">Lenovo Legion 5 16IAH7H (i7 12700H/RTX 3070Ti)</h3>
+          </div>
+          <div class="shorts-prod-price">
+            <span class="shorts-price-current">35.790.000đ</span>
+            <span class="shorts-price-old">42.900.000đ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="swiper-slide shorts-card">
+        <div class="shorts-video-wrapper">
+          <iframe src="https://www.youtube.com/embed/-McT68HyV7k?rel=0&modestbranding=1" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <div class="shorts-play-overlay">
+            <i class="fa-solid fa-circle-play"></i>
+          </div>
+        </div>
+        <div class="shorts-prod-info">
+          <div class="shorts-prod-header">
+            <img src="https://laptopaz.vn/media/product/4049_z7037388711226_76ee9e61aafb396723908112efc90cbb.jpg"
+              alt="Lenovo LOQ 15 2024" class="shorts-prod-thumb">
+            <h3 class="shorts-prod-name">Lenovo LOQ 15 2024 (i5 13420H/RTX 3050)</h3>
+          </div>
+          <div class="shorts-prod-price">
+            <span class="shorts-price-current">18.990.000đ</span>
+            <span class="shorts-price-old">21.990.000đ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="swiper-slide shorts-card">
+        <div class="shorts-video-wrapper">
+          <iframe src="https://www.youtube.com/embed/_z0OnkD-DIA?rel=0&modestbranding=1" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <div class="shorts-play-overlay">
+            <i class="fa-solid fa-circle-play"></i>
+          </div>
+        </div>
+        <div class="shorts-prod-info">
+          <div class="shorts-prod-header">
+            <img
+              src="https://laptopaz.vn/media/product/4024_dell_alienware_16_aurora_ac16250_r1761qb_core_7_240h_16gb_1tb_rtx_5060_8gb_16_icnh_2k_120hz_laptopaz__1_.png"
+              alt="dell alienware" class="shorts-prod-thumb">
+            <h3 class="shorts-prod-name">Dell Alienware 16 Aurora (Core 7 240H/RTX 5060)</h3>
+          </div>
+          <div class="shorts-prod-price">
+            <span class="shorts-price-current">49.990.000đ</span>
+            <span class="shorts-price-old">56.590.000đ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="swiper-slide shorts-card">
+        <div class="shorts-video-wrapper">
+          <iframe src="https://www.youtube.com/embed/Ey_wcdBpB7A?rel=0&modestbranding=1" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <div class="shorts-play-overlay">
+            <i class="fa-solid fa-circle-play"></i>
+          </div>
+        </div>
+        <div class="shorts-prod-info">
+          <div class="shorts-prod-header">
+            <img src="https://laptopaz.vn/media/product/4201_" alt="Card" class="shorts-prod-thumb">
+            <h3 class="shorts-prod-name">MSI Katana 15 (i5 13500k rtx 4060)</h3>
+          </div>
+          <div class="shorts-prod-price">
+            <span class="shorts-price-current">29.990.000đ</span>
+            <span class="shorts-price-old">36.990.000đ</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 5 (extra for swiping demo) -->
+      <div class="swiper-slide shorts-card">
+        <div class="shorts-video-wrapper">
+          <iframe src="https://www.youtube.com/embed/j3VAi3X-998?rel=0&modestbranding=1" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <div class="shorts-play-overlay">
+            <i class="fa-solid fa-circle-play"></i>
+          </div>
+        </div>
+        <div class="shorts-prod-info">
+          <div class="shorts-prod-header">
+            <img src="https://laptopaz.vn/media/product/3289_dell_inspiron_14_5445_2024_1715338903.jpg"
+              alt="Dell Inspiron" class="shorts-prod-thumb">
+            <h3 class="shorts-prod-name">Dell Inspiron 14 (ryzen 7 8840HS/AMD Radeon 780M)</h3>
+          </div>
+          <div class="shorts-prod-price">
+            <span class="shorts-price-current">17.990.000đ</span>
+            <span class="shorts-price-old">21.990.000đ</span>
+          </div>
+        </div>
+      </div>
+
+      <!--slide 6-->
+      <div class="swiper-slide shorts-card">
+        <div class="shorts-video-wrapper">
+          <iframe src="https://www.youtube.com/embed/KqgCK4OGqT0?rel=0&modestbranding=1" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <div class="shorts-play-overlay">
+            <i class="fa-solid fa-circle-play"></i>
+          </div>
+        </div>
+        <div class="shorts-prod-info">
+          <div class="shorts-prod-header">
+            <img src="https://laptopaz.vn/media/product/4233_" alt="Asus Zenbook 14" class="shorts-prod-thumb">
+            <h3 class="shorts-prod-name">Asus Zenbook 14 (ryzen AI 7 350/AMD Radeon 780M/ 3K OLED)</h3>
+          </div>
+          <div class="shorts-prod-price">
+            <span class="shorts-price-current">29.990.000đ</span>
+            <span class="shorts-price-old">34.990.000đ</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- Add Pagination -->
+    <div class="swiper-pagination"></div>
+    <!-- Add Navigation -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+</section>
+
+<!-- ===================== Banner Home =====================-->
+<section class="promo-banner">
+  <div class="promo-content">
+    <h2>Đỉnh Cao Đồ Họa<br />Trong Tầm Tay</h2>
+    <p>
+      Build PC Workstation cấu hình khủng. Trả góp 0%, hỗ trợ kỹ thuật tận
+      nơi.
+    </p>
+    <a href="#" id="consult-now-btn" class="btn-cta">Tư vấn ngay</a>
+  </div>
+  <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=2642" class="promo-img" loading="lazy"
+    alt="PC Setup" />
+</section>
+<script src="{% static 'core/js/main.js' %}"></script>
+
 {% endblock %}
 {% block extra_js %}
 {{ block.super }}
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-function updateBadgeCount(badgeType, newCount) {
-    // Chọn tất cả các badge thuộc một loại (ví dụ: 'cart' hoặc 'wishlist')
-    const badges = document.querySelectorAll(`.nav-badge[data-badge="${badgeType}"]`);
-    
-    badges.forEach(badge => {
-        if (newCount > 0) {
-            badge.innerText = newCount;
-            badge.style.display = ''; // Quay lại thuộc tính display của stylesheet
-        } else {
-            badge.style.display = 'none';
-        }
+  document.addEventListener('DOMContentLoaded', function () {
+    var shortsSwiper = new Swiper(".shorts-swiper", {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        992: {
+          slidesPerView: 3,
+          spaceBetween: 30,
+        },
+        1200: {
+          slidesPerView: 4,
+          spaceBetween: 30,
+        },
+      },
+      // Enable smooth dragging/swiping
+      grabCursor: true,
+      // Improve performance by setting lazy loading
+      preloadImages: false,
+      lazy: true,
     });
-}
+  });
 </script>
 <script>
-function toggleWishlist(event, productId) {
+  function updateBadgeCount(badgeType, newCount) {
+    // Chọn tất cả các badge thuộc một loại (ví dụ: 'cart' hoặc 'wishlist')
+    const badges = document.querySelectorAll(`.nav-badge[data-badge="${badgeType}"]`);
+
+    badges.forEach(badge => {
+      if (newCount > 0) {
+        badge.innerText = newCount;
+        badge.style.display = ''; // Quay lại thuộc tính display của stylesheet
+      } else {
+        badge.style.display = 'none';
+      }
+    });
+  }
+</script>
+<script>
+  function toggleWishlist(event, productId) {
     event.preventDefault();
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
 
-    fetch("{% url 'core:toggle_wishlist' %}", { 
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": csrftoken,
-        },
-        body: new URLSearchParams({ 'id': productId })
+    fetch("{% url 'core:toggle_wishlist' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrftoken,
+      },
+      body: new URLSearchParams({ 'id': productId })
     })
-    .then(response => response.json())
-    .then(data => {
+      .then(response => response.json())
+      .then(data => {
         // Xử lý khi chưa đăng nhập
         if (data.status === 'login_required') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Yêu cầu đăng nhập',
-                text: data.message,
-                confirmButtonText: 'Đăng nhập ngay'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
-                }
-            });
-            return;
+          Swal.fire({
+            icon: 'warning',
+            title: 'Yêu cầu đăng nhập',
+            text: data.message,
+            confirmButtonText: 'Đăng nhập ngay'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
+            }
+          });
+          return;
         }
-        
+
         // Hiển thị thông báo toast
         Swal.fire({
-            toast: true, position: 'top-end', icon: 'success',
-            title: data.message, showConfirmButton: false,
-            timer: 2000
+          toast: true, position: 'top-end', icon: 'success',
+          title: data.message, showConfirmButton: false,
+          timer: 2000
         });
 
         // Logic đổi màu tim hoặc xóa card cũ 
         const heartIcon = document.getElementById(`heart-${productId}`);
         if (data.status === 'added') {
-            if (heartIcon) {
-                heartIcon.classList.remove('fa-regular');
-                heartIcon.classList.add('fa-solid', 'text-danger');
-            }
+          if (heartIcon) {
+            heartIcon.classList.remove('fa-regular');
+            heartIcon.classList.add('fa-solid', 'text-danger');
+          }
         } else if (data.status === 'removed') {
-            if (heartIcon) {
-                heartIcon.classList.remove('fa-solid', 'text-danger');
-                heartIcon.classList.add('fa-regular');
-            }
-            const productCard = document.getElementById(`wishlist-item-${productId}`);
-            if (productCard) productCard.remove();
+          if (heartIcon) {
+            heartIcon.classList.remove('fa-solid', 'text-danger');
+            heartIcon.classList.add('fa-regular');
+          }
+          const productCard = document.getElementById(`wishlist-item-${productId}`);
+          if (productCard) productCard.remove();
         }
 
         // Cập nhật số lượng trên badge
         if (data.wishlist_count !== undefined) {
-            updateBadgeCount('wishlist', data.wishlist_count);
+          updateBadgeCount('wishlist', data.wishlist_count);
         }
-    });
-}
+      });
+  }
 </script>
 <script>
-function toggleCart(event, productId) {
+  function toggleCart(event, productId) {
     event.preventDefault(); // Ngăn hành vi mặc định của thẻ <a>
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
 
-    fetch("{% url 'products:toggle_cart' %}", { 
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": csrftoken,
-        },
-        body: new URLSearchParams({ 'id': productId })
+    fetch("{% url 'products:toggle_cart' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrftoken,
+      },
+      body: new URLSearchParams({ 'id': productId })
     })
-    .then(response => response.json())
-    .then(data => {
+      .then(response => response.json())
+      .then(data => {
         // Xử lý khi chưa đăng nhập
         if (data.status === 'login_required') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Yêu cầu đăng nhập',
-                text: data.message,
-                confirmButtonText: 'Đăng nhập ngay'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
-                }
-            });
-            return;
+          Swal.fire({
+            icon: 'warning',
+            title: 'Yêu cầu đăng nhập',
+            text: data.message,
+            confirmButtonText: 'Đăng nhập ngay'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
+            }
+          });
+          return;
         }
-        
+
         // Nếu thêm sản phẩm thành công (hoặc đã tồn tại), chuyển hướng đến trang giỏ hàng
         if (data.status === 'added' || data.status === 'exists') {
-            window.location.href = "{% url 'orders:cart' %}";
-        } 
-    });
-}
+          window.location.href = "{% url 'orders:cart' %}";
+        }
+      });
+  }
 </script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const consultBtn = document.getElementById('consult-now-btn');
     const chatbotWindow = document.getElementById('chatbot-window');
 
     if (consultBtn && chatbotWindow) {
-        consultBtn.addEventListener('click', function(event) {
-            event.preventDefault(); 
-            chatbotWindow.classList.add('active'); 
-        });
+      consultBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        chatbotWindow.classList.add('active');
+      });
     }
-});
+  });
 </script>
-{% endblock %}  
+{% endblock %}

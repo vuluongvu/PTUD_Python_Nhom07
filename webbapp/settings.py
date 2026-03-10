@@ -145,6 +145,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Tải API key từ biến môi trường. Việc cấu hình sẽ được thực hiện trong view.
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+IMGBB_API_KEY = os.getenv('IMGBB_API_KEY')
 
 # --- MoMo Payment Gateway Configuration ---
 MOMO_PARTNER_CODE = os.getenv('MOMO_PARTNER_CODE', '')
