@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 {% block nav_user_active %}active{% endblock %}
-{% load static %} 
+{% load static %}
 {% block title %}Hồ sơ - LapStore{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
@@ -9,86 +9,97 @@
 <div class="breadcrumb">
   <a href="{% url 'core:home' %}">Trang chủ</a>
 </div>
-    <div class="profile-page">
-      <div class="container">
-        <div class="main-container">
-        <aside class="sidebar-left">
-            <div class="profile-snippet">
-                
-                <img src="{{ avatar }}" alt="Avatar">
-                
-                <h3>{{ first_name }} {{last_name}}</h3>
-               
-            </div>
-            <div class="nav-menu">
-                <a href="#" class="nav-item-profile active"><i class="fas fa-user-shield"></i> Thông tin cá nhân</a>
-                <a href="{% url "users:order_list" %}" class="nav-item-profile"><i class="fas fa-box-open"></i> Đơn hàng của tôi</a>
-                <a href="#" class="nav-item-profile"><i class="fas fa-wallet"></i> Ví thanh toán</a>
-                <a href="{% url 'users:logout' %}" class="nav-item-profile" id='logout'><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-            </div>
-        </aside>
-                <script> 
-                    const logoutBtn = document.getElementById('logout');
-                    logoutBtn.addEventListener('click', function(event) {
-                        event.preventDefault(); 
-                        const confirmed = confirm("Bạn có chắc chắn muốn đăng xuất không?");
-                        if (confirmed) {
-                            window.location.href = logoutBtn.href; 
-                        }
-                    });
-
-                </script>
-
-        <main class="content-card">
-            <h2 class="section-title">Cài đặt tài khoản</h2>
-            <p class="section-subtitle">Thay đổi thông tin liên hệ và tùy chỉnh bảo mật tài khoản của bạn.</p>
-
-            <form method="post" action="">
-              {% csrf_token %}
-                <div class="info-grid">
-                    <div class="input-group">
-                        <label>Họ và tên</label>
-                        <input type="text" name="first_name" value="{{ first_name }}">
-                    </div>
-                    <div class="input-group">
-                        <label>Tên</label>
-                        <input type="text" name="last_name" value="{{ last_name|default:'' }}">
-                    </div>
-                     <div class="input-group">
-                        <label>Số điện thoại</label>
-                        <input type="tel" name="phone_number" value="{{phone_number|default:''}}">
-                    </div> 
-                    <div class="input-group">
-                        <label>Địa chỉ Email</label>
-                        <input type="email" value="{{ email }}" disabled style="background: #f8f9fa; cursor: not-allowed;">
-                    </div>
-                    <div class="form-row full-row">
-                        <div class="input-group">
-                            <label>Tỉnh / Thành phố</label>
-                            <select class="form-control" name="province" id="province"></select>
-                        </div>
-                        <div class="input-group">
-                            <label>Quận / Huyện</label>
-                            <select class="form-control" name="district" id="district"></select>
-                        </div>
-                        <div class="input-group">
-                            <label>Phường / Xã</label>
-                            <select class="form-control" name="ward" id="ward"></select>
-                        </div>
-                    </div>
-                    <div class="input-group full-row">
-                        <label>Địa chỉ cụ thể (Số nhà, tên đường)</label>
-                        <input type="text" name="street_address" placeholder="Nhập số nhà, tên đường..." value="{{ default_address.street_address|default:'' }}">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-submit">CẬP NHẬT HỒ SƠ</button>
-            </form>
-          </main>
+<div class="profile-page">
+  <div class="container">
+    <div class="main-container">
+      <aside class="sidebar-left">
+        <div class="profile-snippet">
+          <div class="avatar-container">
+            {% if avatar %}
+            <img src="{{ avatar }}" alt="Avatar" class="profile-avatar">
+            {% else %}
+            <img src="{% static 'images/default-avatar.png' %}" alt="Default Avatar" class="profile-avatar">
+            {% endif %}
+          </div>
+          <h3>{{ first_name }} {{last_name}}</h3>
         </div>
-      </div>
+        <div class="nav-menu">
+          <a href="#" class="nav-item-profile active"><i class="fas fa-user-shield"></i> Thông tin cá nhân</a>
+          <a href="{% url 'users:order_list' %}" class="nav-item-profile"><i class="fas fa-box-open"></i> Đơn hàng của
+            tôi</a>
+          <a href="#" class="nav-item-profile"><i class="fas fa-wallet"></i> Ví thanh toán</a>
+          <a href="{% url 'users:logout' %}" class="nav-item-profile" id='logout'><i class="fas fa-sign-out-alt"></i>
+            Đăng xuất</a>
+        </div>
+      </aside>
+      <script>
+        const logoutBtn = document.getElementById('logout');
+        logoutBtn.addEventListener('click', function (event) {
+          event.preventDefault();
+          const confirmed = confirm("Bạn có chắc chắn muốn đăng xuất không?");
+          if (confirmed) {
+            window.location.href = logoutBtn.href;
+          }
+        });
+
+      </script>
+
+      <main class="content-card">
+        <h2 class="section-title">Cài đặt tài khoản</h2>
+        <p class="section-subtitle">Thay đổi thông tin liên hệ và tùy chỉnh bảo mật tài khoản của bạn.</p>
+
+        <form method="post" action="" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="info-grid">
+            <div class="input-group full-row">
+              <label>Ảnh đại diện (Avatar)</label>
+              <input type="file" name="avatar" accept=".jpg, .jpeg, .png" class="form-control">
+              <small class="form-text text-muted">Chỉ hỗ trợ .jpg, .jpeg, .png và dung lượng tối đa 5MB.</small>
+            </div>
+            <div class="input-group">
+              <label>Họ và tên</label>
+              <input type="text" name="first_name" value="{{ first_name }}">
+            </div>
+            <div class="input-group">
+              <label>Tên</label>
+              <input type="text" name="last_name" value="{{ last_name|default:'' }}">
+            </div>
+            <div class="input-group">
+              <label>Số điện thoại</label>
+              <input type="tel" name="phone_number" value="{{phone_number|default:''}}">
+            </div>
+            <div class="input-group">
+              <label>Địa chỉ Email</label>
+              <input type="email" value="{{ email }}" disabled style="background: #f8f9fa; cursor: not-allowed;">
+            </div>
+            <div class="form-row full-row">
+              <div class="input-group">
+                <label>Tỉnh / Thành phố</label>
+                <select class="form-control" name="province" id="province"></select>
+              </div>
+              <div class="input-group">
+                <label>Quận / Huyện</label>
+                <select class="form-control" name="district" id="district"></select>
+              </div>
+              <div class="input-group">
+                <label>Phường / Xã</label>
+                <select class="form-control" name="ward" id="ward"></select>
+              </div>
+            </div>
+            <div class="input-group full-row">
+              <label>Địa chỉ cụ thể (Số nhà, tên đường)</label>
+              <input type="text" name="street_address" placeholder="Nhập số nhà, tên đường..."
+                value="{{ default_address.street_address|default:'' }}">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">CẬP NHẬT HỒ SƠ</button>
+        </form>
+      </main>
     </div>
-  
+  </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -107,7 +118,7 @@
         option.value = item.code;
         option.textContent = item.name;
         if (item.code == selectedCode) {
-            option.selected = true;
+          option.selected = true;
         }
         selectElement.appendChild(option);
       });
@@ -119,7 +130,7 @@
       .then((data) => {
         renderOptions(provinceSelect, data, "Chọn Tỉnh/Thành", "{{ default_address.province_code|default:'' }}");
         if (provinceSelect.value) {
-            provinceSelect.dispatchEvent(new Event('change'));
+          provinceSelect.dispatchEvent(new Event('change'));
         }
       });
 
@@ -135,7 +146,7 @@
           .then((data) => {
             renderOptions(districtSelect, data.districts, "Chọn Quận/Huyện", "{{ default_address.district_code|default:'' }}");
             if (districtSelect.value) {
-                districtSelect.dispatchEvent(new Event('change'));
+              districtSelect.dispatchEvent(new Event('change'));
             }
           });
       }
