@@ -46,7 +46,7 @@
     <meta name="theme-color" content="#ffffff">
 
     <!-- CSS Files -->
-    <link rel="stylesheet" href="{% static 'core/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}?v={{ request.resolver_match.view_name }}" />
     <link rel="stylesheet" href="{% static 'core/css/responsive.css' %}" />
 
     <style>
@@ -186,44 +186,37 @@
               </div>
               <div class="cat-dropdown">
                 <div class="mega-menu-grid">
-                  <!-- Cột 1: Laptop -->
                   <div class="mega-col">
-                    <h3 class="mega-title"><i class="fa-solid fa-laptop"></i> Laptop</h3>
-                    <a href="#" class="mega-link">MacBook Air / Pro</a>
-                    <a href="#" class="mega-link">Laptop Gaming</a>
-                    <a href="#" class="mega-link">Laptop Văn Phòng</a>
-                    <a href="#" class="mega-link">Laptop Đồ Họa</a>
-                    <a href="#" class="mega-link">Surface</a>
+                    <h3 class="mega-title"><i class="fa-solid fa-money-bill-wave"></i> Khoảng giá</h3>
+                    {% for item in price_ranges %}
+                       <a href="{% url 'products:view-all-products' %}?price={{ item.value }}" class="mega-link">{{ item.label }}</a>
+                    {% endfor %}
                   </div>
-                  
-                  <!-- Cột 2: PC & Màn hình -->
                   <div class="mega-col">
-                    <h3 class="mega-title"><i class="fa-solid fa-desktop"></i> PC & Màn Hình</h3>
-                    <a href="#" class="mega-link">PC Gaming</a>
-                    <a href="#" class="mega-link">PC Workstation</a>
-                    <a href="#" class="mega-link">PC Văn Phòng</a>
-                    <a href="#" class="mega-link">Màn hình Gaming</a>
-                    <a href="#" class="mega-link">Màn hình Đồ Họa</a>
+                    <h3 class="mega-title"><i class="fa-solid fa-copyright"></i> Thương hiệu</h3>
+                    {% for brand in all_brands %}
+                       <a href="{% url 'products:view-all-products' %}?brand={{ brand.id }}" class="mega-link">{{ brand.name }}</a>
+                    {% endfor %}
                   </div>
-
-                  <!-- Cột 3: Linh Kiện -->
                   <div class="mega-col">
-                    <h3 class="mega-title"><i class="fa-solid fa-microchip"></i> Linh Kiện PC</h3>
-                    <a href="#" class="mega-link">CPU - Vi xử lý</a>
-                    <a href="#" class="mega-link">VGA - Card màn hình</a>
-                    <a href="#" class="mega-link">Mainboard - Bo mạch</a>
-                    <a href="#" class="mega-link">RAM - Bộ nhớ trong</a>
-                    <a href="#" class="mega-link">SSD / HDD</a>
+                    <h3 class="mega-title"><i class="fa-solid fa-layer-group"></i> Nhu cầu</h3>
+                    {% for category in mega_categories %}
+                        {% for child in category.children.all %}
+                           <a href="{% url 'products:view-all-products' %}?category={{ child.id }}" class="mega-link">{{ child.name }}</a>
+                        {% endfor %}
+                    {% endfor %}
                   </div>
-
-                  <!-- Cột 4: Phụ Kiện -->
                   <div class="mega-col">
-                    <h3 class="mega-title"><i class="fa-solid fa-headset"></i> Phụ Kiện & Gear</h3>
-                    <a href="#" class="mega-link">Chuột Gaming</a>
-                    <a href="#" class="mega-link">Bàn phím cơ</a>
-                    <a href="#" class="mega-link">Tai nghe</a>
-                    <a href="#" class="mega-link">Ghế công thái học</a>
-                    <a href="#" class="mega-link">Thiết bị mạng</a>
+                    <h3 class="mega-title"><i class="fa-solid fa-memory"></i> RAM</h3>
+                    {% for ram in ram_options %}
+                       <a href="{% url 'products:view-all-products' %}?ram={{ ram.value }}" class="mega-link">{{ ram.label }}</a>
+                    {% endfor %}
+                  </div>
+                  <div class="mega-col">
+                    <h3 class="mega-title"><i class="fa-solid fa-hard-drive"></i> Ổ cứng</h3>
+                    {% for storage in storage_options %}
+                       <a href="{% url 'products:view-all-products' %}?storage={{ storage.value }}" class="mega-link">{{ storage.label }}</a>
+                    {% endfor %}
                   </div>
                 </div>
               </div>
@@ -285,29 +278,37 @@
         </button>
       </div>
       <ul class="mobile-menu-list">
-        <!-- Mobile Item 1 -->
         <li class="m-menu-group">
-          <div class="m-menu-title"><i class="fa-solid fa-laptop"></i> Laptop</div>
-          <a href="#" class="m-menu-link">MacBook</a>
-          <a href="#" class="m-menu-link">Laptop Gaming</a>
-          <a href="#" class="m-menu-link">Laptop Văn Phòng</a>
+          <div class="m-menu-title"><i class="fa-solid fa-money-bill-wave"></i> Khoảng giá</div>
+          {% for item in price_ranges %}
+             <a href="{% url 'products:view-all-products' %}?price={{ item.value }}" class="m-menu-link">{{ item.label }}</a>
+          {% endfor %}
         </li>
-        <!-- Mobile Item 2 -->
         <li class="m-menu-group">
-          <div class="m-menu-title"><i class="fa-solid fa-desktop"></i> PC & Màn Hình</div>
-          <a href="#" class="m-menu-link">PC Gaming / Workstation</a>
-          <a href="#" class="m-menu-link">Màn hình máy tính</a>
+          <div class="m-menu-title"><i class="fa-solid fa-copyright"></i> Thương hiệu</div>
+          {% for brand in all_brands %}
+             <a href="{% url 'products:view-all-products' %}?brand={{ brand.id }}" class="m-menu-link">{{ brand.name }}</a>
+          {% endfor %}
         </li>
-        <!-- Mobile Item 3 -->
         <li class="m-menu-group">
-          <div class="m-menu-title"><i class="fa-solid fa-microchip"></i> Linh Kiện</div>
-          <a href="#" class="m-menu-link">CPU / VGA / Mainboard</a>
-          <a href="#" class="m-menu-link">RAM / SSD</a>
+          <div class="m-menu-title"><i class="fa-solid fa-layer-group"></i> Nhu cầu</div>
+          {% for category in mega_categories %}
+              {% for child in category.children.all %}
+                 <a href="{% url 'products:view-all-products' %}?category={{ child.id }}" class="m-menu-link">{{ child.name }}</a>
+              {% endfor %}
+          {% endfor %}
         </li>
-        <!-- Mobile Item 4 -->
         <li class="m-menu-group">
-          <div class="m-menu-title"><i class="fa-solid fa-headset"></i> Phụ Kiện</div>
-          <a href="#" class="m-menu-link">Chuột / Phím / Tai nghe</a>
+          <div class="m-menu-title"><i class="fa-solid fa-memory"></i> RAM</div>
+          {% for ram in ram_options %}
+             <a href="{% url 'products:view-all-products' %}?ram={{ ram.value }}" class="m-menu-link">{{ ram.label }}</a>
+          {% endfor %}
+        </li>
+        <li class="m-menu-group">
+          <div class="m-menu-title"><i class="fa-solid fa-hard-drive"></i> Ổ cứng</div>
+          {% for storage in storage_options %}
+             <a href="{% url 'products:view-all-products' %}?storage={{ storage.value }}" class="m-menu-link">{{ storage.label }}</a>
+          {% endfor %}
         </li>
       </ul>
     </aside>

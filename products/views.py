@@ -16,12 +16,20 @@ def view_all_products(request):
     selected_brands = request.GET.getlist('brand')
     selected_categories = request.GET.getlist('category')
     price_range = request.GET.get('price')
+    selected_ram = request.GET.getlist('ram')
+    selected_storage = request.GET.getlist('storage')
 
     if selected_brands:
         products_list = products_list.filter(brand__id__in=selected_brands)
     
     if selected_categories:
         products_list = products_list.filter(category__id__in=selected_categories)
+
+    if selected_ram:
+        products_list = products_list.filter(laptop_config__ram_gb__in=selected_ram)
+        
+    if selected_storage:
+        products_list = products_list.filter(laptop_config__storage_gb__in=selected_storage)
 
     if price_range:
         try:
@@ -42,6 +50,9 @@ def view_all_products(request):
     else: 
         products_list = products_list.order_by('-created_at')
     
+    # Remove duplicates if joins caused any
+    products_list = products_list.distinct()
+    
     paginator = Paginator(products_list, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -50,29 +61,16 @@ def view_all_products(request):
     if request.user.is_authenticated:
         wishlist_ids = WishList.objects.filter(user=request.user).values_list('product_id', flat=True)
 
-    # Lấy danh sách các thương hiệu và danh mục để hiển thị trong sidebar
-    all_brands = Brand.objects.annotate(product_count=Count('products')).filter(product_count__gt=0)
-    all_categories = Category.objects.annotate(product_count=Count('products')).filter(product_count__gt=0)
-
-    price_ranges = [
-        {'value': '0-10', 'label': 'Dưới 10 triệu'},
-        {'value': '10-15', 'label': '10 - 15 triệu'},
-        {'value': '15-20', 'label': '15 - 20 triệu'},
-        {'value': '20-30', 'label': '20 - 30 triệu'},
-        {'value': '30-inf', 'label': 'Trên 30 triệu'},
-    ]
-
     context = {
         'products': page_obj,  
         'page_obj': page_obj,  
         'wishlist_ids': wishlist_ids,
         'sort_param': sort_by, # Truyền tham số sort sang template
-        'all_brands': all_brands,
-        'all_categories': all_categories,
         'selected_brands': selected_brands,
         'selected_categories': selected_categories,
         'selected_price': price_range,
-        'price_ranges': price_ranges,
+        'selected_ram': selected_ram,
+        'selected_storage': selected_storage,
     }
     return render(request, 'products/view-all.html', context)
 
