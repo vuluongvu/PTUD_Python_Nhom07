@@ -227,6 +227,7 @@ class Order(TimeStampedModel):
     # Snapshot thông tin giao hàng
     shipping_name = models.CharField(max_length=100)
     shipping_phone = models.CharField(max_length=15)
+    shipping_email = models.EmailField(max_length=254, blank=True, null=True)
     shipping_address = models.TextField()
     note = models.TextField(blank=True, null=True) # Ghi chú của khách
     

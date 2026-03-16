@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.utils import timezone
 
 from orders.services.momo_service import create_momo_payment, verify_momo_signature
+from orders.services.email_service import send_order_invoice_email
 
 logger = logging.getLogger(__name__)
 
@@ -104,6 +105,7 @@ def checkout(request):
         ward_text = request.POST.get('ward_text')
         district_text = request.POST.get('district_text')
         province_text = request.POST.get('province_text')
+        shipping_email = request.POST.get('email', '').strip()
         payment_method = request.POST.get('payment')
 
         # Ghép các thành phần địa chỉ lại
@@ -115,6 +117,7 @@ def checkout(request):
             user=request.user,
             shipping_name=shipping_name,
             shipping_phone=shipping_phone,
+            shipping_email=shipping_email or None,
             shipping_address=full_address,
             coupon=coupon, # Gán coupon vào đơn hàng
             total_amount=final_total # Sử dụng tổng tiền cuối cùng
@@ -186,6 +189,10 @@ def checkout(request):
                 payment_method=pm_method,
                 payment_status=Payment.Status.PENDING,
             )
+
+            # Gửi email hóa đơn cho khách hàng
+            send_order_invoice_email(new_order)
+
             messages.success(request, "Đặt hàng thành công! Cảm ơn bạn đã mua sắm tại LapStore.")
             return redirect('users:order_list')
 
@@ -331,6 +338,9 @@ def momo_return(request):
                 order = payment.order
                 order.order_status = Order.Status.PROCESSING
                 order.save()
+
+                # Gửi email hóa đơn cho khách hàng
+                send_order_invoice_email(order)
             else:
                 payment.payment_status = Payment.Status.FAILED
                 payment.save()
