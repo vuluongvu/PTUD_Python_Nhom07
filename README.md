@@ -10,7 +10,7 @@ Phát triển website bán laptop và linh kiện máy tính sử dụng ngôn n
 ## Yêu cầu
 
 - Python 3.10+ (hoặc phiên bản phù hợp với `env` trong repo)
-- Django 6.x
+- Django 5.0+
 
 ## Cài đặt nhanh (Windows)
 

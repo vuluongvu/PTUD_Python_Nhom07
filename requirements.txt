@@ -1,6 +1,5 @@
-Django==6.0.1
+Django==5.0.6
 requests
-google-genai
 google-generativeai
 python-dotenv
 Pillow
