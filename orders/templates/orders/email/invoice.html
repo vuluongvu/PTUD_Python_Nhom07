@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hóa đơn đặt hàng — LapStore</title>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f4f6f9; font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+
+  <!-- Wrapper -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+    style="background-color:#f4f6f9; padding:32px 0;">
+    <tr>
+      <td align="center">
+
+        <!-- Main Card -->
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0"
+          style="background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #e81a1a, #e81a1a); padding:28px 32px; text-align:center;">
+              <h1 style="margin:0; color:#ffffff; font-size:26px; font-weight:700; letter-spacing:0.5px;">
+                LapStore
+              </h1>
+              <p style="margin:8px 0 0; color:#bbdefb; font-size:14px;">
+                Xác nhận đơn hàng
+              </p>
+            </td>
+          </tr>
+
+          <!-- Greeting -->
+          <tr>
+            <td style="padding:28px 32px 12px;">
+              <p style="margin:0; font-size:16px; color:#333;">
+                Xin chào <strong>{{ customer_name }}</strong>,
+              </p>
+              <p style="margin:10px 0 0; font-size:15px; color:#555; line-height:1.6;">
+                Cảm ơn bạn đã đặt hàng tại <strong>LapStore</strong>! Đơn hàng của bạn đã được tiếp nhận thành công.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Order Info -->
+          <tr>
+            <td style="padding:8px 32px 20px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                style="background-color:#f0f6ff; border-radius:8px; padding:16px;">
+                <tr>
+                  <td style="padding:16px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="font-size:14px; color:#666; padding-bottom:8px;">Mã đơn hàng:</td>
+                        <td
+                          style="font-size:14px; color:#ed1818; font-weight:700; text-align:right; padding-bottom:8px;">
+                          #{{ order_id }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:14px; color:#666;">Ngày đặt hàng:</td>
+                        <td style="font-size:14px; color:#333; text-align:right;">
+                          {{ order_date|date:"d/m/Y H:i" }}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Products Table -->
+          <tr>
+            <td style="padding:0 32px 24px;">
+              <h3 style="margin:0 0 12px; font-size:16px; color:#333;">Chi tiết đơn hàng</h3>
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                <!-- Table Header -->
+                <thead>
+                  <tr style="background-color:#e8eef7;">
+                    <th
+                      style="padding:10px 12px; text-align:left; font-size:13px; color:#555; font-weight:600; border-bottom:2px solid #d0dbed;">
+                      Sản phẩm
+                    </th>
+                    <th
+                      style="padding:10px 12px; text-align:center; font-size:13px; color:#555; font-weight:600; border-bottom:2px solid #d0dbed;">
+                      SL
+                    </th>
+                    <th
+                      style="padding:10px 12px; text-align:right; font-size:13px; color:#555; font-weight:600; border-bottom:2px solid #d0dbed;">
+                      Đơn giá
+                    </th>
+                    <th
+                      style="padding:10px 12px; text-align:right; font-size:13px; color:#555; font-weight:600; border-bottom:2px solid #d0dbed;">
+                      Thành tiền
+                    </th>
+                  </tr>
+                </thead>
+
+                <!-- Table Body -->
+                <tbody>
+                  {% for item in order_items %}
+                  <tr style="{% if forloop.counter|divisibleby:2 %}background-color:#fafbfd;{% endif %}">
+                    <td style="padding:10px 12px; font-size:14px; color:#333; border-bottom:1px solid #eee;">
+                      {{ item.product_name }}
+                    </td>
+                    <td
+                      style="padding:10px 12px; font-size:14px; color:#333; text-align:center; border-bottom:1px solid #eee;">
+                      {{ item.quantity }}
+                    </td>
+                    <td
+                      style="padding:10px 12px; font-size:14px; color:#333; text-align:right; border-bottom:1px solid #eee;">
+                      {{ item.unit_price|floatformat:0 }} ₫
+                    </td>
+                    <td
+                      style="padding:10px 12px; font-size:14px; color:#333; text-align:right; border-bottom:1px solid #eee;">
+                      {{ item.subtotal|floatformat:0 }} ₫
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+
+                <!-- Total Row -->
+                <tfoot>
+                  <tr>
+                    <td colspan="3"
+                      style="padding:14px 12px; text-align:right; font-size:15px; font-weight:700; color:#333;">
+                      Tổng cộng:
+                    </td>
+                    <td style="padding:14px 12px; text-align:right; font-size:16px; font-weight:700; color:#1a73e8;">
+                      {{ total_amount|floatformat:0 }} ₫
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </td>
+          </tr>
+
+          <!-- CTA / Info -->
+          <tr>
+            <td style="padding:0 32px 28px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                style="background-color:#e8f5e9; border-radius:8px;">
+                <tr>
+                  <td style="padding:16px; text-align:center;">
+                    <p style="margin:0; font-size:14px; color:#2e7d32; line-height:1.5;">
+                      ✅ Đơn hàng của bạn đang được xử lý.<br />
+                      Chúng tôi sẽ thông báo khi đơn hàng được giao.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f8f9fa; padding:20px 32px; text-align:center; border-top:1px solid #e0e0e0;">
+              <p style="margin:0; font-size:13px; color:#999; line-height:1.5;">
+                Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ chúng tôi.<br />
+                © {{ order_date|date:"Y" }} LapStore. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /Main Card -->
+
+      </td>
+    </tr>
+  </table>
+  <!-- /Wrapper -->
+
+</body>
+
+</html>

@@ -2,7 +2,8 @@ import json
 from datetime import timedelta
 
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
@@ -27,87 +28,101 @@ class LapStoreAdminSite(admin.AdminSite):
         extra_context = extra_context or {}
 
         # --- KPI ---
-        total_products = Product.objects.filter(status=True).count()
-        total_orders = Order.objects.count()
-        total_revenue = Order.objects.filter(
-            order_status=Order.Status.DELIVERED
-        ).aggregate(total=Sum('total_amount'))['total'] or 0
-        total_users = User.objects.count()
+        try:
+            total_products = Product.objects.filter(status=True).count()
+            total_orders = Order.objects.count()
+            total_revenue = Order.objects.filter(
+                order_status=Order.Status.DELIVERED
+            ).aggregate(total=Sum('total_amount'))['total'] or 0
+            total_users = User.objects.count()
 
-        # --- Top Selling Products (Bar Chart) ---
-        top_products = Inventory.objects.filter(
-            sold_count__gt=0
-        ).select_related('product').order_by('-sold_count')[:10]
+            # --- Top Selling Products (Bar Chart) ---
+            top_products = Inventory.objects.filter(
+                sold_count__gt=0
+            ).select_related('product').order_by('-sold_count')[:10]
 
-        top_labels = [inv.product.name[:30] for inv in top_products]
-        top_data = [inv.sold_count for inv in top_products]
+            top_labels = [inv.product.name[:30] for inv in top_products]
+            top_data = [inv.sold_count for inv in top_products]
 
-        if not top_labels:
-            top_from_orders = OrderItem.objects.values(
-                'product__name'
-            ).annotate(total_sold=Sum('quantity')).order_by('-total_sold')[:10]
-            top_labels = [i['product__name'][:30] for i in top_from_orders]
-            top_data = [i['total_sold'] for i in top_from_orders]
+            if not top_labels:
+                top_from_orders = OrderItem.objects.values(
+                    'product__name'
+                ).annotate(total_sold=Sum('quantity')).order_by('-total_sold')[:10]
+                top_labels = [i['product__name'][:30] for i in top_from_orders]
+                top_data = [i['total_sold'] for i in top_from_orders]
 
-        # --- Monthly Revenue (Line Chart) ---
-        now = timezone.now()
-        six_months_ago = now - timedelta(days=180)
+            # --- Monthly Revenue (Line Chart) ---
+            now = timezone.now()
+            six_months_ago = now - timedelta(days=180)
 
-        monthly = Order.objects.filter(
-            order_status=Order.Status.DELIVERED,
-            created_at__gte=six_months_ago
-        ).annotate(month=TruncMonth('created_at')).values('month').annotate(
-            revenue=Sum('total_amount')
-        ).order_by('month')
-
-        rev_labels, rev_data = [], []
-        for e in monthly:
-            rev_labels.append(e['month'].strftime('T%m/%Y'))
-            rev_data.append(float(e['revenue']))
-
-        if not rev_labels:
             monthly = Order.objects.filter(
+                order_status=Order.Status.DELIVERED,
                 created_at__gte=six_months_ago
-            ).exclude(order_status=Order.Status.CANCELLED).annotate(
-                month=TruncMonth('created_at')
-            ).values('month').annotate(revenue=Sum('total_amount')).order_by('month')
+            ).annotate(month=TruncMonth('created_at')).values('month').annotate(
+                revenue=Sum('total_amount')
+            ).order_by('month')
+
+            rev_labels, rev_data = [], []
             for e in monthly:
                 rev_labels.append(e['month'].strftime('T%m/%Y'))
                 rev_data.append(float(e['revenue']))
 
-        # --- Order Status Distribution (Doughnut) ---
-        status_counts = Order.objects.values('order_status').annotate(
-            count=Count('id')
-        ).order_by('order_status')
-        status_map = dict(Order.Status.choices)
-        status_labels = [status_map.get(s['order_status'], s['order_status']) for s in status_counts]
-        status_data = [s['count'] for s in status_counts]
+            if not rev_labels:
+                monthly = Order.objects.filter(
+                    created_at__gte=six_months_ago
+                ).exclude(order_status=Order.Status.CANCELLED).annotate(
+                    month=TruncMonth('created_at')
+                ).values('month').annotate(revenue=Sum('total_amount')).order_by('month')
+                for e in monthly:
+                    rev_labels.append(e['month'].strftime('T%m/%Y'))
+                    rev_data.append(float(e['revenue']))
 
-        # --- Recent Orders ---
-        recent_orders = Order.objects.select_related('user').order_by('-created_at')[:5]
+            # --- Order Status Distribution (Doughnut) ---
+            status_counts = Order.objects.values('order_status').annotate(
+                count=Count('id')
+            ).order_by('order_status')
+            status_map = dict(Order.Status.choices)
+            status_labels = [status_map.get(s['order_status'], s['order_status']) for s in status_counts]
+            status_data = [s['count'] for s in status_counts]
 
-        extra_context['dashboard'] = {
-            'total_products': total_products,
-            'total_orders': total_orders,
-            'total_revenue': total_revenue,
-            'total_users': total_users,
-            'top_products_labels': json.dumps(top_labels, ensure_ascii=False),
-            'top_products_data': json.dumps(top_data),
-            'revenue_labels': json.dumps(rev_labels, ensure_ascii=False),
-            'revenue_data': json.dumps(rev_data),
-            'order_status_labels': json.dumps(status_labels, ensure_ascii=False),
-            'order_status_data': json.dumps(status_data),
-            'recent_orders': recent_orders,
-        }
+            # --- Recent Orders ---
+            recent_orders = Order.objects.select_related('user').order_by('-created_at')[:5]
+
+            extra_context['dashboard'] = {
+                'total_products': total_products,
+                'total_orders': total_orders,
+                'total_revenue': total_revenue,
+                'total_users': total_users,
+                'top_products_labels': json.dumps(top_labels, ensure_ascii=False),
+                'top_products_data': json.dumps(top_data),
+                'revenue_labels': json.dumps(rev_labels, ensure_ascii=False),
+                'revenue_data': json.dumps(rev_data),
+                'order_status_labels': json.dumps(status_labels, ensure_ascii=False),
+                'order_status_data': json.dumps(status_data),
+                'recent_orders': recent_orders,
+            }
+        except Exception as e:
+            print(f"Error in Admin Dashboard: {e}")
+            extra_context['dashboard_error'] = str(e)
 
         return super().index(request, extra_context=extra_context)
 
+    def get_app_list(self, request, app_label=None):
+        """Đảm bảo các model được đăng ký ở admin.site mặc định cũng hiện ở đây."""
+        from django.contrib import admin as django_admin
+        for model, model_admin in django_admin.site._registry.items():
+            if model not in self._registry:
+                # Tránh đăng ký lại nếu đã có trong registry của custom site
+                try:
+                    self.register(model, model_admin.__class__)
+                except Exception:
+                    pass
+        return super().get_app_list(request, app_label)
+
 
 # Tạo instance custom admin site
+# Sử dụng name='lapstore' để tránh collision với mặc định nếu cần
 lapstore_admin = LapStoreAdminSite(name='admin')
-
-# Copy tất cả registry từ default admin site
-# (Để các @admin.register decorator ở orders/admin.py vẫn hoạt động)
 
 
 # =========================================
@@ -177,7 +192,9 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
 
 
-# Đăng ký tất cả vào custom admin site
+# Đăng ký các model quan trọng vào custom admin site
+lapstore_admin.register(User, UserAdmin)
+lapstore_admin.register(Group, GroupAdmin)
 lapstore_admin.register(Product, ProductAdmin)
 lapstore_admin.register(Coupon, CouponAdmin)
 lapstore_admin.register(Category, CategoryAdmin)

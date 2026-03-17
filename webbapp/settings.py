@@ -139,9 +139,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your_email@gmail.com'  # Thay bằng email của bạn
-EMAIL_HOST_PASSWORD = 'your_app_password'      # Thay bằng mật khẩu ứng dụng
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER', '')
 
 # Tải API key từ biến môi trường. Việc cấu hình sẽ được thực hiện trong view.
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')

@@ -137,6 +137,38 @@
         </ul>
       </div>
 
+      <!-- Filter by RAM -->
+      <div class="filter-group">
+        <h3 class="filter-title">RAM (Bộ nhớ trong)</h3>
+        <ul class="filter-list">
+          {% for ram in ram_options %}
+          <li>
+            <label class="filter-label">
+              <input type="checkbox" name="ram" value="{{ ram.value }}" class="filter-checkbox" {% if ram.value in selected_ram %}checked{% endif %}>
+              <span class="checkmark"></span>
+              {{ ram.label }}
+            </label>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Filter by Storage -->
+      <div class="filter-group">
+        <h3 class="filter-title">Ổ cứng (Lưu trữ)</h3>
+        <ul class="filter-list">
+          {% for storage in storage_options %}
+          <li>
+            <label class="filter-label">
+              <input type="checkbox" name="storage" value="{{ storage.value }}" class="filter-checkbox" {% if storage.value in selected_storage %}checked{% endif %}>
+              <span class="checkmark"></span>
+              {{ storage.label }}
+            </label>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
       <input type="hidden" name="sort" value="{{ sort_param|default:'default' }}">
       <button type="submit" class="btn-apply-filters" style="display: none;">Áp dụng bộ lọc</button>
 
@@ -209,6 +241,11 @@
           </div>
         </article>
       </a>
+      {% empty %}
+         <div class="empty-products-msg" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+           <i class="fa-solid fa-box-open" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
+           <p style="font-size: 1.1rem; color: #666;">Không tìm thấy sản phẩm nào phù hợp với bộ lọc.</p>
+         </div>
       {% endfor %}
     </div>
 
