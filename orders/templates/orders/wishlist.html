@@ -125,7 +125,7 @@ thích - LapStore{% endblock %} {% block extra_css %}
             <span class="price-old">{{ item.product.discount_price_vn }}</span>
         {% endif %}
       </div>
-      <button class="btn-buy-now">Mua ngay</button>
+      <button class="btn-buy-now" onclick="buyNow(event, '{{ item.product.id }}')">Mua ngay</button>
     </div>
   </article>
 {% endfor %}
@@ -171,6 +171,43 @@ function toggleWishlist(event, productId) {
         }
     })
     .catch(error => console.error('Lỗi: ', error));
+}
+
+function buyNow(event, productId) {
+    event.preventDefault();
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || "{{ csrf_token }}";
+
+    fetch("{% url 'products:toggle_cart' %}", { 
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrftoken,
+        },
+        // Gửi thêm action='add_only' để backend biết chỉ thêm, không xóa (tương tự như trong product detail)
+        body: new URLSearchParams({ 'id': productId, 'action': 'add_only' })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Lỗi Server");
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'login_required') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Yêu cầu đăng nhập',
+                text: data.message
+            }).then(() => {
+                window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
+            });
+        } else {
+            // Dù thêm mới hay đã có sẵn, đều chuyển đến trang giỏ hàng
+            window.location.href = "{% url 'orders:cart' %}";
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi khi thực hiện Mua Ngay:', error);
+        Swal.fire('Lỗi', 'Không thể thực hiện thao tác này.', 'error');
+    });
 }
 </script>
 {% endblock %}
