@@ -4,3 +4,8 @@ google-genai
 google-generativeai
 python-dotenv
 Pillow
+whitenoise
+gunicorn
+dj-database-url
+psycopg2-binary
+djangorestframework
