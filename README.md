@@ -1,4 +1,4 @@
-# 💻 LapStore - Website Bán Laptop & Linh Kiện Công Nghệ
+# 💻 LapStore - Website Bán Laptop & Linh Kiện Máy Tính
 
 [![Django](https://img.shields.io/badge/Framework-Django%206.x-green.svg)](https://www.djangoproject.com/)
 [![Python](https://img.shields.io/badge/Language-Python%203.x-blue.svg)](https://www.python.org/)
