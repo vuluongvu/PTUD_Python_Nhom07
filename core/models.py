@@ -156,6 +156,19 @@ class Product(TimeStampedModel):
         """Kiểm tra xem sản phẩm có cấu hình laptop hay không"""
         return hasattr(self, 'laptop_config') and self.laptop_config is not None
 
+    @property
+    def primary_image_url(self):
+        """Trả về URL ảnh chính hoặc ảnh đầu tiên của sản phẩm"""
+        primary_image = self.images.filter(is_primary=True).first()
+        if primary_image:
+            return primary_image.image_url
+        
+        first_image = self.images.first()
+        if first_image:
+            return first_image.image_url
+            
+        return "https://via.placeholder.com/150?text=No+Image"
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
