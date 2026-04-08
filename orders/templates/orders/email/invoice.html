@@ -25,7 +25,7 @@
               <h1 style="margin:0; color:#ffffff; font-size:26px; font-weight:700; letter-spacing:0.5px;">
                 LapStore
               </h1>
-              <p style="margin:8px 0 0; color:#bbdefb; font-size:14px;">
+              <p style="margin:8px 0 0; color:#fff; font-size:14px;">
                 Xác nhận đơn hàng
               </p>
             </td>
@@ -82,6 +82,10 @@
                   <tr style="background-color:#e8eef7;">
                     <th
                       style="padding:10px 12px; text-align:left; font-size:13px; color:#555; font-weight:600; border-bottom:2px solid #d0dbed;">
+                      Hình ảnh
+                    </th>
+                    <th
+                      style="padding:10px 12px; text-align:left; font-size:13px; color:#555; font-weight:600; border-bottom:2px solid #d0dbed;">
                       Sản phẩm
                     </th>
                     <th
@@ -104,6 +108,13 @@
                   {% for item in order_items %}
                   <tr style="{% if forloop.counter|divisibleby:2 %}background-color:#fafbfd;{% endif %}">
                     <td style="padding:10px 12px; font-size:14px; color:#333; border-bottom:1px solid #eee;">
+                      {% if item.product %}
+                        <img src="{{ item.product.primary_image_url }}" alt="{{ item.product_name }}" width="60" style="border-radius:4px; display:block;">
+                      {% else %}
+                        <div style="width:60px; height:60px; background:#eee; border-radius:4px;"></div>
+                      {% endif %}
+                    </td>
+                    <td style="padding:10px 12px; font-size:14px; color:#333; border-bottom:1px solid #eee;">
                       {{ item.product_name }}
                     </td>
                     <td
@@ -125,7 +136,7 @@
                 <!-- Total Row -->
                 <tfoot>
                   <tr>
-                    <td colspan="3"
+                    <td colspan="4"
                       style="padding:14px 12px; text-align:right; font-size:15px; font-weight:700; color:#333;">
                       Tổng cộng:
                     </td>
@@ -146,7 +157,7 @@
                 <tr>
                   <td style="padding:16px; text-align:center;">
                     <p style="margin:0; font-size:14px; color:#2e7d32; line-height:1.5;">
-                      ✅ Đơn hàng của bạn đang được xử lý.<br />
+                       Đơn hàng của bạn đang được xử lý.<br />
                       Chúng tôi sẽ thông báo khi đơn hàng được giao.
                     </p>
                   </td>
