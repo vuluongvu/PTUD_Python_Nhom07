@@ -179,14 +179,19 @@
         <div class="average-score">
           {{ p.avg_rating|default:0|floatformat:1 }}
         </div>
-        
-
+ 
         <div class="stars-display">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star-half-stroke"></i>
+          {% with avg_rating=p.avg_rating|default:0 %}
+            {% for i in "12345" %}
+                {% if avg_rating >= forloop.counter %}
+                    <i class="fa-solid fa-star"></i>
+                {% elif avg_rating >= forloop.counter|add:"-0.5" %}
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                {% else %}
+                    <i class="fa-regular fa-star" style="color:#e5e7eb"></i>
+                {% endif %}
+            {% endfor %}
+          {% endwith %}
         </div>
         <div class="total-reviews">{{ p.reviews_set.count }} đánh giá</div>
     </div>
