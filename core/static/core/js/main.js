@@ -83,22 +83,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- SEARCH AUTOCOMPLETE ---
   const searchInputs = document.querySelectorAll(".search-box input");
   const sampleData = [
-    "MacBook Air M1",
-    "MacBook Pro M2",
+    "Lenovo legion 5",
+    "Dell Alienware",
+    "Dell Inspiron",
+    "VGA RTX 5050",
+    "Intel Core i5",
+    "ASUS Radeon",
+    "CPU AMD Ryzen",
+    "RAM",
+    "Lenovo LOQ",
     "Laptop Gaming Asus",
     "Acer Nitro 5",
-    "Dell XPS 13",
-    "LG Gram 2023",
-    "iPhone 15 Pro Max",
-    "Samsung Galaxy S24",
-    "Chuột Logitech G102",
-    "Bàn phím cơ",
-    "Tai nghe Gaming",
-    "Màn hình Dell Ultrasharp",
-    "RAM 8GB DDR4",
-    "SSD 512GB NVMe",
+    "Dell XPS",
+    "RAM 16GB DDR5",
     "VGA RTX 3060",
-    "Mainboard B660",
   ];
 
   searchInputs.forEach((input) => {
