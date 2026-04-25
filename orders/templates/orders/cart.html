@@ -247,6 +247,7 @@
   .empty-cart-message {
     padding: 40px;
     text-align: center;
+    margin: 150px;
   }
   .empty-cart-message img {
     width: 150px;
@@ -354,6 +355,11 @@
 </div>
 
 <div class="container">
+  <div class="section-head">
+  <h2 style="font-size: 24px; font-weight: 800">
+    Sản phẩm trong <span style="color: var(--primary)">Giỏ hàng</span> ({{product_count}})
+  </h2>
+</div>
   {% csrf_token %}
   {% if cart_items %}
   <div class="cart-layout">

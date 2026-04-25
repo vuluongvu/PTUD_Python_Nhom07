@@ -165,7 +165,7 @@ def product_detail(request, slug):
             })
         except Exception as e:
            
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+            return JsonResponse({'status': 'error', 'message': "Bạn đã bình luận trước đó rồi!"}, status=500)
 
     # XỬ LÝ GET 
     # Khai báo giá trị mặc định để tránh  UnboundLocalError
