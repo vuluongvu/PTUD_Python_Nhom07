@@ -32,7 +32,7 @@
             <label class="remember-label">
               <input type="checkbox" name="remember_me" style="accent-color: #ff0000;"/> Nhớ tài khoản
             </label>
-            <a href="#">Quên mật khẩu?</a>
+            <a href="{% url 'users:password_reset' %}">Quên mật khẩu?</a>
           </div>
 
           <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
