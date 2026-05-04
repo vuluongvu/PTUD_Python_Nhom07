@@ -1182,6 +1182,58 @@ footer {
     .filter-btn {
         white-space: nowrap;
     }
+
+    /* View-all page: reset to 2 columns on mobile */
+    .view-all-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Cart item-actions: giữ hàng ngang, thu nhỏ giá để vừa 1 dòng */
+    .item-actions {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        flex-wrap: nowrap;
+    }
+
+    .item-price {
+        flex-shrink: 0;
+    }
+
+    .p-current {
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .p-old {
+        font-size: 10px;
+    }
+
+    .item-name {
+        font-size: 13px;
+        -webkit-line-clamp: 2;
+    }
+
+    .item-variant {
+        font-size: 11px;
+    }
+
+    .qty-control {
+        height: 28px;
+        flex-shrink: 0;
+    }
+
+    .qty-btn {
+        width: 26px;
+        font-size: 12px;
+    }
+
+    .qty-input {
+        width: 30px;
+        font-size: 11px;
+    }
 }
 
 /* =========================================

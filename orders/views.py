@@ -302,10 +302,11 @@ def wishlist_list(request):
         # Nếu chưa login, vẫn cho vào trang nhưng wishlist sẽ trống
         return render(request, 'orders/wishlist.html', {
             'wishlist': [],
+            'product_count': 0,
             'needs_login': True # Gửi thêm biến này để template xử lý
         })
     
-    user_wishlist = WishList.objects.filter(user=request.user).select_related('product')
+    user_wishlist = WishList.objects.filter(user=request.user).select_related('product').prefetch_related('product__images')
     product_count = user_wishlist.count()
     return render(request, 'orders/wishlist.html', {
         'wishlist': user_wishlist, 

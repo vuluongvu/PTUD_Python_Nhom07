@@ -66,6 +66,13 @@
   .view-all-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+
+  /* Responsive: 2 cột trên mobile */
+  @media (max-width: 768px) {
+    .view-all-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
 </style>
 
 {% endblock %}

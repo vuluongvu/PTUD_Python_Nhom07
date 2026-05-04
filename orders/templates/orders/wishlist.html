@@ -73,16 +73,8 @@ thích - LapStore{% endblock %} {% block extra_css %}
   </h2>
 </div>
 
-  {% if needs_login %}
-          <div class="login-prompt" style="text-align: center; padding: 100px;">
-        <div class="empty-cart-message">
-    <h3>Mục yêu thích của bạn đang trống</h3>
-    <p>Hãy khám phá thêm các sản phẩm và thêm vào mục yêu thích nhé!</p>
-    <a href="{% url 'core:home' %}" class="btn-back-home">Tiếp tục mua sắm</a>
-  </div>
-    </div>
-    {% endif %}
-    <div class="flash-grid">
+{% if wishlist %}
+<div class="flash-grid">
   <!-- DJANGO: Loop Wishlist Items -->
   <!-- Sản phẩm -->
   {% for item in wishlist %}
@@ -128,9 +120,16 @@ thích - LapStore{% endblock %} {% block extra_css %}
       <button class="btn-buy-now" onclick="buyNow(event, '{{ item.product.id }}')">Mua ngay</button>
     </div>
   </article>
-{% endfor %}
+  {% endfor %}
   <!-- DJANGO: End Loop -->
 </div>
+{% else %}
+<div class="empty-cart-message">
+  <h3>Mục yêu thích của bạn đang trống</h3>
+  <p>Hãy khám phá thêm các sản phẩm và thêm vào mục yêu thích nhé!</p>
+  <a href="{% url 'core:home' %}" class="btn-back-home">Tiếp tục mua sắm</a>
+</div>
+{% endif %}
 
 {% endblock %}
 {% block extra_js %}
