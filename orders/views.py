@@ -98,6 +98,25 @@ def checkout(request):
     final_total = total_amount - discount_amount
 
     if request.method == 'POST':
+        # --- Kiểm tra tồn kho trước khi cho đặt hàng ---
+        out_of_stock_items = []
+        for item in cart_items:
+            try:
+                inv = item.product.inventory
+                if inv.quantity <= 0:
+                    out_of_stock_items.append(item.product.name)
+            except Exception:
+                out_of_stock_items.append(item.product.name)
+
+        if out_of_stock_items:
+            product_names = ", ".join(out_of_stock_items)
+            messages.error(
+                request,
+                f"Đặt hàng thất bại! Các sản phẩm sau đã hết hàng: {product_names}. "
+                "Vui lòng xóa chúng khỏi giỏ hàng trước khi tiếp tục."
+            )
+            return redirect('orders:cart')
+
         # Lấy dữ liệu từ form
         shipping_name = request.POST.get('fullname')
         shipping_phone = request.POST.get('phone')
@@ -123,7 +142,7 @@ def checkout(request):
             total_amount=final_total # Sử dụng tổng tiền cuối cùng
         )
 
-        # Chuyển các sản phẩm từ giỏ hàng sang chi tiết đơn hàng
+        # Chuyển các sản phẩm từ giỏ hàng sang chi tiết đơn hàng và trừ tồn kho
         for item in cart_items:
             OrderItem.objects.create(
                 order=new_order,
@@ -132,6 +151,14 @@ def checkout(request):
                 quantity=item.quantity,
                 unit_price=(item.product.final_price or 0)
             )
+            # Trừ tồn kho và tăng sold_count
+            try:
+                inv = item.product.inventory
+                inv.quantity = max(0, inv.quantity - item.quantity)
+                inv.sold_count += item.quantity
+                inv.save()
+            except Exception:
+                pass
 
         # Giảm số lượng coupon nếu có
         if coupon:

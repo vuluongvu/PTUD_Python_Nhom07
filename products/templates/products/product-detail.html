@@ -86,19 +86,29 @@
     </div>
 
     <div class="action-group">
-      <button class="btn-main btn-buy" onclick="buyNow(event, '{{ p.id }}')">
-        MUA NGAY
-        <span>(Giao hàng tận nơi hoặc nhận tại cửa hàng)</span>
-      </button>
-      <button class="btn-main btn-cart btn-add-to-cart {% if is_in_cart %}in-cart{% endif %}" 
-              data-product-id="{{ p.id }}"
-              {% if is_in_cart %}disabled{% endif %}>
-        {% if is_in_cart %}
-          <span><i class="fa-solid fa-check-circle"></i> Đã có trong giỏ</span>
-        {% else %}
-          <span>Thêm vào giỏ hàng</span>
-        {% endif %}
-      </button>
+      {% if p.inventory and p.inventory.quantity > 0 %}
+        <button class="btn-main btn-buy" onclick="buyNow(event, '{{ p.id }}')">
+          MUA NGAY
+          <span>(Giao hàng tận nơi hoặc nhận tại cửa hàng)</span>
+        </button>
+        <button class="btn-main btn-cart btn-add-to-cart {% if is_in_cart %}in-cart{% endif %}" 
+                data-product-id="{{ p.id }}"
+                {% if is_in_cart %}disabled{% endif %}>
+          {% if is_in_cart %}
+            <span><i class="fa-solid fa-check-circle"></i> Đã có trong giỏ</span>
+          {% else %}
+            <span>Thêm vào giỏ hàng</span>
+          {% endif %}
+        </button>
+      {% else %}
+        <button class="btn-main btn-buy" disabled style="opacity:0.5; cursor:not-allowed; background:#aaa;">
+          <i class="fa-solid fa-ban"></i> HẾT HÀNG
+          <span>Sản phẩm tạm thời không có sẵn</span>
+        </button>
+        <button class="btn-main btn-cart" disabled style="opacity:0.5; cursor:not-allowed;">
+          <span><i class="fa-solid fa-xmark"></i> Không thể thêm vào giỏ</span>
+        </button>
+      {% endif %}
     </div>
   </div>
 </div>
@@ -336,18 +346,24 @@
     </div>
 
 <div class="mobile-bar">
-  <button class="m-btn m-add btn-add-to-cart {% if is_in_cart %}in-cart{% endif %}" 
-          data-product-id="{{ p.id }}"
-          {% if is_in_cart %}disabled{% endif %}>
-    {% if is_in_cart %}
-      <i class="fa-solid fa-check"></i> Đã có trong giỏ
-    {% else %}
-      <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
-    {% endif %}
-  </button>
-  <button class="m-btn m-buy" onclick="buyNow(event, '{{ p.id }}')">
-    Mua Ngay
-  </button>
+  {% if p.inventory and p.inventory.quantity > 0 %}
+    <button class="m-btn m-add btn-add-to-cart {% if is_in_cart %}in-cart{% endif %}" 
+            data-product-id="{{ p.id }}"
+            {% if is_in_cart %}disabled{% endif %}>
+      {% if is_in_cart %}
+        <i class="fa-solid fa-check"></i> Đã có trong giỏ
+      {% else %}
+        <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
+      {% endif %}
+    </button>
+    <button class="m-btn m-buy" onclick="buyNow(event, '{{ p.id }}')">
+      Mua Ngay
+    </button>
+  {% else %}
+    <button class="m-btn" disabled style="opacity:0.5; cursor:not-allowed; background:#aaa; flex:1;">
+      <i class="fa-solid fa-ban"></i> HẾT HÀNG
+    </button>
+  {% endif %}
 </div>
 
 <!-- MODAL SO SÁNH SẢN PHẨM -->
@@ -656,6 +672,8 @@ function buyNow(event, productId) {
             Swal.fire('Yêu cầu đăng nhập', data.message, 'warning').then(() => {
                 window.location.href = "{% url 'users:login' %}?next=" + window.location.pathname;
             });
+        } else if (data.status === 'out_of_stock') {
+            Swal.fire('Hết hàng', data.message, 'error');
         } else {
             // Dù thêm mới hay đã có sẵn, đều chuyển đến trang giỏ hàng
             window.location.href = "{% url 'orders:cart' %}";

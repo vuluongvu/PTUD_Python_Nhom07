@@ -219,6 +219,21 @@ def toggle_cart(request):
         product_id = request.POST.get('id')
         product = get_object_or_404(Product, id=product_id)
 
+        # --- Kiểm tra tồn kho trước khi thêm vào giỏ ---
+        try:
+            inventory = product.inventory
+            if inventory.quantity <= 0:
+                return JsonResponse({
+                    'status': 'out_of_stock',
+                    'message': 'Sản phẩm này đã hết hàng, không thể thêm vào giỏ!'
+                })
+        except Exception:
+            # Nếu không có inventory record, coi như hết hàng
+            return JsonResponse({
+                'status': 'out_of_stock',
+                'message': 'Sản phẩm này đã hết hàng!'
+            })
+
         # Lấy hoặc tạo giỏ hàng cho user
         user_cart, _ = Cart.objects.get_or_create(user=request.user)
 
